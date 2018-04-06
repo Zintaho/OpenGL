@@ -126,7 +126,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="main.h" />
+    <ClInclude Include="C2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\fragment.glsl" />
