@@ -137,7 +137,6 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="ShaderManager.h" />
-    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\fragment.glsl" />

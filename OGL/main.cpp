@@ -6,7 +6,6 @@ OpenGL 4.3 Practice
 //Header
 ///C++
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <vector>
 ///OpenGL
@@ -20,13 +19,6 @@ OpenGL 4.3 Practice
 
 ///to be erased
 using namespace std;
-//inline math functions
-inline void cross3D(const float *u, const float *v, float* result)
-{
-	result[0] = u[1] * v[2] - u[2] * v[1];
-	result[1] = u[2] * v[0] - u[0] * v[2];
-	result[2] = u[0] * v[1] - u[1] * v[0];
-}
 
 int main()
 {
@@ -108,23 +100,23 @@ int main()
 			{- 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f }	//WHI
 			};
 			
-			//unsigned int indice[36] =
-			//{
-			//	1,3,2,0,1,2,
-			//	7,3,2,6,7,2,
-			//	0,2,6,4,0,6,
-			//	1,3,7,5,1,7,
-			//	5,7,6,4,5,6,
-			//	5,1,0,4,5,0,
-			//};
-
 			unsigned int indice[DRAW_AMOUNT] =
 			{
-				1,0,3,
-				0,3,2,
-				4,5,6,
-				5,6,7,
+				1,3,2,0,1,2,
+				7,3,2,6,7,2,
+				0,2,6,4,0,6,
+				1,3,7,5,1,7,
+				5,7,6,4,5,6,
+				5,1,0,4,5,0,
 			};
+
+			//unsigned int indice[DRAW_AMOUNT] =
+			//{
+			//	1,0,3,
+			//	0,3,2,
+			//	4,5,6,
+			//	5,6,7,
+			//};
 
 			struct Camera2
 			{
@@ -138,26 +130,25 @@ int main()
 
 			Camera2 mainCam =
 			{
-			{0.0f,1.0f,1.0f},	//EYE
+			{0.2f,0.5f,1.0f},	//EYE
 			{0.0f,0.0f,0.5f},	//AT
 			{0.0f,1.0f,0.0f},	//UP
-			90,//fovy
+			120,//fovy
 			WINDOWY / WINDOWX,//aspect
-			0,2//n,f
+			-1,1//n,f
 			};
 
-			Matrix4x4 MVPmat;
-			setViewMatrix(MVPmat, mainCam.EYE, mainCam.AT, mainCam.UP);
+			Matrix4x4 viewMat = { 0 };
+			setViewMatrix(viewMat, mainCam.EYE, mainCam.AT, mainCam.UP);
+
+			Matrix4x4 projMat = { 0 };
+			setProjMatrix(projMat, mainCam.fovy, mainCam.aspect, mainCam.n, mainCam.f);
 
 			for (int i = 0; i < 8; ++i)
 			{
 				//_EulerRotate(vertice[i].Pos, ROTY, 90);
-				_multiply(MVPmat, vertice[i].Pos);
-			}
-
-			for (int i = 0; i < 8; ++i)
-			{
-				_PROJ(vertice[i].Pos, mainCam.fovy, mainCam.aspect, mainCam.f, mainCam.n);
+				vertice[i].Pos = MultiplyMatVec(viewMat, vertice[i].Pos);
+				vertice[i].Pos = MultiplyMatVec(projMat, vertice[i].Pos);
 			}
 
 			//6. Set VertexArray , VertexBuffer, IndexBuffer
@@ -326,58 +317,6 @@ void _homoTransform(float *pos, float sx, float sy, float sz, float tx, float ty
 
 	mat[0][0] = sx;	mat[1][1] = sy;	mat[2][2] = sz; mat[3][3] = 1;
 	mat[0][3] = tx * sx;	mat[1][3] = ty * sy;	mat[2][3] = tz * sz;
-
-	for (int y = 0; y < 4; ++y)
-	{
-		for (int x = 0; x < 4; ++x)
-		{
-			temp[y] += (mat[y][x] * homoPos[x]);
-		}
-	}
-
-	for (int i = 0; i < 3; ++i)
-	{
-		pos[i] = temp[i];
-	}
-}
-
-void _multiply(const float mat[4][4], float *pos)
-{
-	float temp[4] = { 0 };
-	float homoPos[4];
-	for (int i = 0; i < 3; ++i) homoPos[i] = pos[i];
-	homoPos[3] = 1;
-	temp[3] = 1;
-
-	for (int y = 0; y < 4; ++y)
-	{
-		for (int x = 0; x < 4; ++x)
-		{
-			temp[y] += (mat[y][x] * homoPos[x]);
-		}
-	}
-	for (int i = 0; i < 3; ++i)
-	{
-		pos[i] = temp[i];
-	}
-}
-
-void _PROJ(float *pos, float fovy, const float aspect, const float f, const float n)
-{
-	float temp[4] = { 0 };
-	float homoPos[4];
-	for (int i = 0; i < 3; ++i) homoPos[i] = pos[i];
-	homoPos[3] = 1;
-	temp[3] = 1;
-	float mat[4][4] = { 0 };
-
-	fovy *= (float)M_PI / 180.0f;
-
-	mat[0][0] = -1 / (tan(fovy / 2) *aspect);
-	mat[1][1] = -1 / (tan(fovy / 2));
-	mat[2][2] = -((f + n) / (f - n));
-	mat[2][3] = -2 * n*f / (f - n);
-	mat[3][2] = -1;
 
 	for (int y = 0; y < 4; ++y)
 	{
