@@ -4,6 +4,7 @@ const int VERSION_MAJOR = 4;
 const int VERSION_MINOR = 3;
 const char* FILENAME_VSHADER = "vertex.glsl";
 const char* FILENAME_FSHADER = "fragment.glsl";
+
 const int WINDOWX = 600;
 const int WINDOWY = 600;
 const int XMIN = 0;

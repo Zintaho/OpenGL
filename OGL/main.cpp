@@ -17,8 +17,9 @@ OpenGL 4.3 Practice
 #include "main.h"
 #include "C2.h"
 #include "ShaderManager.h"
-using namespace std;
 
+///to be erased
+using namespace std;
 //inline math functions
 inline void cross3D(const float *u, const float *v, float* result)
 {
@@ -29,6 +30,8 @@ inline void cross3D(const float *u, const float *v, float* result)
 
 int main()
 {
+	using namespace MyMath;
+
 	//1. Initialize GLFW
 	if (not glfwInit())
 	{///Initialization Failed
@@ -58,7 +61,7 @@ int main()
 				glfwTerminate();
 				exit(EXIT_FAILURE);
 			}
-
+		
 			//4.Load Shader Program
 			string vshaderFilename = FILENAME_VSHADER;
 			string fshaderFilename = FILENAME_FSHADER;
@@ -125,9 +128,9 @@ int main()
 
 			struct Camera2
 			{
-				float EYE[3];
-				float AT[3];
-				float UP[3];
+				Vector3 EYE;
+				Vector3 AT;
+				Vector3 UP;
 				float fovy;
 				float aspect;
 				float n, f;
@@ -142,8 +145,10 @@ int main()
 			WINDOWY / WINDOWX,//aspect
 			0,2//n,f
 			};
-			float MVPmat[4][4];
-			_setVIEW(MVPmat, mainCam.EYE, mainCam.AT, mainCam.UP);
+
+			Matrix4x4 MVPmat;
+			setViewMatrix(MVPmat, mainCam.EYE, mainCam.AT, mainCam.UP);
+
 			for (int i = 0; i < 8; ++i)
 			{
 				//_EulerRotate(vertice[i].Pos, ROTY, 90);
@@ -334,44 +339,6 @@ void _homoTransform(float *pos, float sx, float sy, float sz, float tx, float ty
 	{
 		pos[i] = temp[i];
 	}
-}
-
-void _setVIEW(float mat[4][4], const float *EYE, const float *AT, const float *UP)
-{
-	for (int z = 0; z < 3; ++z) mat[3][z] = 0;
-	mat[3][3] = 1;
-
-	float u[3], v[3], n[3];
-	for (int i = 0; i < 3; ++i)
-	{
-		n[i] = (EYE[i] - AT[i]);
-	}
-	if (not (n[0] == 0 && n[1] == 0 && n[2] == 0))
-	{
-		for (int i = 0; i < 3; ++i)
-		{
-			n[i] /= sqrt((n[0] * n[0] + n[1] * n[1] + n[2] * n[2]));
-		}
-	}
-	cross3D(n, UP, u);
-	if (not (u[0] == 0 && u[1] == 0 && u[2] == 0))
-	{
-		for (int i = 0; i < 3; ++i)
-		{
-			u[i] /= sqrt((u[0] * u[0] + u[1] * u[1] + u[2] * u[2]));
-		}
-	}
-	cross3D(n, u, v);
-
-	for (int i = 0; i < 3; ++i)
-	{
-		mat[0][i] = u[i];
-		mat[1][i] = v[i];
-		mat[2][i] = n[i];
-	}
-	mat[0][3] = -EYE[0] * (u[0] + u[1] + u[2]);
-	mat[1][3] = -EYE[1] * (v[0] + v[1] + v[2]);
-	mat[2][3] = -EYE[2] * (n[0] + n[1] + n[2]);
 }
 
 void _multiply(const float mat[4][4], float *pos)
