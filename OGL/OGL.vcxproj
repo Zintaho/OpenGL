@@ -120,13 +120,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="MyMath.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C2.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="constants.h" />
+    <ClInclude Include="Deprecated.md" />
+    <ClInclude Include="License.md" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="MyMath.h" />
+    <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\fragment.glsl" />

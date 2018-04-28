@@ -16,12 +16,24 @@
     <Filter Include="Shader Files">
       <UniqueIdentifier>{e137c40c-78c7-4976-83d1-c09c49e3cf7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Readme Files">
+      <UniqueIdentifier>{6138cddc-456c-465c-9605-f387f448ad4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="glad.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MyMath.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,6 +47,30 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C2.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="constants.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="License.md">
+      <Filter>Readme Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Deprecated.md">
+      <Filter>Readme Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MyMath.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

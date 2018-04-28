@@ -9,30 +9,16 @@ OpenGL 4.3 Practice
 #include <fstream>
 #include <string>
 #include <vector>
-#define _USE_MATH_DEFINES
-#include <math.h>
 ///OpenGL
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 ///User
+#include "MyMath.h"
+#include "main.h"
 #include "C2.h"
-///namespace
+#include "ShaderManager.h"
 using namespace std;
 
-//inline CallBackFunctions
-inline static void errorCallback(int error, const char* description)
-{
-	cerr << "Error : " << description << '\n';
-}
-inline static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
-inline static void fbSizeCallBack(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
 //inline math functions
 inline void cross3D(const float *u, const float *v, float* result)
 {
@@ -41,15 +27,8 @@ inline void cross3D(const float *u, const float *v, float* result)
 	result[2] = u[0] * v[1] - u[1] * v[0];
 }
 
-//ShaderSource
-string vertexShaderSource;
-string fragmentShaderSource;
-
 int main()
 {
-	const int XSIZ = 600;
-	const int YSIZ = 600;
-	const char* TITLE = "OpenGL 4.3 Practice";
 	//1. Initialize GLFW
 	if (not glfwInit())
 	{///Initialization Failed
@@ -58,35 +37,35 @@ int main()
 	else
 	{
 		//2. Create and Set Window
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		GLFWwindow* window = glfwCreateWindow(XSIZ, YSIZ, TITLE, NULL, NULL);
-		if (not window)
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, VERSION_MAJOR); //OpenGL 4.3
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, VERSION_MINOR);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //Need not Older OpenGL
+
+		GLFWwindow* window;
+		window = glfwCreateWindow(WINDOWX, WINDOWY, TITLE, NULL, NULL);
+		if (window == nullptr)
 		{///Window or OpenGL context creation failed
 			glfwTerminate();
 			exit(EXIT_FAILURE);
 		}
 		else
 		{
-			//3.MakeContext and SetCallback, GLAD
+			//3.MakeContext, GLAD
 			glfwMakeContextCurrent(window);
-
-			glfwSetErrorCallback(errorCallback);
-			glfwSetKeyCallback(window, keyCallback);
-			glfwSetFramebufferSizeCallback(window, fbSizeCallBack);
-
 			if (not gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 			{
 				//failed to initialize GLAD
 				glfwTerminate();
 				exit(EXIT_FAILURE);
 			}
+
 			//4.Load Shader Program
-			_loadShaderSource();
+			string vshaderFilename = FILENAME_VSHADER;
+			string fshaderFilename = FILENAME_FSHADER;
+			ShaderManager::LoadShaderSource(vshaderFilename,fshaderFilename);
 			///vertex
 			unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-			vector<char> compatibleVSource(vertexShaderSource.begin(), vertexShaderSource.end());
+			vector<char> compatibleVSource(ShaderManager::vertexShaderSource.begin(), ShaderManager::vertexShaderSource.end());
 			compatibleVSource.push_back('\0');
 			const char *ptr = &compatibleVSource[0];
 			glShaderSource(vertexShader, 1, &ptr, NULL);
@@ -94,7 +73,7 @@ int main()
 			_checkShaderCompileError(vertexShader, "Vertex");
 			///fragment			
 			unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-			vector<char> compatibleFSource(fragmentShaderSource.begin(), fragmentShaderSource.end());
+			vector<char> compatibleFSource(ShaderManager::fragmentShaderSource.begin(), ShaderManager::fragmentShaderSource.end());
 			compatibleFSource.push_back('\0');
 			ptr = &compatibleFSource[0];
 			glShaderSource(fragmentShader, 1, &ptr, NULL);
@@ -111,20 +90,6 @@ int main()
 			glDeleteShader(fragmentShader);
 
 			//5. MVP Transformation
-			struct Vertex
-			{
-				float Pos[3];
-				float Color[3];
-			};
-			struct Camera
-			{
-				float EYE[3];
-				float AT[3];
-				float UP[3];
-				float fovy;
-				float aspect;
-				float f, n;
-			};
 
 			const int STRIDE = 6;
 			Vertex vertice[8] =
@@ -140,28 +105,48 @@ int main()
 			{- 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f }	//WHI
 			};
 			
-			unsigned int indice[36] =
+			//unsigned int indice[36] =
+			//{
+			//	1,3,2,0,1,2,
+			//	7,3,2,6,7,2,
+			//	0,2,6,4,0,6,
+			//	1,3,7,5,1,7,
+			//	5,7,6,4,5,6,
+			//	5,1,0,4,5,0,
+			//};
+
+			unsigned int indice[DRAW_AMOUNT] =
 			{
-				1,3,2,0,1,2,
-				7,3,2,6,7,2,
-				0,2,6,4,0,6,
-				1,3,7,5,1,7,
-				5,7,6,4,5,6,
-				5,1,0,4,5,0,
+				1,0,3,
+				0,3,2,
+				4,5,6,
+				5,6,7,
 			};
-			Camera mainCam =
+
+			struct Camera2
 			{
-			{0.3f,0.6f,1.0f},	//EYE
+				float EYE[3];
+				float AT[3];
+				float UP[3];
+				float fovy;
+				float aspect;
+				float n, f;
+			};
+
+			Camera2 mainCam =
+			{
+			{0.0f,1.0f,1.0f},	//EYE
 			{0.0f,0.0f,0.5f},	//AT
 			{0.0f,1.0f,0.0f},	//UP
-			120,//fovy
-			YSIZ / XSIZ,//aspect
-			-1,1//f,n
+			90,//fovy
+			WINDOWY / WINDOWX,//aspect
+			0,2//n,f
 			};
 			float MVPmat[4][4];
 			_setVIEW(MVPmat, mainCam.EYE, mainCam.AT, mainCam.UP);
 			for (int i = 0; i < 8; ++i)
 			{
+				//_EulerRotate(vertice[i].Pos, ROTY, 90);
 				_multiply(MVPmat, vertice[i].Pos);
 			}
 
@@ -192,18 +177,21 @@ int main()
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
 
+			//glEnable(GL_CULL_FACE); //You MUST enable GL_CULL_FACE to use function glCullFace
+			glDepthRange(0, 1);
 			/// Loop
 			while (!glfwWindowShouldClose(window))
 			{
 				///Input
 
 				///Render
-				glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+				glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
 				glClear(GL_COLOR_BUFFER_BIT);
 
 				glUseProgram(shaderProgram);
 				glBindVertexArray(VAO);
-				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+				glCullFace(GL_BACK);
+				glDrawElements(GL_TRIANGLES, DRAW_AMOUNT, GL_UNSIGNED_INT, 0);
 
 				///SwapBuffers, ProcessEvents
 				glfwSwapBuffers(window);
@@ -218,27 +206,6 @@ int main()
 		glfwTerminate();
 	}
 	return 0;
-}
-
-void _loadShaderSource()
-{
-	///Load Shader Source
-	string temp;
-	ifstream source(".\\shader\\vertex.glsl");
-	while (not source.eof())
-	{
-		getline(source, temp);
-		vertexShaderSource += (temp + '\n');
-	}
-	source.close();
-	source.open(".\\shader\\fragment.glsl");
-	while (not source.eof())
-	{
-		getline(source, temp);
-		fragmentShaderSource += (temp + '\n');
-	}
-	source.close();
-	///
 }
 
 void _checkShaderCompileError(const unsigned int shader, string tag)
@@ -316,8 +283,8 @@ void _EulerRotate(float *pos, int rot, float amount)
 		break;
 	case ROTY:
 		mat[0][0] = mat[2][2] = cos(amount);
-		mat[0][2] = sin(amount);
-		mat[2][0] = -sin(amount);
+		mat[2][0] = sin(amount);
+		mat[0][2] = -sin(amount);
 		mat[1][1] = 1;
 		break;
 	case ROTZ:
