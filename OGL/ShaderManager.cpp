@@ -1,9 +1,5 @@
 #include "ShaderManager.h"
 
-#include <fstream>
-#include <string>
-#include <vector>
-
 std::string ShaderManager::vertexShaderSource;
 std::string ShaderManager::fragmentShaderSource;
 

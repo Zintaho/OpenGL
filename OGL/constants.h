@@ -5,6 +5,8 @@ const int VERSION_MINOR = 3;
 const char* FILENAME_VSHADER = "vertex.glsl";
 const char* FILENAME_FSHADER = "fragment.glsl";
 
+const char* PAGODA = "Pagoda";
+
 const int DRAW_AMOUNT = 36;
 
 const int WINDOWX = 600;

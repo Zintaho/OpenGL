@@ -1,6 +1,11 @@
 /*
 OpenGL 4.3 Practice
 2018-04, Zintaho (Jin-Seok, Yu)
+
+[TODO : MAIN]
+모델 로더 구현
+[TODO : MISC]
+헤더 정리
 */
 
 //Header
@@ -13,9 +18,12 @@ OpenGL 4.3 Practice
 #include <GLFW/glfw3.h>
 ///User
 #include "MyMath.h"
+#include "Vertex.h"
+#include "GameObject.h"
 #include "main.h"
 #include "C2.h"
 #include "ShaderManager.h"
+#include "ModelManager.h"
 
 ///to be erased
 using namespace std;
@@ -85,6 +93,8 @@ int main()
 			glDeleteShader(fragmentShader);
 
 			//5. MVP Transformation
+			GameObject pagoda(PAGODA);
+			ModelManager::ProcessObject(pagoda);
 
 			const int STRIDE = 6;
 			Vertex vertice[8] =
