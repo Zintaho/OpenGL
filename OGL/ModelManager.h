@@ -1,7 +1,9 @@
 #pragma once
 #include "GameObject.h"
 #include "Vertex.h"
+#include "MyMath.h"
 #include <fstream>
+#include <sstream>
 #include <vector>
 
 /*
@@ -17,5 +19,6 @@ class ModelManager
 public:
 	static void ProcessObject(GameObject &gObj);
 	static std::vector<Vertex> vertice;
+	static std::vector<int> indice;
 };
 

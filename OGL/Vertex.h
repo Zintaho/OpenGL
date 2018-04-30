@@ -5,5 +5,4 @@
 struct Vertex
 {
 	MyMath::Vector3 Pos;
-	MyMath::Vector3 Color;
 };

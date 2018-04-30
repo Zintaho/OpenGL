@@ -58,6 +58,7 @@ namespace MyMath
 	Vector3 ReturnUnitVec3(const Vector3 v);
 	Vector3 MultiplyMatVec(const Matrix4x4 mat, const Vector3 v);
 
+	void setScaleMatrix(Matrix4x4 mat, const float X, const float Y, const float Z);
 	void setViewMatrix(Matrix4x4 mat, const Vector3 EYE, const Vector3 AT, const Vector3 UP);
 	void setProjMatrix(Matrix4x4 mat, const float fovy, const float aspect, const float n, const float f);
 

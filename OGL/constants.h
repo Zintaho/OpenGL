@@ -6,6 +6,11 @@ const char* FILENAME_VSHADER = "vertex.glsl";
 const char* FILENAME_FSHADER = "fragment.glsl";
 
 const char* PAGODA = "Pagoda";
+const char* TEAPOT = "Teapot";
+
+const float scaleX = 0.05f;
+const float scaleY = 0.05f;
+const float scaleZ = 0.05f;
 
 const int DRAW_AMOUNT = 36;
 

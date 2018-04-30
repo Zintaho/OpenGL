@@ -24,6 +24,14 @@ Vector3 MyMath::ReturnUnitVec3(const Vector3 v)
 	return rVec;
 }
 
+void MyMath::setScaleMatrix(Matrix4x4 mat, const float X, const float Y, const float Z)
+{
+	mat[0][0] = X;
+	mat[1][1] = Y;
+	mat[2][2] = Z;
+	mat[3][3] = 1;
+}
+
 void MyMath::setViewMatrix(Matrix4x4 mat, const Vector3 EYE, const Vector3 AT, const Vector3 UP)
 {
 	///Get u, v, n
