@@ -6,10 +6,12 @@ OpenGL 4.3 Practice
 카메라 클래스
 퐁 모델 적용
 
+드로우 개선 (ArrayBuffer가 한도를 넘어서면 crash - 인텔내장그래픽 문제로 보임)
+
 로컬 -> 월드 매트릭스
 
 [TODO : SUB]
-모델 로더 개선
+모델 로더 개선(속도가 느림, uv좌표 읽어와야함, 노멀벡터 읽어와야 함)
 
 [TODO : MISC]
 헤더 정리
@@ -69,11 +71,11 @@ int main()
 				glfwTerminate();
 				exit(EXIT_FAILURE);
 			}
-		
+
 			//4.Load Shader Program
 			string vshaderFilename = FILENAME_VSHADER;
 			string fshaderFilename = FILENAME_FSHADER;
-			ShaderManager::LoadShaderSource(vshaderFilename,fshaderFilename);
+			ShaderManager::LoadShaderSource(vshaderFilename, fshaderFilename);
 			///vertex
 			unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 			vector<char> compatibleVSource(ShaderManager::vertexShaderSource.begin(), ShaderManager::vertexShaderSource.end());
@@ -101,7 +103,8 @@ int main()
 			glDeleteShader(fragmentShader);
 
 			//5. MVP Transformation
-			GameObject myObject(PC);
+			string objectType = MORITAKA;
+			GameObject myObject(objectType);
 			ModelManager::ProcessObject(myObject);
 
 			GLsizei vertexAmount = static_cast<GLsizei>(ModelManager::vertice.size());
@@ -135,6 +138,9 @@ int main()
 			mainCam.AT.y = myObject.position.y;
 			mainCam.AT.z = myObject.position.z;
 
+			Matrix4x4 translateMat = { 0 };
+			setTranslateMatrix(translateMat, transX, transY, transZ);
+
 			Matrix4x4 scaleMat = { 0 };
 			setScaleMatrix(scaleMat, scaleX, scaleY, scaleZ);
 
@@ -147,6 +153,7 @@ int main()
 			for (int i = 0; i < vertexAmount; ++i)
 			{
 				ModelManager::vertice[i].Pos = MultiplyMatVec(scaleMat, ModelManager::vertice[i].Pos);
+				ModelManager::vertice[i].Pos = MultiplyMatVec(translateMat, ModelManager::vertice[i].Pos);
 				ModelManager::vertice[i].Pos = MultiplyMatVec(viewMat, ModelManager::vertice[i].Pos);
 				ModelManager::vertice[i].Pos = MultiplyMatVec(projMat, ModelManager::vertice[i].Pos);
 			}
@@ -175,7 +182,7 @@ int main()
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
 
-			//glEnable(GL_CULL_FACE); //You MUST enable GL_CULL_FACE to use function glCullFace
+			glEnable(GL_CULL_FACE); //You MUST enable GL_CULL_FACE to use function glCullFace
 			glDepthRange(0, 1);
 			/// Loop
 			while (!glfwWindowShouldClose(window))

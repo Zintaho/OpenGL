@@ -7,10 +7,16 @@ const char* FILENAME_FSHADER = "fragment.glsl";
 
 const char* CUBE = "Cube";
 const char* PC = "PC";
+const char* BAMBOOSWORD = "BambooSword";
+const char* MORITAKA = "Moritaka";
 
-const float scaleX = 1.0f;
-const float scaleY = 1.0f;
-const float scaleZ = 1.0f;
+const float transX = 0.0f;
+const float transY = 6.2f;
+const float transZ = 0.0f;
+
+const float scaleX = 0.2f;
+const float scaleY = 0.2f;
+const float scaleZ = 0.2f;
 
 const int WINDOWX = 600;
 const int WINDOWY = 600;

@@ -35,7 +35,7 @@ void ModelManager::ProcessObject(GameObject & gObj)
 
 					float tempXYZ[3];
 					int index = 0;
-					while (getline(iss, token, ' '))
+					while (getline(iss, token, ' ') && index < 3)
 					{
 						if (token.size() > 0 && token[0] != 'v' && token[0] != ' ')
 						{
