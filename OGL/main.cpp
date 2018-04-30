@@ -1,9 +1,22 @@
 /*
 OpenGL 4.3 Practice
 2018-04, Zintaho (Jin-Seok, Yu)
+
+[TODO : MAIN]
+카메라 클래스
+퐁 모델 적용
+
+로컬 -> 월드 매트릭스
+
+[TODO : SUB]
+모델 로더 개선
+
+[TODO : MISC]
+헤더 정리
 */
 
 //Header
+
 ///C++
 #include <iostream>
 #include <string>
@@ -13,9 +26,12 @@ OpenGL 4.3 Practice
 #include <GLFW/glfw3.h>
 ///User
 #include "MyMath.h"
+#include "Vertex.h"
+#include "GameObject.h"
 #include "main.h"
 #include "C2.h"
 #include "ShaderManager.h"
+#include "ModelManager.h"
 
 ///to be erased
 using namespace std;
@@ -85,38 +101,11 @@ int main()
 			glDeleteShader(fragmentShader);
 
 			//5. MVP Transformation
+			GameObject myObject(PC);
+			ModelManager::ProcessObject(myObject);
 
-			const int STRIDE = 6;
-			Vertex vertice[8] =
-			{
-			{0.5f,  0.5f, 0.0f , 1.0f, 0.0f, 0.0f},		//R
-			{-0.5f,  0.5f, 0.0f,	0.0f, 1.0f, 0.0f},	//G
-			{0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f},		//B
-			{-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f},		//BL
-
-			{0.5f,  0.5f, 1.0f , 1.0f, 1.0f, 0.0f},		//RG
-			{-0.5f,  0.5f, 1.0f,	0.0f, 1.0f, 1.0f },	//GB
-			{0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 1.0f },		//RB
-			{- 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f }	//WHI
-			};
-			
-			unsigned int indice[DRAW_AMOUNT] =
-			{
-				1,3,2,0,1,2,
-				7,3,2,6,7,2,
-				0,2,6,4,0,6,
-				1,3,7,5,1,7,
-				5,7,6,4,5,6,
-				5,1,0,4,5,0,
-			};
-
-			//unsigned int indice[DRAW_AMOUNT] =
-			//{
-			//	1,0,3,
-			//	0,3,2,
-			//	4,5,6,
-			//	5,6,7,
-			//};
+			GLsizei vertexAmount = static_cast<GLsizei>(ModelManager::vertice.size());
+			GLsizei drawAmount = static_cast<GLsizei>(ModelManager::indice.size());
 
 			struct Camera2
 			{
@@ -130,7 +119,7 @@ int main()
 
 			Camera2 mainCam =
 			{
-			{0.2f,0.5f,1.0f},	//EYE
+			{0.0f,0.0f,2.0f},	//EYE
 			{0.0f,0.0f,0.5f},	//AT
 			{0.0f,1.0f,0.0f},	//UP
 			120,//fovy
@@ -138,18 +127,34 @@ int main()
 			-1,1//n,f
 			};
 
+			mainCam.EYE.x = myObject.position.x + 0.5f;
+			mainCam.EYE.y = myObject.position.y + 0.5f;
+			mainCam.EYE.z = myObject.position.z + 2.0f;
+
+			mainCam.AT.x = myObject.position.x;
+			mainCam.AT.y = myObject.position.y;
+			mainCam.AT.z = myObject.position.z;
+
+			Matrix4x4 scaleMat = { 0 };
+			setScaleMatrix(scaleMat, scaleX, scaleY, scaleZ);
+
 			Matrix4x4 viewMat = { 0 };
 			setViewMatrix(viewMat, mainCam.EYE, mainCam.AT, mainCam.UP);
 
 			Matrix4x4 projMat = { 0 };
 			setProjMatrix(projMat, mainCam.fovy, mainCam.aspect, mainCam.n, mainCam.f);
 
-			for (int i = 0; i < 8; ++i)
+			for (int i = 0; i < vertexAmount; ++i)
 			{
-				//_EulerRotate(vertice[i].Pos, ROTY, 90);
-				vertice[i].Pos = MultiplyMatVec(viewMat, vertice[i].Pos);
-				vertice[i].Pos = MultiplyMatVec(projMat, vertice[i].Pos);
+				ModelManager::vertice[i].Pos = MultiplyMatVec(scaleMat, ModelManager::vertice[i].Pos);
+				ModelManager::vertice[i].Pos = MultiplyMatVec(viewMat, ModelManager::vertice[i].Pos);
+				ModelManager::vertice[i].Pos = MultiplyMatVec(projMat, ModelManager::vertice[i].Pos);
 			}
+			
+			//6. Set VertexArray , VertexBuffer, IndexBuffer
+
+			size_t vCount = sizeof(Vertex) * drawAmount;
+			size_t iCount = sizeof(int) * drawAmount;
 
 			//6. Set VertexArray , VertexBuffer, IndexBuffer
 			unsigned int VAO, VBO, IBO;
@@ -159,16 +164,13 @@ int main()
 
 			glBindVertexArray(VAO);
 			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertice), vertice, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, vCount, &ModelManager::vertice[0], GL_STATIC_DRAW);
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indice), indice, GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, iCount, &ModelManager::indice[0], GL_STATIC_DRAW);
 			///Pos
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, STRIDE * sizeof(float), (void*)0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 			glEnableVertexAttribArray(0);
-			///Color
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, STRIDE * sizeof(float), (void*)(3 * sizeof(float)));
-			glEnableVertexAttribArray(1);
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
@@ -187,7 +189,7 @@ int main()
 				glUseProgram(shaderProgram);
 				glBindVertexArray(VAO);
 				glCullFace(GL_BACK);
-				glDrawElements(GL_TRIANGLES, DRAW_AMOUNT, GL_UNSIGNED_INT, 0);
+				glDrawElements(GL_TRIANGLES, drawAmount, GL_UNSIGNED_INT, 0);
 
 				///SwapBuffers, ProcessEvents
 				glfwSwapBuffers(window);
@@ -224,110 +226,5 @@ void _checkProgramLinkError(const unsigned int program, string tag)
 	if (!success) {
 		glGetProgramInfoLog(program, 512, NULL, infoLog);
 		cout << tag << ":: PROGRAM LINK ERROR\n" << infoLog << endl;
-	}
-}
-
-void _linearScale(float *pos, float a, float b, float c)
-{
-	float temp[3] = { 0 };
-
-	float mat[3][3] =
-	{
-		a, 0, 0,
-		0, b, 0,
-		0, 0, c
-	};
-
-	for (int y = 0; y < 3; ++y)
-	{
-		for (int x = 0; x < 3; ++x)
-		{
-			temp[y] += (mat[y][x] * pos[x]);
-		}
-	}
-
-	for (int i = 0; i < 3; ++i)
-	{
-		pos[i] = temp[i];
-	}
-}
-
-void _translate(float *pos, float x, float y, float z)
-{
-	pos[0] += x;
-	pos[1] += y;
-	pos[2] += z;
-}
-
-void _EulerRotate(float *pos, int rot, float amount)
-{
-	amount *= (float)M_PI / 180.0f;
-
-	float temp[4] = { 0 };
-	float homoPos[4];
-	for (int i = 0; i < 3; ++i) homoPos[i] = pos[i];
-	homoPos[3] = 1;
-	temp[3] = 1;
-	float mat[4][4] = { 0 };
-	switch (rot)
-	{
-	case ROTX:
-		mat[1][1] = mat[2][2] = cos(amount);
-		mat[1][2] = -sin(amount);
-		mat[2][1] = sin(amount);
-		mat[0][0] = 1;
-		break;
-	case ROTY:
-		mat[0][0] = mat[2][2] = cos(amount);
-		mat[2][0] = sin(amount);
-		mat[0][2] = -sin(amount);
-		mat[1][1] = 1;
-		break;
-	case ROTZ:
-		mat[0][0] = mat[1][1] = cos(amount);
-		mat[0][1] = -sin(amount);
-		mat[1][0] = sin(amount);
-		mat[2][2] = 1;
-		break;
-	}
-	mat[3][3] = 1;
-
-	for (int y = 0; y < 4; ++y)
-	{
-		for (int x = 0; x < 4; ++x)
-		{
-			temp[y] += (mat[y][x] * pos[x]);
-		}
-	}
-
-	for (int i = 0; i < 3; ++i)
-	{
-		pos[i] = temp[i];
-	}
-}
-
-void _homoTransform(float *pos, float sx, float sy, float sz, float tx, float ty, float tz)
-{
-	float temp[4] = { 0 };
-	float homoPos[4];
-	for (int i = 0; i < 3; ++i) homoPos[i] = pos[i];
-	homoPos[3] = 1;
-	temp[3] = 1;
-	float mat[4][4] = { 0 };
-
-	mat[0][0] = sx;	mat[1][1] = sy;	mat[2][2] = sz; mat[3][3] = 1;
-	mat[0][3] = tx * sx;	mat[1][3] = ty * sy;	mat[2][3] = tz * sz;
-
-	for (int y = 0; y < 4; ++y)
-	{
-		for (int x = 0; x < 4; ++x)
-		{
-			temp[y] += (mat[y][x] * homoPos[x]);
-		}
-	}
-
-	for (int i = 0; i < 3; ++i)
-	{
-		pos[i] = temp[i];
 	}
 }

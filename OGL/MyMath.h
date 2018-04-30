@@ -5,6 +5,16 @@
 ///Cmath extension
 namespace MyMath
 {
+	///integer
+	using Int08 = char;
+	using uInt08 = unsigned char;
+	using Int16 = short;
+	using uInt16 = unsigned short;
+	using Int32 = int;
+	using uInt32 = unsigned int;
+	using Int64 = long long;
+	using uInt64 = unsigned long long;
+
 	///Vector3
 	struct Vector3
 	{
@@ -44,17 +54,11 @@ namespace MyMath
 	///Matrix 4x4
 	using Matrix4x4 = float[4][4];
 
-	///Vertex
-	struct Vertex
-	{
-		Vector3 Pos;
-		Vector3 Color;
-	};
-
 	Vector3 CrossProduct(const Vector3 u, const Vector3 v);
 	Vector3 ReturnUnitVec3(const Vector3 v);
 	Vector3 MultiplyMatVec(const Matrix4x4 mat, const Vector3 v);
 
+	void setScaleMatrix(Matrix4x4 mat, const float X, const float Y, const float Z);
 	void setViewMatrix(Matrix4x4 mat, const Vector3 EYE, const Vector3 AT, const Vector3 UP);
 	void setProjMatrix(Matrix4x4 mat, const float fovy, const float aspect, const float n, const float f);
 

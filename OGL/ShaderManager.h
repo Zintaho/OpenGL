@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <fstream>
+#include <vector>
 
 class ShaderManager
 {
