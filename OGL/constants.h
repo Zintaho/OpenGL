@@ -5,14 +5,12 @@ const int VERSION_MINOR = 3;
 const char* FILENAME_VSHADER = "vertex.glsl";
 const char* FILENAME_FSHADER = "fragment.glsl";
 
-const char* PAGODA = "Pagoda";
-const char* TEAPOT = "Teapot";
+const char* CUBE = "Cube";
+const char* PC = "PC";
 
-const float scaleX = 0.05f;
-const float scaleY = 0.05f;
-const float scaleZ = 0.05f;
-
-const int DRAW_AMOUNT = 36;
+const float scaleX = 1.0f;
+const float scaleY = 1.0f;
+const float scaleZ = 1.0f;
 
 const int WINDOWX = 600;
 const int WINDOWY = 600;

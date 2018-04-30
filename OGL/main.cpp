@@ -3,12 +3,20 @@ OpenGL 4.3 Practice
 2018-04, Zintaho (Jin-Seok, Yu)
 
 [TODO : MAIN]
-모델 로더 구현
+카메라 클래스
+퐁 모델 적용
+
+로컬 -> 월드 매트릭스
+
+[TODO : SUB]
+모델 로더 개선
+
 [TODO : MISC]
 헤더 정리
 */
 
 //Header
+
 ///C++
 #include <iostream>
 #include <string>
@@ -93,12 +101,11 @@ int main()
 			glDeleteShader(fragmentShader);
 
 			//5. MVP Transformation
-			GameObject myObject(PAGODA);
+			GameObject myObject(PC);
 			ModelManager::ProcessObject(myObject);
 
 			GLsizei vertexAmount = static_cast<GLsizei>(ModelManager::vertice.size());
 			GLsizei drawAmount = static_cast<GLsizei>(ModelManager::indice.size());
-			const int STRIDE = 6;
 
 			struct Camera2
 			{
@@ -112,13 +119,21 @@ int main()
 
 			Camera2 mainCam =
 			{
-			{0.2f,0.5f,1.0f},	//EYE
+			{0.0f,0.0f,2.0f},	//EYE
 			{0.0f,0.0f,0.5f},	//AT
 			{0.0f,1.0f,0.0f},	//UP
 			120,//fovy
 			WINDOWY / WINDOWX,//aspect
 			-1,1//n,f
 			};
+
+			mainCam.EYE.x = myObject.position.x + 0.5f;
+			mainCam.EYE.y = myObject.position.y + 0.5f;
+			mainCam.EYE.z = myObject.position.z + 2.0f;
+
+			mainCam.AT.x = myObject.position.x;
+			mainCam.AT.y = myObject.position.y;
+			mainCam.AT.z = myObject.position.z;
 
 			Matrix4x4 scaleMat = { 0 };
 			setScaleMatrix(scaleMat, scaleX, scaleY, scaleZ);
@@ -132,66 +147,58 @@ int main()
 			for (int i = 0; i < vertexAmount; ++i)
 			{
 				ModelManager::vertice[i].Pos = MultiplyMatVec(scaleMat, ModelManager::vertice[i].Pos);
+				ModelManager::vertice[i].Pos = MultiplyMatVec(viewMat, ModelManager::vertice[i].Pos);
+				ModelManager::vertice[i].Pos = MultiplyMatVec(projMat, ModelManager::vertice[i].Pos);
 			}
-			myObject.position.x *= scaleX;
-			myObject.position.y *= scaleY;
-			myObject.position.z *= scaleZ;
-
-			mainCam.AT.x = myObject.position.x;
-			mainCam.AT.y = myObject.position.y;
-			mainCam.AT.z = myObject.position.z;
-
-			Vertex *arrVertice = &ModelManager::vertice[0];
-
+			
 			//6. Set VertexArray , VertexBuffer, IndexBuffer
 
-			GLuint VAO, VBO, IBO;
+			size_t vCount = sizeof(Vertex) * drawAmount;
+			size_t iCount = sizeof(int) * drawAmount;
+
+			//6. Set VertexArray , VertexBuffer, IndexBuffer
+			unsigned int VAO, VBO, IBO;
 			glGenVertexArrays(1, &VAO);
 			glGenBuffers(1, &VBO);
+			glGenBuffers(1, &IBO);
 
 			glBindVertexArray(VAO);
 			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(arrVertice), arrVertice, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, vCount, &ModelManager::vertice[0], GL_STATIC_DRAW);
 
-			//pos
-			glVertexAttribPointer(
-				0,                  // 0번째 속성(attribute). 0 이 될 특별한 이유는 없지만, 쉐이더의 레이아웃(layout)와 반드시 맞추어야 합니다.
-				3,                  // 크기(size)
-				GL_FLOAT,           // 타입(type)
-				GL_FALSE,           // 정규화(normalized)?
-				3 * sizeof(float),                  // 다음 요소 까지 간격(stride)
-				(void*)0            // 배열 버퍼의 오프셋(offset; 옮기는 값)
-			);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, iCount, &ModelManager::indice[0], GL_STATIC_DRAW);
+			///Pos
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 			glEnableVertexAttribArray(0);
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
 
-			glPointSize(5);
+			//glEnable(GL_CULL_FACE); //You MUST enable GL_CULL_FACE to use function glCullFace
+			glDepthRange(0, 1);
 			/// Loop
-			do
+			while (!glfwWindowShouldClose(window))
 			{
 				///Input
 
 				///Render
-				glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
+				glClear(GL_COLOR_BUFFER_BIT);
 
 				glUseProgram(shaderProgram);
 				glBindVertexArray(VAO);
-				glDrawArrays(GL_POINTS, 0, vertexAmount); // 버텍스 0에서 시작해서; 총 3개의 버텍스로 -> 하나의 삼각형
-
+				glCullFace(GL_BACK);
+				glDrawElements(GL_TRIANGLES, drawAmount, GL_UNSIGNED_INT, 0);
 
 				///SwapBuffers, ProcessEvents
 				glfwSwapBuffers(window);
 				glfwPollEvents();
-
 			}
-			while (not glfwWindowShouldClose(window));
 
 			glDeleteVertexArrays(1, &VAO);
 			glDeleteBuffers(1, &VBO);
-			//glDeleteBuffers(1, &IBO);
+			glDeleteBuffers(1, &IBO);
 		}
 
 		glfwTerminate();

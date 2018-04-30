@@ -1,5 +1,4 @@
-Model License : CC-BY
+[Model License : CC-BY]
 
-<Poly By Google>
-Teapot.obj
-Pagoda.obj
+<Robert Schlyter : https://poly.google.com/view/doMMnviJrGi >
+PC.obj
