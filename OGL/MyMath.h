@@ -5,15 +5,21 @@
 ///Cmath extension
 namespace MyMath
 {
-	///integer
-	using Int08 = char;
-	using uInt08 = unsigned char;
-	using Int16 = short;
-	using uInt16 = unsigned short;
-	using Int32 = int;
-	using uInt32 = unsigned int;
-	using Int64 = long long;
-	using uInt64 = unsigned long long;
+	///Vector2
+	struct Vector2
+	{
+		float u;
+		float v;
+
+		Vector2 operator -(const Vector2 n) const
+		{
+			Vector2 tempVec;
+			tempVec.u = u - n.u;
+			tempVec.v = v - n.v;
+
+			return tempVec;
+		}
+	};
 
 	///Vector3
 	struct Vector3
@@ -21,6 +27,16 @@ namespace MyMath
 		float x;
 		float y;
 		float z;
+
+		Vector3 operator +(const Vector3 u) const
+		{
+			Vector3 tempVec;
+			tempVec.x = x + u.x;
+			tempVec.y = y + u.y;
+			tempVec.z = z + u.z;
+
+			return tempVec;
+		}
 
 		Vector3 operator -(const Vector3 u) const
 		{

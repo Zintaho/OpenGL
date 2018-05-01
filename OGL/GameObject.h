@@ -12,7 +12,7 @@ public:
 
 	MyMath::Vector3 position;
 private:
-	MyMath::uInt32 drawPriority;
+	int drawPriority;
 	std::string modelFileName;
 };
 
