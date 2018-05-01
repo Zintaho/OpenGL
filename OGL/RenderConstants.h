@@ -1,17 +1,11 @@
 #pragma once
 #ifndef __CONSTANT__H
 #define __CONSTANT__H
-
-const char* TITLE = "OpenGL 4.3 Practice";
-const int WINDOW_POSX = 0;
-const int WINDOW_POSY = 0;
-const int WINDOW_WIDTH = 600;
-const int WINDOW_HEIGHT = 600;
+#include "MyColor.h"
+const Color COLOR_BACKGROUND = { 0.0f, 0.0f, 0.5f, 1.0f };
 
 const int VERSION_MAJOR = 4;
 const int VERSION_MINOR = 3;
-const char* FILENAME_VSHADER = "vertex.glsl";
-const char* FILENAME_FSHADER = "fragment.glsl";
 
 const char* CUBE = "Cube";
 const char* PC = "PC";

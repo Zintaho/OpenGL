@@ -1,9 +1,10 @@
 #include "SDLWindow.h"
+#include "RenderConstants.h"
 
-#include <GLFW/glfw3.h>
+#include <GL/glew.h>
 #include <iostream>
 
-SDLWindow::SDLWindow(unsigned int width, unsigned int height, const std::string &title)
+SDLWindow::SDLWindow(unsigned int posX, unsigned int posY, unsigned int width, unsigned int height, const std::string &title)
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
 
@@ -14,15 +15,15 @@ SDLWindow::SDLWindow(unsigned int width, unsigned int height, const std::string 
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
+	window = SDL_CreateWindow(title.c_str(), posX, posY, width, height, SDL_WINDOW_OPENGL);
 	glContext = SDL_GL_CreateContext(window);
 
 	//1. Initialize GLFW
-	status = glfwInit();
+	status = glewInit();
 
-	if (status == GLFW_NOT_INITIALIZED)
+	if (status == GLEW_OK)
 	{///Initialization Failed
-		std::cerr << "GLFW failed to initialize" << std::endl;
+		std::cerr << "GLEW failed to initialize" << std::endl;
 	}
 	isWindowClosed = false;
 }
@@ -37,7 +38,6 @@ SDLWindow::~SDLWindow()
 
 void SDLWindow::Update()
 {
-	Clear();
 	SDL_GL_SwapWindow(window);
 	SDL_Event event;
 

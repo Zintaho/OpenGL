@@ -1,6 +1,9 @@
 /*
 OpenGL 4.3 Practice
-2018-04, Zintaho (Jin-Seok, Yu)
+by Zintaho (Jin-Seok, Yu)
+
+from 2018-04
+ now 2018-05
 
 [TODO : MAIN]
 카메라 클래스
@@ -18,94 +21,24 @@ OpenGL 4.3 Practice
 */
 
 //Header
-
-///C++
-//#include <iostream>
-//#include <string>
-//#include <vector>
-///OpenGL
-//#include <glad/glad.h>
-//#include <GLFW/glfw3.h>
-///User
+#include "MainConstants.h"
 #include "SDLWindow.h"
-#include "Constants.h"
-//#include "MyMath.h"
-//#include "Vertex.h"
-//#include "GameObject.h"
-//#include "main.h"
-//#include "C2.h"
-//#include "ShaderManager.h"
-//#include "ModelManager.h"
+#include "ShaderManager.h"
 
-///to be erased
 int WinMain(int argc, char **argv)
 {
-	SDLWindow sdlWindow(WINDOW_WIDTH, WINDOW_HEIGHT, TITLE);
+	SDLWindow sdlWindow(WINDOW_POSX,WINDOW_POSY,WINDOW_WIDTH, WINDOW_HEIGHT, TITLE);
 	
 	while (not sdlWindow.CheckWindowClosed())
 	{
+		sdlWindow.Clear();
+		ShaderManager::LoadShader(FILENAME_VSHADER, FILENAME_FSHADER);
 		sdlWindow.Update();
+		ShaderManager::UnloadShader();
 	}
 
-	////1. Initialize GLFW
-	//if (not glfwInit())
-	//{///Initialization Failed
-	//	exit(EXIT_FAILURE);
-	//}
-	//else
-	//{
-	//	//2. Create and Set Window
-	//	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, VERSION_MAJOR); //OpenGL 4.3
-	//	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, VERSION_MINOR);
-	//	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //Need not Older OpenGL
 
-	//	GLFWwindow* window;
-	//	window = glfwCreateWindow(WINDOWX, WINDOWY, TITLE, NULL, NULL);
-	//	if (window == nullptr)
-	//	{///Window or OpenGL context creation failed
-	//		glfwTerminate();
-	//		exit(EXIT_FAILURE);
-	//	}
-	//	else
-	//	{
-	//		//3.MakeContext, GLAD
-	//		glfwMakeContextCurrent(window);
-	//		if (not gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	//		{
-	//			//failed to initialize GLAD
-	//			glfwTerminate();
-	//			exit(EXIT_FAILURE);
-	//		}
 
-	//		//4.Load Shader Program
-	//		string vshaderFilename = FILENAME_VSHADER;
-	//		string fshaderFilename = FILENAME_FSHADER;
-	//		ShaderManager::LoadShaderSource(vshaderFilename, fshaderFilename);
-	//		///vertex
-	//		unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	//		vector<char> compatibleVSource(ShaderManager::vertexShaderSource.begin(), ShaderManager::vertexShaderSource.end());
-	//		compatibleVSource.push_back('\0');
-	//		const char *ptr = &compatibleVSource[0];
-	//		glShaderSource(vertexShader, 1, &ptr, NULL);
-	//		glCompileShader(vertexShader);
-	//		_checkShaderCompileError(vertexShader, "Vertex");
-	//		///fragment			
-	//		unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	//		vector<char> compatibleFSource(ShaderManager::fragmentShaderSource.begin(), ShaderManager::fragmentShaderSource.end());
-	//		compatibleFSource.push_back('\0');
-	//		ptr = &compatibleFSource[0];
-	//		glShaderSource(fragmentShader, 1, &ptr, NULL);
-	//		glCompileShader(fragmentShader);
-	//		_checkShaderCompileError(fragmentShader, "Fragment");
-	//		///link program
-	//		int shaderProgram = glCreateProgram();
-	//		glAttachShader(shaderProgram, vertexShader);
-	//		glAttachShader(shaderProgram, fragmentShader);
-	//		glLinkProgram(shaderProgram);
-	//		_checkProgramLinkError(shaderProgram, "Shader Program");
-	//		///delete shader
-	//		glDeleteShader(vertexShader);
-	//		glDeleteShader(fragmentShader);
 
 	//		//5. MVP Transformation
 	//		string objectType = DUNNO;
@@ -217,26 +150,3 @@ int WinMain(int argc, char **argv)
 	//}
 	return 0;
 }
-
-//void _checkShaderCompileError(const unsigned int shader, string tag)
-//{
-//	int success;
-//	char infoLog[512];
-//	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-//	if (!success)
-//	{
-//		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-//		cout << tag << ":: SHADER COMPILE ERROR\n" << infoLog << endl;
-//	}
-//}
-//
-//void _checkProgramLinkError(const unsigned int program, string tag)
-//{
-//	int success;
-//	char infoLog[512];
-//	glGetProgramiv(program, GL_LINK_STATUS, &success);
-//	if (!success) {
-//		glGetProgramInfoLog(program, 512, NULL, infoLog);
-//		cout << tag << ":: PROGRAM LINK ERROR\n" << infoLog << endl;
-//	}
-//}
