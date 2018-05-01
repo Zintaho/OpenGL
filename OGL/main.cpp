@@ -25,14 +25,27 @@ from 2018-04
 #include "SDLWindow.h"
 #include "ShaderManager.h"
 
+#include "Mesh.h"
+
 int WinMain(int argc, char **argv)
 {
 	SDLWindow sdlWindow(WINDOW_POSX,WINDOW_POSY,WINDOW_WIDTH, WINDOW_HEIGHT, TITLE);
+
+	Vertex vertice[4];
+	vertice[0].Pos = { 0.5f,0.5f,0.5f };
+	vertice[1].Pos = { -0.5f,0.5f,0.5f };
+	vertice[2].Pos = { -0.5f,-0.5f,0.5f };
+	vertice[3].Pos = { 0.5f,-0.5f,0.5f };
+
+	Mesh mesh(vertice, 4);
 	
 	while (not sdlWindow.CheckWindowClosed())
 	{
 		sdlWindow.Clear();
 		ShaderManager::LoadShader(FILENAME_VSHADER, FILENAME_FSHADER);
+
+		mesh.DrawMesh();
+
 		sdlWindow.Update();
 		ShaderManager::UnloadShader();
 	}
@@ -95,30 +108,7 @@ int WinMain(int argc, char **argv)
 	//			ModelManager::vertice[i].Pos = MultiplyMatVec(viewMat, ModelManager::vertice[i].Pos);
 	//			ModelManager::vertice[i].Pos = MultiplyMatVec(projMat, ModelManager::vertice[i].Pos);
 	//		}
-	//		
-	//		//6. Set VertexArray , VertexBuffer, IndexBuffer
 
-	//		size_t vCount = sizeof(Vertex) * drawAmount;
-	//		size_t iCount = sizeof(int) * drawAmount;
-
-	//		//6. Set VertexArray , VertexBuffer, IndexBuffer
-	//		unsigned int VAO, VBO, IBO;
-	//		glGenVertexArrays(1, &VAO);
-	//		glGenBuffers(1, &VBO);
-	//		glGenBuffers(1, &IBO);
-
-	//		glBindVertexArray(VAO);
-	//		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//		glBufferData(GL_ARRAY_BUFFER, vCount, &ModelManager::vertice[0], GL_STATIC_DRAW);
-
-	//		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	//		glBufferData(GL_ELEMENT_ARRAY_BUFFER, iCount, &ModelManager::indice[0], GL_STATIC_DRAW);
-	//		///Pos
-	//		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	//		glEnableVertexAttribArray(0);
-
-	//		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//		glBindVertexArray(0);
 
 	//		glEnable(GL_CULL_FACE); //You MUST enable GL_CULL_FACE to use function glCullFace
 	//		glDepthRange(0, 1);

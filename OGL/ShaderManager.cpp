@@ -1,7 +1,6 @@
 #include "ShaderManager.h"
 
 #include <GL/glew.h>
-
 #include <iostream>
 
 std::string ShaderManager::vShaderSrc;

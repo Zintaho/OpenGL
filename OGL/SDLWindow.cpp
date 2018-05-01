@@ -52,7 +52,7 @@ void SDLWindow::Update()
 
 void SDLWindow::Clear()
 {
-	glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
+	glClearColor(COLOR_BACKGROUND.r, COLOR_BACKGROUND.g, COLOR_BACKGROUND.b, COLOR_BACKGROUND.a);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
