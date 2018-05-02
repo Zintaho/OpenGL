@@ -131,6 +131,8 @@
     <ClCompile Include="MyMath.cpp" />
     <ClCompile Include="SDLWindow.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -144,7 +146,8 @@
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="SDLWindow.h" />
     <ClInclude Include="ShaderManager.h" />
-    <ClInclude Include="Vertex.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\fragment.glsl" />

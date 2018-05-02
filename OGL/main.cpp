@@ -27,17 +27,66 @@ from 2018-04
 
 #include "Mesh.h"
 
+#include "GameObject.h"
+#include "ModelManager.h"
+#include "MyMath.h"
+
 int WinMain(int argc, char **argv)
 {
+	using namespace MyMath;
+
 	SDLWindow sdlWindow(WINDOW_POSX,WINDOW_POSY,WINDOW_WIDTH, WINDOW_HEIGHT, TITLE);
 
-	Vertex vertice[4];
-	vertice[0].Pos = { 0.5f,0.5f,0.5f };
-	vertice[1].Pos = { -0.5f,0.5f,0.5f };
-	vertice[2].Pos = { -0.5f,-0.5f,0.5f };
-	vertice[3].Pos = { 0.5f,-0.5f,0.5f };
+	GameObject go("Moritaka");
+	ModelManager::ProcessObject(go);
+	size_t cnt = ModelManager::vertice.size();
 
-	Mesh mesh(vertice, 4);
+			struct Camera2
+			{
+				Vector3 EYE;
+				Vector3 AT;
+				Vector3 UP;
+				float fovy;
+				float aspect;
+				float n, f;
+			};
+
+			Camera2 mainCam =
+			{
+			{0.0f,0.0f,2.0f},	//EYE
+			{0.0f,0.0f,0.5f},	//AT
+			{0.0f,1.0f,0.0f},	//UP
+			120,//fovy
+			WINDOW_HEIGHT / WINDOW_WIDTH,//aspect
+			-1,1//n,f
+			};
+
+			mainCam.EYE.x = go.position.x + 0.5f;
+			mainCam.EYE.y = go.position.y + 0.5f;
+			mainCam.EYE.z = go.position.z + 2.0f;
+
+			mainCam.AT.x = go.position.x;
+			mainCam.AT.y = go.position.y;
+			mainCam.AT.z = go.position.z;
+
+			Matrix4x4 scaleMat;
+			scaleMat.SetScaleMatrix(0.1f, 0.1f, 0.1f);
+
+			Matrix4x4 translateMat;
+			translateMat.SetTranslateMatrix(0.0f, 8.0f, 0.0f);
+			
+			Matrix4x4 viewMat;
+			viewMat.SetViewMatrix(mainCam.EYE, mainCam.AT, mainCam.UP);
+
+			Matrix4x4 projMat;
+			projMat.SetProjMatrix(mainCam.fovy, mainCam.aspect, mainCam.n, mainCam.f);
+
+			for (int i = 0; i < cnt; ++i)
+			{
+				ModelManager::vertice[i].Pos = projMat * viewMat * translateMat * scaleMat * ModelManager::vertice[i].Pos;
+			}
+
+	Mesh mesh(&ModelManager::vertice[0], cnt);
 	
 	while (not sdlWindow.CheckWindowClosed())
 	{
@@ -49,94 +98,5 @@ int WinMain(int argc, char **argv)
 		sdlWindow.Update();
 		ShaderManager::UnloadShader();
 	}
-
-
-
-
-	//		//5. MVP Transformation
-	//		string objectType = DUNNO;
-	//		GameObject myObject(objectType);
-	//		ModelManager::ProcessObject(myObject);
-
-	//		GLsizei vertexAmount = static_cast<GLsizei>(ModelManager::vertice.size());
-	//		GLsizei drawAmount = static_cast<GLsizei>(ModelManager::indice.size());
-
-	//		struct Camera2
-	//		{
-	//			Vector3 EYE;
-	//			Vector3 AT;
-	//			Vector3 UP;
-	//			float fovy;
-	//			float aspect;
-	//			float n, f;
-	//		};
-
-	//		Camera2 mainCam =
-	//		{
-	//		{0.0f,0.0f,2.0f},	//EYE
-	//		{0.0f,0.0f,0.5f},	//AT
-	//		{0.0f,1.0f,0.0f},	//UP
-	//		120,//fovy
-	//		WINDOWY / WINDOWX,//aspect
-	//		-1,1//n,f
-	//		};
-
-	//		mainCam.EYE.x = myObject.position.x + 0.5f;
-	//		mainCam.EYE.y = myObject.position.y + 0.5f;
-	//		mainCam.EYE.z = myObject.position.z + 2.0f;
-
-	//		mainCam.AT.x = myObject.position.x;
-	//		mainCam.AT.y = myObject.position.y;
-	//		mainCam.AT.z = myObject.position.z;
-
-	//		Matrix4x4 translateMat = { 0 };
-	//		setTranslateMatrix(translateMat, transX, transY, transZ);
-
-	//		Matrix4x4 scaleMat = { 0 };
-	//		setScaleMatrix(scaleMat, scaleX, scaleY, scaleZ);
-
-	//		Matrix4x4 viewMat = { 0 };
-	//		setViewMatrix(viewMat, mainCam.EYE, mainCam.AT, mainCam.UP);
-
-	//		Matrix4x4 projMat = { 0 };
-	//		setProjMatrix(projMat, mainCam.fovy, mainCam.aspect, mainCam.n, mainCam.f);
-
-	//		for (int i = 0; i < vertexAmount; ++i)
-	//		{
-	//			ModelManager::vertice[i].Pos = MultiplyMatVec(scaleMat, ModelManager::vertice[i].Pos);
-	//			ModelManager::vertice[i].Pos = MultiplyMatVec(translateMat, ModelManager::vertice[i].Pos);
-	//			ModelManager::vertice[i].Pos = MultiplyMatVec(viewMat, ModelManager::vertice[i].Pos);
-	//			ModelManager::vertice[i].Pos = MultiplyMatVec(projMat, ModelManager::vertice[i].Pos);
-	//		}
-
-
-	//		glEnable(GL_CULL_FACE); //You MUST enable GL_CULL_FACE to use function glCullFace
-	//		glDepthRange(0, 1);
-	//		/// Loop
-	//		while (!glfwWindowShouldClose(window))
-	//		{
-	//			///Input
-
-	//			///Render
-	//			glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
-	//			glClear(GL_COLOR_BUFFER_BIT);
-
-	//			glUseProgram(shaderProgram);
-	//			glBindVertexArray(VAO);
-	//			glCullFace(GL_BACK);
-	//			glDrawElements(GL_TRIANGLES, drawAmount, GL_UNSIGNED_INT, 0);
-
-	//			///SwapBuffers, ProcessEvents
-	//			glfwSwapBuffers(window);
-	//			glfwPollEvents();
-	//		}
-
-	//		glDeleteVertexArrays(1, &VAO);
-	//		glDeleteBuffers(1, &VBO);
-	//		glDeleteBuffers(1, &IBO);
-	//	}
-
-	//	glfwTerminate();
-	//}
 	return 0;
 }

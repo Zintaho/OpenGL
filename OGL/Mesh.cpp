@@ -1,6 +1,6 @@
 #include "Mesh.h"
 
-Mesh::Mesh(Vertex * vertice, unsigned numVertice)
+Mesh::Mesh(Vertex * vertice, size_t numVertice)
 {
 	drawCount = numVertice;
 
@@ -20,7 +20,7 @@ Mesh::Mesh(Vertex * vertice, unsigned numVertice)
 void Mesh::DrawMesh()
 {
 	glBindVertexArray(VAOs[0]);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, drawCount);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, static_cast<GLsizei>(drawCount));
 
 	glBindVertexArray(0);
 }

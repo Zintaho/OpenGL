@@ -160,6 +160,13 @@ void ModelManager::ProcessObject(GameObject & gObj)
 		sourceStream.close();
 	}
 
+	for (Vector3 v : positions)
+	{
+		Vertex vv;
+		vv.Pos = v;
+		vertice.push_back(vv);
+	}
+
 	size_t verticeSize = vertice.size();
 	centerPos.x /= verticeSize;
 	centerPos.y /= verticeSize;

@@ -1,7 +1,6 @@
 #pragma once
 #include "GameObject.h"
-#include "Vertex.h"
-#include "MyMath.h"
+#include "Mesh.h"
 #include <fstream>
 #include <sstream>
 #include <vector>

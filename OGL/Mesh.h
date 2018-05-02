@@ -15,7 +15,7 @@ struct Vertex
 class Mesh
 {
 public:
-	Mesh(Vertex* vertice, unsigned numVertice);
+	Mesh(Vertex* vertice, size_t numVertice);
 
 	void DrawMesh();
 
@@ -28,6 +28,6 @@ private:
 
 	unsigned int VAOs[NUM_VAO];
 	unsigned int VBOs[NUM_VBO];
-	unsigned int drawCount;
+	size_t drawCount;
 };
 
