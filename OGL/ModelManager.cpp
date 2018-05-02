@@ -172,5 +172,6 @@ void ModelManager::ProcessObject(GameObject & gObj)
 	centerPos.y /= verticeSize;
 	centerPos.z /= verticeSize;
 
-	gObj.position = centerPos;
+	gObj.centerPos = centerPos;
+	gObj.GetMesh().InitMesh(&vertice[0], vertice.size());
 }
