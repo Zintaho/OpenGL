@@ -18,6 +18,7 @@ private:
 	{
 		TRANSFORM = 0,
 		VIEWPROJ,
+		EYE,
 
 		NUM_UNIFORM
 	};

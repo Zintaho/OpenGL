@@ -28,11 +28,11 @@ int SDL_main(int argc, char **argv)
 
 	SDLWindow sdlWindow(WINDOW_POSX, WINDOW_POSY, WINDOW_WIDTH, WINDOW_HEIGHT, TITLE);
 
-	GameObject go("Pikachu", {0.0f,0.0f,0.0f }, {PI/36,0,0 }, { INIT_SCALE,INIT_SCALE,INIT_SCALE });
+	GameObject go("Pikachu", {0.0f,0.0f,0.0f }, {PI/18,0,0 }, { INIT_SCALE,INIT_SCALE,INIT_SCALE });
 	ModelManager::ProcessObject(go);
-	Camera mainCam(120, WINDOW_HEIGHT / WINDOW_WIDTH, -1, 1, { go.centerPos.x, go.centerPos.y + 0.5f, go.centerPos.z + 2.0f }, go.centerPos);
-
-	ShaderManager::LoadShader(FILENAME_VSHADER, FILENAME_FSHADER);
+	Camera mainCam(90, WINDOW_HEIGHT / WINDOW_WIDTH, -4, 1, { go.centerPos.x, go.centerPos.y + 0.5f, go.centerPos.z + 2.5f }, go.centerPos);
+	 
+	ShaderManager::LoadShader(VS_PHONG, FS_PHONG);
 	float counter = 0.0f;
 	float rotCounter = 0.0f;
 	while (not sdlWindow.CheckWindowClosed())

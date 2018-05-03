@@ -73,6 +73,7 @@ void ShaderManager::LoadShader(const char* vertexShaderFileName, const char* fra
 
 	uniforms[static_cast<unsigned int>(UNIFORM_TYPE::TRANSFORM)] = glGetUniformLocation(shaderProgram, "transform");
 	uniforms[static_cast<unsigned int>(UNIFORM_TYPE::VIEWPROJ)] = glGetUniformLocation(shaderProgram, "vp");
+	uniforms[static_cast<unsigned int>(UNIFORM_TYPE::EYE)] = glGetUniformLocation(shaderProgram, "eye");
 }
 
 void ShaderManager::UpdateShader(GameObject * ro, Camera * rc)
@@ -87,6 +88,9 @@ void ShaderManager::UpdateShader(GameObject * ro, Camera * rc)
 
 	glUniformMatrix4fv(uniforms[static_cast<unsigned int>(UNIFORM_TYPE::TRANSFORM)], 1, GL_FALSE, transMat.GetMatrix());
 	glUniformMatrix4fv(uniforms[static_cast<unsigned int>(UNIFORM_TYPE::VIEWPROJ)], 1, GL_FALSE, VPMat.GetMatrix());
+	MyMath::Vector3 eye = renderCam->GetEYE();
+	GLfloat fEye[3] = { eye.x,eye.y,eye.z };
+	glUniform3fv(uniforms[static_cast<unsigned int>(UNIFORM_TYPE::VIEWPROJ)], 1, fEye);
 }
 
 void ShaderManager::UnloadShader()
