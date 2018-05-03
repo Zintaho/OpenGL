@@ -18,10 +18,9 @@ SDLWindow::SDLWindow(unsigned int posX, unsigned int posY, unsigned int width, u
 	window = SDL_CreateWindow(title.c_str(), posX, posY, width, height, SDL_WINDOW_OPENGL);
 	glContext = SDL_GL_CreateContext(window);
 
-	//1. Initialize GLFW
 	status = glewInit();
 
-	if (status == GLEW_OK)
+	if (status != GLEW_OK)
 	{///Initialization Failed
 		std::cerr << "GLEW failed to initialize" << std::endl;
 	}
@@ -38,9 +37,6 @@ SDLWindow::~SDLWindow()
 
 void SDLWindow::Update()
 {
-	SDL_GL_SwapWindow(window);
-	SDL_Event event;
-
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_QUIT)
@@ -48,6 +44,11 @@ void SDLWindow::Update()
 			isWindowClosed = true;
 		}
 	}
+}
+
+void SDLWindow::SwapBuffer()
+{
+	SDL_GL_SwapWindow(window);
 }
 
 void SDLWindow::Clear()

@@ -7,3 +7,5 @@ const int WINDOW_HEIGHT = 600;
 
 const char* FILENAME_VSHADER = "vertex.glsl";
 const char* FILENAME_FSHADER = "fragment.glsl";
+
+const float INIT_SCALE = 6.0f;

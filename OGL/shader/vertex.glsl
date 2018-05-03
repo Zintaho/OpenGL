@@ -1,11 +1,11 @@
 #version 430 core
 
-layout (location = 0) in vec3 aPos;
+attribute vec3 position;
 
 uniform mat4 transform;
-uniform mat VP;
+uniform mat4 vp;
 
 void main()
 {
-    gl_Position = VP * transform * vec4(aPos, 1.0);
+    gl_Position =  vp * transform * vec4(position, 1.0);
 }      

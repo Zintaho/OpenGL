@@ -9,6 +9,7 @@ from 2018-04
 퐁 모델 적용 <= 버텍스 노멀을 쉐이더에서 처리해야함
 
 [TODO : SUB]
+모델 로딩 속도
 
 [TODO : MISC]
 */
@@ -17,40 +18,35 @@ from 2018-04
 #include "MainConstants.h"
 #include "SDLWindow.h"
 #include "ShaderManager.h"
-
-#include "Mesh.h"
-
+#include "ModelManager.h"
 #include "Camera.h"
 #include "GameObject.h"
-#include "ModelManager.h"
-#include "MyMath.h"
 
-int WinMain(int argc, char **argv)
+int SDL_main(int argc, char **argv)
 {
 	using namespace MyMath;
 
 	SDLWindow sdlWindow(WINDOW_POSX, WINDOW_POSY, WINDOW_WIDTH, WINDOW_HEIGHT, TITLE);
 
-	GameObject go("PC", { 0.0f,0.0f,0.0f }, { 0,0,0 }, { 2.0f,2.0f,2.0f });
+	GameObject go("DUNNO", {0.0f,0.0f,0.0f }, { 0,0,0 }, { INIT_SCALE,INIT_SCALE,INIT_SCALE });
 	ModelManager::ProcessObject(go);
-	size_t cnt = ModelManager::vertice.size();
-
 	Camera mainCam(120, WINDOW_HEIGHT / WINDOW_WIDTH, -1, 1, { go.centerPos.x, go.centerPos.y + 0.5f, go.centerPos.z + 2.0f }, go.centerPos);
 
-	for (int i = 0; i < cnt; ++i)
-	{
-		ModelManager::vertice[i].Pos = mainCam.MakeMatrix() * go.GetTransform().MakeMatrix() * ModelManager::vertice[i].Pos;
-	}
-
+	ShaderManager::LoadShader(FILENAME_VSHADER, FILENAME_FSHADER);
+	float counter = 0.0f;
 	while (not sdlWindow.CheckWindowClosed())
 	{
+		sdlWindow.Update();
 		sdlWindow.Clear();
-		ShaderManager::LoadShader(FILENAME_VSHADER, FILENAME_FSHADER);
+		go.GetTransform().SetScale({ INIT_SCALE + sinf(counter),INIT_SCALE + cosf(counter),INIT_SCALE});
+		ShaderManager::UpdateShader(&go, &mainCam);
 
 		go.GetMesh().DrawMesh();
 
-		sdlWindow.Update();
-		ShaderManager::UnloadShader();
+		sdlWindow.SwapBuffer();
+
+		counter += 0.1f;
 	}
+	ShaderManager::UnloadShader();
 	return 0;
 }

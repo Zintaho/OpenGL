@@ -1,11 +1,17 @@
 #include "ShaderManager.h"
+#include "MyMath.h"
 
 #include <GL/glew.h>
 #include <iostream>
+#include <fstream>
+#include <vector>
+
+GameObject* ShaderManager::renderObject;
+Camera* ShaderManager::renderCam;
 
 std::string ShaderManager::vShaderSrc;
 std::string ShaderManager::fShaderSrc;
-
+int ShaderManager::uniforms[static_cast<unsigned int>(UNIFORM_TYPE::NUM_UNIFORM)];
 unsigned int ShaderManager::vShader, ShaderManager::fShader, ShaderManager::shaderProgram;
 
 void ShaderManager::LoadShader(const char* vertexShaderFileName, const char* fragmentShaderFileName)
@@ -55,14 +61,40 @@ void ShaderManager::LoadShader(const char* vertexShaderFileName, const char* fra
 	shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vShader);
 	glAttachShader(shaderProgram, fShader);
+
+	glBindAttribLocation(shaderProgram, 0, "position");
+
 	glLinkProgram(shaderProgram);
 	CheckProgramLinkError(shaderProgram, "Shader Program");
+
+	glValidateProgram(shaderProgram);
+	CheckProgramValidateError(shaderProgram, "Shader Validate");
+
+	uniforms[static_cast<unsigned int>(UNIFORM_TYPE::TRANSFORM)] = glGetUniformLocation(shaderProgram, "transform");
+	uniforms[static_cast<unsigned int>(UNIFORM_TYPE::VIEWPROJ)] = glGetUniformLocation(shaderProgram, "vp");
+}
+
+void ShaderManager::UpdateShader(GameObject * ro, Camera * rc)
+{
+	glUseProgram(shaderProgram);
+
+	renderObject = ro;
+	renderCam = rc;
+
+	MyMath::Matrix4x4 transMat = ro->GetTransform().MakeMatrix();
+	MyMath::Matrix4x4 VPMat = rc->MakeMatrix();
+
+	glUniformMatrix4fv(uniforms[static_cast<unsigned int>(UNIFORM_TYPE::TRANSFORM)], 1, GL_FALSE, transMat.GetMatrix());
+	glUniformMatrix4fv(uniforms[static_cast<unsigned int>(UNIFORM_TYPE::VIEWPROJ)], 1, GL_FALSE, VPMat.GetMatrix());
 }
 
 void ShaderManager::UnloadShader()
 {
+	glDetachShader(shaderProgram, vShader);
+	glDetachShader(shaderProgram, fShader);
 	glDeleteShader(vShader);
 	glDeleteShader(fShader);
+	glDeleteProgram(shaderProgram);
 }
 
 void ShaderManager::CheckShaderCompileError(const unsigned int shader, std::string tag)
@@ -85,5 +117,16 @@ void ShaderManager::CheckProgramLinkError(const unsigned int program, std::strin
 	if (!success) {
 		glGetProgramInfoLog(program, 512, NULL, infoLog);
 		std::cerr << tag << ":: PROGRAM LINK ERROR\n" << infoLog << std::endl;
+	}
+}
+
+void ShaderManager::CheckProgramValidateError(const unsigned int program, std::string tag)
+{
+	int success;
+	char infoLog[512];
+	glGetProgramiv(program, GL_VALIDATE_STATUS, &success);
+	if (!success) {
+		glGetProgramInfoLog(program, 512, NULL, infoLog);
+		std::cerr << tag << ":: PROGRAM ERROR\n" << infoLog << std::endl;
 	}
 }

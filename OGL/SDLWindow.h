@@ -9,12 +9,14 @@ public:
 	virtual ~SDLWindow();
 
 	void Update();
+	void SwapBuffer();
 	bool CheckWindowClosed();
 	void Clear();
 private:
 	bool isWindowClosed;
 	int status;
 
+	SDL_Event event;
 	SDL_Window * window;
 	SDL_GLContext glContext;
 };

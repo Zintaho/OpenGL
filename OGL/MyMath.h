@@ -88,47 +88,45 @@ namespace MyMath
 	Vector3 ReturnUnitVec3(const Vector3 v);
 
 	///Matrix 4x4
-	struct Matrix4x4
+	class Matrix4x4
 	{
-		float M[4][4];
-
-		void Clear()
+	public:
+		Matrix4x4()
+		{
+			Clear();
+		}
+		inline float* GetMatrix()
+		{
+			return this->mat.M;
+		}
+		inline void Clear()
 		{
 			for (int y = 0; y < 4; ++y)
 			{
 				for (int x = 0; x < 4; ++x)
 				{
-					M[y][x] = 0;
+					this->mat(y, x) = 0;
 				}
 			}
 		}
-
-		void SetTranslateMatrix(const float X, const float Y, const float Z)
+		inline void SetTranslateMatrix(const float X, const float Y, const float Z)
 		{
-			Clear();
+			mat(0,3) = X;
+			mat(1,3) = Y;
+			mat(2,3) = Z;
+			mat(3,3) = 1;
 
-			M[0][3] = X;
-			M[1][3] = Y;
-			M[2][3] = Z;
-			M[3][3] = 1;
-
-			M[0][0] = M[1][1] = M[2][2] = 1;
+			mat(0,0) = mat(1,1) = mat(2,2) = 1;
 		}
-
-		void SetScaleMatrix(const float X, const float Y, const float Z)
+		inline void SetScaleMatrix(const float X, const float Y, const float Z)
 		{
-			Clear();
-
-			M[0][0] = X;
-			M[1][1] = Y;
-			M[2][2] = Z;
-			M[3][3] = 1;
+			mat(0,0) = X;
+			mat(1,1) = Y;
+			mat(2,2) = Z;
+			mat(3,3) = 1;
 		}
-
-		void SetViewMatrix(const Vector3 EYE, const Vector3 AT, const Vector3 UP)
+		inline void SetViewMatrix(const Vector3 EYE, const Vector3 AT, const Vector3 UP)
 		{
-			Clear();
-
 			///Get u, v, n
 			Vector3 u, v, n;
 			n = EYE - AT;
@@ -139,51 +137,40 @@ namespace MyMath
 
 			v = CrossProduct(n, u);
 			///Set Matrix
-			M[0][0] = u.x;	M[0][1] = u.y;	M[0][2] = u.z;
-			M[0][3] = -EYE.x * (u.x + u.y + u.z);
-			M[1][0] = v.x;	M[1][1] = v.y;	M[1][2] = v.z;
-			M[1][3] = -EYE.y * (v.x + v.y + v.z);
-			M[2][0] = n.x;	M[2][1] = n.y;	M[2][2] = n.z;
-			M[2][3] = -EYE.z * (n.x + n.y + n.z);
+			mat(0,0) = u.x;	mat(0,1) = u.y;	mat(0,2) = u.z;
+			mat(0,3) = -EYE.x * (u.x + u.y + u.z);
+			mat(1,0) = v.x;	mat(1,1) = v.y;	mat(1,2) = v.z;
+			mat(1,3) = -EYE.y * (v.x + v.y + v.z);
+			mat(2,0) = n.x;	mat(2,1) = n.y;	mat(2,2) = n.z;
+			mat(2,3) = -EYE.z * (n.x + n.y + n.z);
 			for (int z = 0; z < 3; ++z)
 			{
-				M[3][z] = 0;
+				mat(3,z) = 0;
 			}
-			M[3][3] = 1;
+			mat(3,3) = 1;
 		}
-
-		void SetProjMatrix(const float fovy, const float aspect, const float n, const float f)
+		inline void SetProjMatrix(const float fovy, const float aspect, const float n, const float f)
 		{
-			Clear();
+			const float PI = 3.14159265f;
+			float radFovy = fovy * PI / 180.0f;
 
-			float radFovy = fovy * (float)3.141592f / 180.0f;
-
-			for (int y = 0; y < 4; ++y)
-			{
-				for (int x = 0; x < 4; ++x)
-				{
-					M[y][x] = 0;
-				}
-			}
-
-			M[0][0] = -1 / (tanf(radFovy / 2) *aspect);
-			M[1][1] = -1 / (tanf(radFovy / 2));
-			M[2][2] = -((f + n) / (f - n));
-			M[2][3] = -2 * n*f / (f - n);
-			M[3][2] = -1;
+			mat(0,0) = -1 / (tanf(radFovy / 2) *aspect);
+			mat(1,1) = -1 / (tanf(radFovy / 2));
+			mat(2,2) = -((f + n) / (f - n));
+			mat(2,3) = -2 * n*f / (f - n);
+			mat(3,2) = -1;
 		}
 
-		Matrix4x4 operator* (const Matrix4x4 MB)
+		Matrix4x4 operator* (Matrix4x4 MB)
 		{
 			Matrix4x4 MA;
 			for (int y = 0; y < 4; ++y)
 			{
 				for (int x = 0; x < 4; ++x)
 				{
-					MA.M[y][x] = 0;
 					for (int j = 0; j < 4; ++j)
 					{
-						MA.M[y][x] += M[y][j] * MB.M[j][x];
+						MA.mat(y, x) += (mat(y, j) * MB.mat(j, x));
 					}
 				}
 			}
@@ -194,15 +181,28 @@ namespace MyMath
 		{
 			Vector4 tempVec4 = { vec.x, vec.y, vec.z, 1 };
 
-			tempVec4.x = (M[0][0] * tempVec4.x + M[0][1] * tempVec4.y + M[0][2] * tempVec4.z + M[0][3] * tempVec4.w);
-			tempVec4.y = (M[1][0] * tempVec4.x + M[1][1] * tempVec4.y + M[1][2] * tempVec4.z + M[1][3] * tempVec4.w);
-			tempVec4.z = (M[2][0] * tempVec4.x + M[2][1] * tempVec4.y + M[2][2] * tempVec4.z + M[2][3] * tempVec4.w);
-			tempVec4.w = (M[3][0] * tempVec4.x + M[3][1] * tempVec4.y + M[3][2] * tempVec4.z + M[3][3] * tempVec4.w);
+			tempVec4.x = (mat(0,0) * tempVec4.x + mat(0,1) * tempVec4.y + mat(0,2) * tempVec4.z + mat(0,3) * tempVec4.w);
+			tempVec4.y = (mat(1,0) * tempVec4.x + mat(1,1) * tempVec4.y + mat(1,2) * tempVec4.z + mat(1,3) * tempVec4.w);
+			tempVec4.z = (mat(2,0) * tempVec4.x + mat(2,1) * tempVec4.y + mat(2,2) * tempVec4.z + mat(2,3) * tempVec4.w);
+			tempVec4.w = (mat(3,0) * tempVec4.x + mat(3,1) * tempVec4.y + mat(3,2) * tempVec4.z + mat(3,3) * tempVec4.w);
 
 			Vector3 tempVec3 = { tempVec4.x, tempVec4.y, tempVec4.z };
 
 			return tempVec3;
 		}
+
+	private:
+		struct Matrix
+		{
+			float M[4 * 4];
+
+			float& operator()(int y, int x)
+			{
+				return M[y * 4 + x];
+			}
+		};
+
+		Matrix mat;
 	};
 }
 
