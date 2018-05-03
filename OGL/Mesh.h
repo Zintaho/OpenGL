@@ -8,7 +8,7 @@
 struct Vertex
 {
 	MyMath::Vector3 Pos;
-	//MyMath::Vector3 Normal;
+	MyMath::Vector3 Normal;
 	//MyMath::Vector2 TextureUV;
 };
 
@@ -16,10 +16,10 @@ class Mesh
 {
 public:
 	Mesh();
-	Mesh(Vertex* vertice, size_t numVertice);
+	Mesh(Vertex * vertice, GLsizei numVertice, unsigned int* indice, GLsizei numIndice);
 	virtual ~Mesh();
 
-	void InitMesh(Vertex* vertice, size_t numVertice);
+	void InitMesh(Vertex * vertice, GLsizei numVertice, unsigned int* indice, GLsizei numIndice);
 	void DrawMesh();
 private:
 	enum class VAO_TYPE : GLuint
@@ -31,13 +31,15 @@ private:
 	enum class VBO_TYPE : GLuint
 	{
 		POS = 0,
+		NORMAL,
+		INDEX,
 
 		NUM_VBO
 	};
 
 	unsigned int VAOs[static_cast<GLuint>(VAO_TYPE::NUM_VAO)];
 	unsigned int VBOs[static_cast<GLuint>(VBO_TYPE::NUM_VBO)];
-	size_t drawCount;
+	GLsizei drawCount;
 
 	bool isMeshInitialized;
 };

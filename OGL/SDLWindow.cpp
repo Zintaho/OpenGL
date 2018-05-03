@@ -13,6 +13,7 @@ SDLWindow::SDLWindow(unsigned int posX, unsigned int posY, unsigned int width, u
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);	
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	window = SDL_CreateWindow(title.c_str(), posX, posY, width, height, SDL_WINDOW_OPENGL);
@@ -23,8 +24,17 @@ SDLWindow::SDLWindow(unsigned int posX, unsigned int posY, unsigned int width, u
 	if (status != GLEW_OK)
 	{///Initialization Failed
 		std::cerr << "GLEW failed to initialize" << std::endl;
+		exit(1);
 	}
 	isWindowClosed = false;
+
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+
+	glFrontFace(GL_CW);
+
+
+	glCullFace(GL_BACK);
 }
 
 
@@ -54,7 +64,7 @@ void SDLWindow::SwapBuffer()
 void SDLWindow::Clear()
 {
 	glClearColor(COLOR_BACKGROUND.r, COLOR_BACKGROUND.g, COLOR_BACKGROUND.b, COLOR_BACKGROUND.a);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 bool SDLWindow::CheckWindowClosed()

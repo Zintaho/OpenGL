@@ -55,6 +55,17 @@ namespace MyMath
 
 			return tempVec;
 		}
+
+		Vector3 ConvertToUnitVector()
+		{
+			float norm = sqrtf(x * x + y * y + z * z);
+
+			x /= norm;
+			y /= norm;
+			z /= norm;
+
+			return { x,y,z };
+		}
 	};
 	///Vector4
 	struct Vector4
@@ -85,7 +96,6 @@ namespace MyMath
 		}
 	};
 	Vector3 CrossProduct(const Vector3 u, const Vector3 v);
-	Vector3 ReturnUnitVec3(const Vector3 v);
 
 	///Matrix 4x4
 	class Matrix4x4
@@ -125,15 +135,42 @@ namespace MyMath
 			mat(2,2) = Z;
 			mat(3,3) = 1;
 		}
+		inline void SetRotXMatrix(const float radAngle)
+		{
+			mat(0, 0) = 1;
+			mat(1, 1) = cosf(radAngle);
+			mat(1, 2) = -sinf(radAngle);
+			mat(2, 1) = sinf(radAngle);
+			mat(2, 2) = cosf(radAngle);
+			mat(3, 3) = 1;
+		}
+		inline void SetRotYMatrix(const float radAngle)
+		{
+			mat(0, 0) = cosf(radAngle);
+			mat(0, 2) = sinf(radAngle);
+			mat(1, 1) = 1;
+			mat(2, 0) = -sinf(radAngle);
+			mat(2, 2) = cosf(radAngle);
+			mat(3, 3) = 1;
+		}
+		inline void SetRotZMatrix(const float radAngle)
+		{
+			mat(0, 0) = cosf(radAngle);
+			mat(0, 1) = -sinf(radAngle);
+			mat(1, 0) = sinf(radAngle);
+			mat(1, 1) = cosf(radAngle);
+			mat(2, 2) = 1;
+			mat(3, 3) = 1;
+		}
 		inline void SetViewMatrix(const Vector3 EYE, const Vector3 AT, const Vector3 UP)
 		{
 			///Get u, v, n
 			Vector3 u, v, n;
 			n = EYE - AT;
-			n = ReturnUnitVec3(n);
+			n = n.ConvertToUnitVector();
 
 			u = CrossProduct(n, UP);
-			u = ReturnUnitVec3(u);
+			u = u.ConvertToUnitVector();
 
 			v = CrossProduct(n, u);
 			///Set Matrix

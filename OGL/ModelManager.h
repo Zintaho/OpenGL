@@ -18,6 +18,6 @@ class ModelManager
 public:
 	static void ProcessObject(GameObject &gObj);
 	static std::vector<Vertex> vertice;
-	static std::vector<int> indice;
+	static std::vector<unsigned int> indice;
 };
 

@@ -1,7 +1,7 @@
 #include "ModelManager.h"
 
 std::vector<Vertex> ModelManager::vertice;
-std::vector<int> ModelManager::indice;
+std::vector<unsigned int> ModelManager::indice;
 
 void ModelManager::ProcessObject(GameObject & gObj)
 {
@@ -29,6 +29,8 @@ void ModelManager::ProcessObject(GameObject & gObj)
 
 	bool hasVN = false;
 	bool hasVT = false;
+	bool isVNVT = false;
+	bool isVTVN = false;
 	///Load
 	vertice.clear();
 	indice.clear();
@@ -57,7 +59,7 @@ void ModelManager::ProcessObject(GameObject & gObj)
 							tempXYZ[index++] = stof(token);
 						}
 					}
-					
+
 					tempVec = { tempXYZ[0], tempXYZ[1], tempXYZ[2] };
 					centerPos = centerPos + tempVec;
 
@@ -66,6 +68,10 @@ void ModelManager::ProcessObject(GameObject & gObj)
 				else if (buffer[1] == 'n')
 				{///VERTEX NORMAL
 					hasVN = true;
+					if (not isVNVT && not isVTVN)
+					{
+						isVNVT = true;
+					}
 
 					istringstream iss(buffer);
 					string token;
@@ -88,6 +94,10 @@ void ModelManager::ProcessObject(GameObject & gObj)
 				else if (buffer[1] == 't')
 				{///VERTEX TEXTURE UV
 					hasVT = true;
+					if (not isVNVT && not isVTVN)
+					{
+						isVTVN = true;
+					}
 
 					istringstream iss(buffer);
 					string token;
@@ -127,26 +137,28 @@ void ModelManager::ProcessObject(GameObject & gObj)
 							break;
 						}
 						else
-						{
+						{///Please set v vt vn
 							int i = abs(stoi(tokenToken)) - 1;
 							if (index == 0)
 							{
 								oi.pos = i;
+								indice.push_back(i);
 							}
 							else if (index == 1)
-							{//v vn vt
-								if (hasVN)
+							{
+								if (hasVT)
+								{///vn only or vt only
+									oi.uv = i;
+								}
+								else if (not hasVT)
 								{
 									oi.normal = i;
 								}
-								else if(hasVT)
-								{
-									oi.uv = i;
-								}
+
 							}
 							else if (index == 2)
 							{
-								oi.uv = i;
+								oi.normal = i;
 							}
 
 							++index;
@@ -160,18 +172,28 @@ void ModelManager::ProcessObject(GameObject & gObj)
 		sourceStream.close();
 	}
 
+	///Set Vertex
 	for (Vector3 v : positions)
 	{
 		Vertex vv;
 		vv.Pos = v;
+		vv.Normal = { 0,0,0 };
 		vertice.push_back(vv);
 	}
 
+	///Calculate Vertex Normal
+	for (auto oi : objIndice)
+	{
+		vertice[oi.pos].Normal = vertice[oi.pos].Normal + normals[oi.normal];
+	}
+
+
+	///Calculate Center Position of GameObject
 	size_t verticeSize = vertice.size();
 	centerPos.x /= verticeSize;
 	centerPos.y /= verticeSize;
 	centerPos.z /= verticeSize;
 
 	gObj.centerPos = centerPos;
-	gObj.GetMesh().InitMesh(&vertice[0], vertice.size());
+	gObj.GetMesh().InitMesh(&vertice[0], static_cast<GLsizei>(vertice.size()), &indice[0], static_cast<GLsizei>(indice.size()));
 }

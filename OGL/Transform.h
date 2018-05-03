@@ -13,10 +13,14 @@ public:
 		transMat.SetTranslateMatrix(position.x, position.y, position.z);
 		MyMath::Matrix4x4 scaleMat;
 		scaleMat.SetScaleMatrix(scale.x, scale.y, scale.z);
-		//MyMath::Matrix4x4 rotateMat;
-		//rotateMat~
+		MyMath::Matrix4x4 rotateXMat;
+		rotateXMat.SetRotXMatrix(rotation.x);
+		MyMath::Matrix4x4 rotateYMat;
+		rotateYMat.SetRotYMatrix(rotation.y);
+		MyMath::Matrix4x4 rotateZMat;
+		rotateZMat.SetRotZMatrix(rotation.z);
 
-		MyMath::Matrix4x4 returnMat = transMat * scaleMat; // transMat * rotateMat * scaleMat;
+		MyMath::Matrix4x4 returnMat = transMat * rotateZMat * rotateYMat * rotateXMat *  scaleMat;
 
 		return returnMat;
 	}

@@ -63,6 +63,7 @@ void ShaderManager::LoadShader(const char* vertexShaderFileName, const char* fra
 	glAttachShader(shaderProgram, fShader);
 
 	glBindAttribLocation(shaderProgram, 0, "position");
+	glBindAttribLocation(shaderProgram, 1, "normal");
 
 	glLinkProgram(shaderProgram);
 	CheckProgramLinkError(shaderProgram, "Shader Program");

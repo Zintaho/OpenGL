@@ -1,8 +1,9 @@
 #version 430 core
 
-out vec4 FragColor;  
+in vec3 normal0;
+out vec4 fragColor;
   
 void main()
 {
-    FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+	fragColor = vec4(0.9,0.9,0.1,1.0) * clamp(dot(-normalize(vec3(0.0,0.0,-1.0)),-normal0),0.2,1.0);
 }
