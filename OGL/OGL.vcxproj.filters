@@ -65,6 +65,12 @@
     <None Include="shader\VS_Phong.glsl">
       <Filter>Shader Files</Filter>
     </None>
+    <None Include="shader\FS_Phongv.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\VS_Phongv.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">

@@ -56,6 +56,16 @@ namespace MyMath
 			return tempVec;
 		}
 
+		Vector3 operator *(const float f) const
+		{
+			Vector3 tempVec;
+			tempVec.x = x * f;
+			tempVec.y = y * f;
+			tempVec.z = z * f;
+
+			return tempVec;
+		}
+
 		Vector3 ConvertToUnitVector()
 		{
 			float norm = sqrtf(x * x + y * y + z * z);

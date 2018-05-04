@@ -153,8 +153,10 @@
   <ItemGroup>
     <None Include="shader\fragment.glsl" />
     <None Include="shader\FS_Phong.glsl" />
+    <None Include="shader\FS_Phongv.glsl" />
     <None Include="shader\vertex.glsl" />
     <None Include="shader\VS_Phong.glsl" />
+    <None Include="shader\VS_Phongv.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
