@@ -7,9 +7,11 @@ from 2018-04
 
 [TODO : MAIN]
 텍스쳐
+테셀레이션
 
 [TODO : SUB]
 모델 로딩 속도
+글로벌 일루미네이션
 
 [TODO : MISC]
 */
