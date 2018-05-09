@@ -5,9 +5,9 @@ const int WINDOW_POSY = 100;
 const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 600;
 
-const float INIT_SCALE = 1.0f;
+const float INIT_SCALE = 2.0f;
 
-const char* DEFAULT_MODEL = "Pikachu";
+const char* DEFAULT_MODEL = "Trophy";
 
 ///shader
 const char* FILENAME_VSHADER = "vertex.glsl";

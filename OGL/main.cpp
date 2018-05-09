@@ -30,7 +30,7 @@ int SDL_main(int argc, char **argv)
 
 	SDLWindow sdlWindow(WINDOW_POSX, WINDOW_POSY, WINDOW_WIDTH, WINDOW_HEIGHT, TITLE);
 
-	GameObject go(DEFAULT_MODEL, { 0.0f,0.0f,0.0f }, { PI/12, 0,0 }, { INIT_SCALE,INIT_SCALE,INIT_SCALE });
+	GameObject go(DEFAULT_MODEL, { 0.0f,0.0f,0.0f }, { PI/12, 0,PI }, { INIT_SCALE,INIT_SCALE,INIT_SCALE });
 	ModelManager::ProcessObject(go);
 
 	Vector3 p0 = { go.centerPos.x + 0.0f, go.centerPos.y + 0.0f, go.centerPos.z + 2.5f };
