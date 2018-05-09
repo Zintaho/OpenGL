@@ -1,9 +1,12 @@
 #include "ModelManager.h"
 
+MyMath::Vector3	ModelManager::centerPos;
 std::vector<Vertex> ModelManager::vertice;
 std::vector<unsigned int> ModelManager::indice;
+GLuint ModelManager::verticeNum;
+GLuint ModelManager::indiceNum;
 
-void ModelManager::ProcessObject(GameObject & gObj)
+void ModelManager::ProcessModel(std::string fileName)
 {
 	using namespace std;
 	using namespace MyMath;
@@ -15,6 +18,8 @@ void ModelManager::ProcessObject(GameObject & gObj)
 		unsigned int uv = -1;
 	};
 
+	centerPos = { 0,0,0 };
+
 	std::vector<MyMath::Vector3> positions;
 	std::vector<MyMath::Vector3> normals;
 	std::vector<MyMath::Vector2> uvs;
@@ -25,7 +30,6 @@ void ModelManager::ProcessObject(GameObject & gObj)
 
 	string path, buffer;
 	ifstream sourceStream;
-	Vector3 centerPos = { 0,0,0 };
 
 	bool hasVN = false;
 	bool hasVT = false;
@@ -35,7 +39,7 @@ void ModelManager::ProcessObject(GameObject & gObj)
 	vertice.clear();
 	indice.clear();
 
-	path = modelPathHeader + gObj.GetFileName() + modelPathFooter;
+	path = modelPathHeader + fileName + modelPathFooter;
 	sourceStream.open(path);
 	if (sourceStream)
 	{
@@ -194,6 +198,6 @@ void ModelManager::ProcessObject(GameObject & gObj)
 	centerPos.y /= verticeSize;
 	centerPos.z /= verticeSize;
 
-	gObj.centerPos = centerPos;
-	gObj.GetMesh().InitMesh(&vertice[0], static_cast<GLsizei>(vertice.size()), &indice[0], static_cast<GLsizei>(indice.size()));
+	verticeNum = static_cast<GLuint>(vertice.size());
+	indiceNum = static_cast<GLuint>(indice.size());
 }

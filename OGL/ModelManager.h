@@ -1,6 +1,6 @@
 #pragma once
-#include "GameObject.h"
 #include "Mesh.h"
+
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -16,8 +16,12 @@
 class ModelManager
 {
 public:
-	static void ProcessObject(GameObject &gObj);
+	static void ProcessModel(std::string fileName);
+
+	static MyMath::Vector3 centerPos;
 	static std::vector<Vertex> vertice;
 	static std::vector<unsigned int> indice;
+	static GLuint verticeNum;
+	static GLuint indiceNum;
 };
 

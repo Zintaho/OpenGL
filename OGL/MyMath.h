@@ -138,9 +138,9 @@ namespace MyMath
 
 		inline void SetTranslateMatrix(const float X, const float Y, const float Z)
 		{
-			mat(0,3) = X;
-			mat(1,3) = Y;
-			mat(2,3) = Z;
+			mat(3,0) = X;
+			mat(3,1) = Y;
+			mat(3,2) = Z;
 			mat(3,3) = 1;
 
 			mat(0,0) = mat(1,1) = mat(2,2) = 1;

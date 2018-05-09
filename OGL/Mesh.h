@@ -2,6 +2,7 @@
 #include "MyMath.h"
 #include "RenderConstants.h"
 
+#include <string>
 #include <GL/glew.h>
 
 ///Vertex
@@ -15,10 +16,20 @@ struct Vertex
 class Mesh
 {
 public:
-	Mesh();
-	Mesh(Vertex * vertice, GLsizei numVertice, unsigned int* indice, GLsizei numIndice);
+	Mesh(const char* fileName) :
+		fileName(fileName) 
+	{
+		drawCount = 0;
+		isMeshInitialized = false;
+	};
 	virtual ~Mesh();
 
+	inline std::string GetFileName()
+	{
+		return fileName;
+	}
+
+	void LoadMeshFile();
 	void InitMesh(Vertex * vertice, GLsizei numVertice, unsigned int* indice, GLsizei numIndice);
 	void DrawMesh();
 	void CleanArray();
@@ -51,5 +62,6 @@ private:
 	unsigned int VBOs[static_cast<GLuint>(VBO_TYPE::NUM_VBO)];
 	GLsizei drawCount;
 
+	std::string fileName;
 	bool isMeshInitialized;
 };

@@ -1,14 +1,13 @@
 #include "Mesh.h"
+#include "ModelManager.h"
 
-Mesh::Mesh()
+void Mesh::LoadMeshFile()
 {
-	drawCount = 0;
-	isMeshInitialized = false;
+	ModelManager::ProcessModel(fileName);
 }
 
 void Mesh::InitMesh(Vertex * vertice, GLsizei numVertice, unsigned int* indice, GLsizei numIndice)
 {
-
 	isMeshInitialized = true;
 
 	drawCount = numIndice;
@@ -28,11 +27,6 @@ void Mesh::InitMesh(Vertex * vertice, GLsizei numVertice, unsigned int* indice, 
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOs[VBOTYPE(VBO_TYPE::INDEX)]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndice * sizeof(unsigned int), indice, GL_STATIC_DRAW);
-}
-
-Mesh::Mesh(Vertex * vertice, GLsizei numVertice, unsigned int* indice, GLsizei numIndice)
-{
-	InitMesh(vertice, numVertice, indice, numIndice);
 }
 
 void Mesh::DrawMesh()
