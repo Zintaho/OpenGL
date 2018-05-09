@@ -1,6 +1,8 @@
 #pragma once
 #include "MyMath.h"
 
+#include <GL/glew.h>
+
 class Camera
 {
 public:

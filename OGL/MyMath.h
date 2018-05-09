@@ -4,6 +4,8 @@
 ///CMh extension
 namespace MyMath
 {
+	const float PI = 3.141592f;
+
 	///Vector2
 	struct Vector2
 	{
@@ -129,6 +131,11 @@ namespace MyMath
 				}
 			}
 		}
+		inline void SetIdentityMatrix()
+		{
+			mat(0, 0) = mat(1, 1) = mat(2, 2) = mat(3, 3) = 1;
+		}
+
 		inline void SetTranslateMatrix(const float X, const float Y, const float Z)
 		{
 			mat(0,3) = X;
@@ -201,8 +208,8 @@ namespace MyMath
 			const float PI = 3.14159265f;
 			float radFovy = fovy * PI / 180.0f;
 
-			mat(0,0) = -1 / (tanf(radFovy / 2) *aspect);
-			mat(1,1) = -1 / (tanf(radFovy / 2));
+			mat(0,0) = 1 / (tanf(radFovy / 2) *aspect);
+			mat(1,1) = 1 / (tanf(radFovy / 2));
 			mat(2,2) = -((f + n) / (f - n));
 			mat(2,3) = -2 * n*f / (f - n);
 			mat(3,2) = -1;

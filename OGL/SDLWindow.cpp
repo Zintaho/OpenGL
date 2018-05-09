@@ -32,8 +32,6 @@ SDLWindow::SDLWindow(unsigned int posX, unsigned int posY, unsigned int width, u
 	glEnable(GL_DEPTH_TEST);
 
 	glFrontFace(GL_CW);
-
-
 	glCullFace(GL_BACK);
 }
 

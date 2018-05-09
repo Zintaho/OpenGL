@@ -12,10 +12,10 @@ uniform vec4 LightColor = vec4(1.0,1.0,1.0,1.0);
 uniform vec4 LightAmbient = vec4(0.9,0.9,0.9,1.0);
 
 //Material
-uniform vec4 MaterialDiffuse = vec4(0.96, 0.89, 0.51, 1.0);
-uniform vec4 MaterialSpecular = vec4(0.63,0.56,0.37,1.0);
-uniform float MaterialShininess = 61.2;
-uniform vec4 MaterialAmbient = vec4(0.25,0.20,0.07,1.0);
+uniform vec4 MaterialAmbient = vec4(0.17,0.01,0.01,0.55);
+uniform vec4 MaterialDiffuse = vec4(0.61, 0.04, 0.04, 0.55);
+uniform vec4 MaterialSpecular = vec4(0.73,0.63,0.63,0.55);
+uniform float MaterialShininess = 76.8;
 uniform vec4 MaterialEmission = vec4(0.96, 0.89, 0.51, 1.0);
 
 void main()
@@ -48,7 +48,7 @@ void main()
 
 
 
-	fragColor = vec4(PhongD+PhongS+PhongA+PhongE, 1.0);	
+	fragColor = vec4(PhongD + PhongA+ PhongS + PhongE, 1.0);	
 }
 
   

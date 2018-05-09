@@ -21,6 +21,7 @@ public:
 
 	void InitMesh(Vertex * vertice, GLsizei numVertice, unsigned int* indice, GLsizei numIndice);
 	void DrawMesh();
+	void CleanArray();
 private:
 	enum class VAO_TYPE : GLuint
 	{
@@ -36,6 +37,15 @@ private:
 
 		NUM_VBO
 	};
+
+	constexpr GLuint VAOTYPE(VAO_TYPE type)
+	{
+		return static_cast<GLuint>(type);
+	}
+	constexpr GLuint VBOTYPE(VBO_TYPE type)
+	{
+		return static_cast<GLuint>(type);
+	}
 
 	unsigned int VAOs[static_cast<GLuint>(VAO_TYPE::NUM_VAO)];
 	unsigned int VBOs[static_cast<GLuint>(VBO_TYPE::NUM_VBO)];
