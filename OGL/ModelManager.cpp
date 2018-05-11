@@ -1,10 +1,37 @@
 #include "ModelManager.h"
 
+#include <iostream>
+
 MyMath::Vector3	ModelManager::centerPos;
 std::vector<Vertex> ModelManager::vertice;
 std::vector<unsigned int> ModelManager::indice;
 GLuint ModelManager::verticeNum;
 GLuint ModelManager::indiceNum;
+
+std::vector<std::string> StringSpliter(std::string buffer, char token)
+{
+	std::vector<std::string> splitedBuffer;
+	std::string tempString = "";
+
+	for (auto c : buffer)
+	{
+		if (c != token)
+		{
+			tempString += c;
+		}
+		else if (c == token && tempString != "")
+		{
+			splitedBuffer.push_back(tempString);
+			tempString = "";
+		}
+	}
+	if (tempString != "")
+	{
+		splitedBuffer.push_back(tempString);
+	}
+
+	return splitedBuffer;
+}
 
 void ModelManager::ProcessModel(std::string fileName)
 {
@@ -46,132 +73,170 @@ void ModelManager::ProcessModel(std::string fileName)
 		while (not sourceStream.eof())
 		{
 			getline(sourceStream, buffer);
-			if (buffer[0] == 'v')
+
+			vector<string> splitedBuffer = StringSpliter(buffer, ' ');
+
+			if (splitedBuffer.size() > 0)
 			{
-				if (buffer[1] == ' ' || buffer[1] == '\t')
-				{///VERTEX POSITION 
-					istringstream iss(buffer);
-					string token;
-
-					Vector3 tempVec;
-					float tempXYZ[3];
-					int index = 0;
-					while (getline(iss, token, ' ') && index < 3)
-					{
-						if (token.size() > 0 && token[0] != 'v' && token[0] != ' ')
-						{
-							tempXYZ[index++] = stof(token);
-						}
-					}
-
-					tempVec = { tempXYZ[0], tempXYZ[1], tempXYZ[2] };
-					centerPos = centerPos + tempVec;
-
+				string lineHeader = splitedBuffer[0];
+				if (lineHeader == "v")
+				{
+					Vector3 tempVec = { stof(splitedBuffer[1]),stof(splitedBuffer[2]),stof(splitedBuffer[3]) };
 					positions.push_back(tempVec);
 				}
-				else if (buffer[1] == 'n')
-				{///VERTEX NORMAL
-					hasVN = true;
-					if (not isVNVT && not isVTVN)
+				else if (lineHeader == "vt")
+				{
+					Vector2 tempVec = { stof(splitedBuffer[1]),stof(splitedBuffer[2]) };
+					try
 					{
-						isVNVT = true;
+						uvs.push_back(tempVec);
 					}
-
-					istringstream iss(buffer);
-					string token;
-
-					Vector3 tempVec;
-					float tempXYZ[3];
-					int index = 0;
-					while (getline(iss, token, ' ') && index < 3)
+					catch (...)
 					{
-						if (token.size() > 0 && token[0] != 'v' && token[0] != ' ')
-						{
-							tempXYZ[index++] = stof(token);
-						}
+						cout << uvs.size() << endl;
 					}
-
-					tempVec = { tempXYZ[0], tempXYZ[1], tempXYZ[2] };
-
+				}
+				else if (lineHeader == "vn")
+				{
+					Vector3 tempVec = { stof(splitedBuffer[1]),stof(splitedBuffer[2]),stof(splitedBuffer[3]) };
 					normals.push_back(tempVec);
 				}
-				else if (buffer[1] == 't')
-				{///VERTEX TEXTURE UV
-					hasVT = true;
-					if (not isVNVT && not isVTVN)
-					{
-						isVTVN = true;
-					}
-
-					istringstream iss(buffer);
-					string token;
-
-					Vector2 tempVec;
-					float tempXY[2];
-					int index = 0;
-					while (getline(iss, token, ' ') && index < 2)
-					{
-						if (token.size() > 0 && token[0] != 'v' && token[0] != ' ')
-						{
-							tempXY[index++] = stof(token);
-						}
-					}
-
-					tempVec = { tempXY[0], tempXY[1] };
-
-					uvs.push_back(tempVec);
-				}
-			}
-			else if (buffer[0] == 'f')
-			{
-				istringstream iss(&buffer[2]);
-				string token;
-
-				while (getline(iss, token, ' '))
+				else if (lineHeader == "f")
 				{
-					istringstream tokenIss(token);
-					string tokenToken;
-					ObjIndice oi;
-
-					int index = 0;
-					while (getline(tokenIss, tokenToken, '/') && index < 3)
-					{
-						if (tokenToken == "\0")
-						{
-							break;
-						}
-						else
-						{///Please set v vt vn
-							int i = abs(stoi(tokenToken)) - 1;
-							if (index == 0)
-							{
-								oi.pos = i;
-								indice.push_back(i);
-							}
-							else if (index == 1)
-							{
-								if (hasVT)
-								{///vn only or vt only
-									oi.uv = i;
-								}
-								else if (not hasVT)
-								{
-									oi.normal = i;
-								}
-
-							}
-							else if (index == 2)
-							{
-								oi.normal = i;
-							}
-
-							++index;
-						}
-					}
-
-					objIndice.push_back(oi);
+					Vector3 tes;
 				}
 			}
+
+
+			//	
+
+
+			//	if (buffer[0] == 'v')
+			//	{
+			//		if (buffer[1] == ' ' || buffer[1] == '\t')
+			//		{///VERTEX POSITION 
+			//			istringstream iss(buffer);
+			//			string token;
+
+			//			Vector3 tempVec;
+			//			float tempXYZ[3];
+			//			int index = 0;
+			//			while (getline(iss, token, ' ') && index < 3)
+			//			{
+			//				if (token.size() > 0 && token[0] != 'v' && token[0] != ' ')
+			//				{
+			//					tempXYZ[index++] = stof(token);
+			//				}
+			//			}
+
+			//			tempVec = { tempXYZ[0], tempXYZ[1], tempXYZ[2] };
+			//			centerPos = centerPos + tempVec;
+
+			//			positions.push_back(tempVec);
+			//		}
+			//		else if (buffer[1] == 'n')
+			//		{///VERTEX NORMAL
+			//			hasVN = true;
+			//			if (not isVNVT && not isVTVN)
+			//			{
+			//				isVNVT = true;
+			//			}
+
+			//			istringstream iss(buffer);
+			//			string token;
+
+			//			Vector3 tempVec;
+			//			float tempXYZ[3];
+			//			int index = 0;
+			//			while (getline(iss, token, ' ') && index < 3)
+			//			{
+			//				if (token.size() > 0 && token[0] != 'v' && token[0] != ' ')
+			//				{
+			//					tempXYZ[index++] = stof(token);
+			//				}
+			//			}
+
+			//			tempVec = { tempXYZ[0], tempXYZ[1], tempXYZ[2] };
+
+			//			normals.push_back(tempVec);
+			//		}
+			//		else if (buffer[1] == 't')
+			//		{///VERTEX TEXTURE UV
+			//			hasVT = true;
+			//			if (not isVNVT && not isVTVN)
+			//			{
+			//				isVTVN = true;
+			//			}
+
+			//			istringstream iss(buffer);
+			//			string token;
+
+			//			Vector2 tempVec;
+			//			float tempXY[2];
+			//			int index = 0;
+			//			while (getline(iss, token, ' ') && index < 2)
+			//			{
+			//				if (token.size() > 0 && token[0] != 'v' && token[0] != ' ')
+			//				{
+			//					tempXY[index++] = stof(token);
+			//				}
+			//			}
+
+			//			tempVec = { tempXY[0], tempXY[1] };
+
+			//			uvs.push_back(tempVec);
+			//		}
+			//	}
+			//	else if (buffer[0] == 'f')
+			//	{
+			//		istringstream iss(&buffer[2]);
+			//		string token;
+
+			//		while (getline(iss, token, ' '))
+			//		{
+			//			istringstream tokenIss(token);
+			//			string tokenToken;
+			//			ObjIndice oi;
+
+			//			int index = 0;
+			//			while (getline(tokenIss, tokenToken, '/') && index < 3)
+			//			{
+			//				if (tokenToken == "\0")
+			//				{
+			//					break;
+			//				}
+			//				else
+			//				{///Please set v vt vn
+			//					int i = abs(stoi(tokenToken)) - 1;
+			//					if (index == 0)
+			//					{
+			//						oi.pos = i;
+			//						indice.push_back(i);
+			//					}
+			//					else if (index == 1)
+			//					{
+			//						if (hasVT)
+			//						{///vn only or vt only
+			//							oi.uv = i;
+			//						}
+			//						else if (not hasVT)
+			//						{
+			//							oi.normal = i;
+			//						}
+
+			//					}
+			//					else if (index == 2)
+			//					{
+			//						oi.normal = i;
+			//					}
+
+			//					++index;
+			//				}
+			//			}
+
+			//			objIndice.push_back(oi);
+			//		}
+			//	}
 		}
 		sourceStream.close();
 	}
