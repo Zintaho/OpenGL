@@ -1,6 +1,5 @@
 #pragma once
 #include "MyMath.h"
-#include "RenderConstants.h"
 
 #include <string>
 #include <GL/glew.h>

@@ -103,7 +103,7 @@ void ModelManager::ProcessModel(std::string fileName)
 				}
 				else if (lineHeader == "f")
 				{
-					Vector3 tes;
+					//Vector3 tes;
 				}
 			}
 
