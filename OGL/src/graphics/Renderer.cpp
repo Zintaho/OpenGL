@@ -16,6 +16,8 @@ void Renderer::InitGLEW() const
 		std::cerr << "GLEW failed to initialize" << std::endl;
 		exit(1);
 	}
+
+	std::cout << "Current GL Version: " << glGetString(GL_VERSION) << std::endl;
 }
 
 void Renderer::SetGLOptions() const
@@ -36,4 +38,14 @@ void Renderer::Clear()
 Renderer::~Renderer()
 {
 
+}
+
+///For Debug (under OGL3.2)
+void Renderer::DrawTriangle()
+{
+	glBegin(GL_TRIANGLES);
+	glVertex2f(0.5f, 0.5f);
+	glVertex2f(-0.5f, -0.5f);
+	glVertex2f(0.5f, -0.5f);
+	glEnd();
 }

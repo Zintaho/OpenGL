@@ -25,7 +25,7 @@ from 2018-04
 //#include "Camera.h"
 //#include "GameObject.h"
 
-int main(int argc, char **argv)
+int SDL_main(int argc, char **argv)
 {
 	//using namespace MyMath;
 
@@ -51,9 +51,10 @@ int main(int argc, char **argv)
 	///Create Renderer
 	Renderer renderer;
 	///Loop
-	while (display.CheckState() != STATE::END)
+	while(true) //(display.CheckState() != STATE::END)
 	{
 		renderer.Clear();
+		renderer.DrawTriangle();
 
 		display.SwapBuffer();
 		display.CheckEvent();

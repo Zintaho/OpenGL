@@ -22,6 +22,11 @@ void Display::InitSDL()
 		state = STATE::END;
 		exit(1);
 	}
+	///Get Display Flags
+	displayFlags = GetDisplayFlags();
+
+	window = SDL_CreateWindow(winStat.title.c_str(), winStat.position.x, winStat.position.y, winStat.size.x, winStat.size.y, displayFlags);
+	glContext = SDL_GL_CreateContext(window);
 }
 
 void Display::SetSDLAttributes()
@@ -39,15 +44,13 @@ void Display::SetSDLAttributes()
 	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, COLOR_BIT_SIZE);
 
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, MIN_FRAMEBUFFER_SIZE);
-	///Get Display Flags
-	displayFlags = GetDisplayFlags();
 
 	///Other Options
 	if (this->winStat.displayOption.ADAPTIVE_VSYNC)
 	{
 		if (SDL_GL_SetSwapInterval(ON) == -1)
 		{///if adaptive vsync not supported
-			std::cerr << "ADAPTIVE VSYNC NOT SUPPORTED" << std::endl;
+			std::cerr << SDL_GetError() << std::endl;
 			SDL_GL_SetSwapInterval(OFF);
 		}
 	}
@@ -82,9 +85,6 @@ void Display::CreateDisplay()
 {
 	InitSDL();
 	SetSDLAttributes();
-
-	window = SDL_CreateWindow(winStat.title.c_str(), winStat.position.x, winStat.position.y, winStat.size.x, winStat.size.y, displayFlags);
-	glContext = SDL_GL_CreateContext(window);
 
 	state = STATE::RUNNING;
 }

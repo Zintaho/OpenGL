@@ -9,6 +9,8 @@ public:
 	virtual ~Renderer();
 	///Methods
 	void Clear();
+
+	void DrawTriangle();
 private:
 	///Methods
 	void InitGLEW() const;
