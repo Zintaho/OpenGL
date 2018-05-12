@@ -122,32 +122,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="ModelManager.cpp" />
-    <ClCompile Include="MyMath.cpp" />
-    <ClCompile Include="Display.cpp" />
-    <ClCompile Include="ShaderManager.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="src\core\Display.cpp" />
+    <ClCompile Include="src\graphics\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="DisplayConstants.h" />
-    <ClInclude Include="GameObject.h" />
     <ClInclude Include="License.md" />
     <ClInclude Include="MainConstants.h" />
-    <ClInclude Include="ModelManager.h" />
-    <ClInclude Include="MyMath.h" />
-    <ClInclude Include="Display.h" />
-    <ClInclude Include="ShaderManager.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="Transform.h" />
+    <ClInclude Include="src\core\Display.h" />
+    <ClInclude Include="src\core\DisplayConstants.h" />
+    <ClInclude Include="src\graphics\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\fragment.glsl" />

@@ -18,15 +18,16 @@ from 2018-04
 
 //Header
 #include "MainConstants.h"
-#include "Display.h"
-#include "ShaderManager.h"
-#include "ModelManager.h"
-#include "Camera.h"
-#include "GameObject.h"
+#include "src/core/Display.h"
+#include "src/graphics/Renderer.h"
+//#include "ShaderManager.h"
+//#include "ModelManager.h"
+//#include "Camera.h"
+//#include "GameObject.h"
 
-int SDL_main(int argc, char **argv)
+int main(int argc, char **argv)
 {
-	using namespace MyMath;
+	//using namespace MyMath;
 
 	///Set DisplayOption
 	DisplayOption displayOption;
@@ -47,10 +48,13 @@ int SDL_main(int argc, char **argv)
 	///Create Display
 	Display display(displayOption);
 	display.CreateDisplay();
+	///Create Renderer
+	Renderer renderer;
 	///Loop
 	while (display.CheckState() != STATE::END)
 	{
-		display.Clear();
+		renderer.Clear();
+
 		display.SwapBuffer();
 		display.CheckEvent();
 	}
