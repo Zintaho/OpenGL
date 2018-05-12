@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cassert>
 
-///CMh extension
+///CMath extension
 namespace MyMath
 {
 	const float PI = 3.141592f;
@@ -144,7 +144,7 @@ namespace MyMath
 
 		Vector3()
 		{
-			x = y = z =  0.0f;
+			x = y = z = 0.0f;
 		}
 		Vector3(float x, float y, float z)
 		{
@@ -255,7 +255,7 @@ namespace MyMath
 
 		friend std::ostream& operator << (std::ostream& stream, const Vector3 &vec)
 		{
-			stream << '<' << vec.x << ',' << vec.y << ',' << vec.z <<'>';
+			stream << '<' << vec.x << ',' << vec.y << ',' << vec.z << '>';
 			return stream;
 		}
 
@@ -291,7 +291,7 @@ namespace MyMath
 			this->y = y;
 			this->z = z;
 			w = 1.0f;
-		}		
+		}
 
 		friend Vector4 operator +(const Vector4& left, const Vector4& right)
 		{
@@ -414,153 +414,182 @@ namespace MyMath
 	float DotProduct(const Vector4 left, const Vector4 right);
 
 	///Matrix 4x4
-	class Matrix4x4
+	struct Matrix4x4
 	{
-	public:
+		float M[4 * 4];
+
 		Matrix4x4()
 		{
 			Clear();
 		}
-		inline float* GetMatrix()
+
+		float& operator()(int y, int x)
 		{
-			return this->mat.M;
+			return this->M[y * 4 + x];
 		}
+
 		inline void Clear()
 		{
 			for (int y = 0; y < 4; ++y)
 			{
 				for (int x = 0; x < 4; ++x)
 				{
-					this->mat(y, x) = 0;
+					(*this)(y, x) = 0;
 				}
 			}
 		}
+
 		inline void SetIdentityMatrix()
 		{
-			mat(0, 0) = mat(1, 1) = mat(2, 2) = mat(3, 3) = 1;
+			(*this)(0, 0) = (*this)(1, 1) = (*this)(2, 2) = (*this)(3, 3) = 1;
 		}
-
 		inline void SetTranslateMatrix(const float X, const float Y, const float Z)
-		{
-			mat(3,0) = X;
-			mat(3,1) = Y;
-			mat(3,2) = Z;
-			mat(3,3) = 1;
+		{///column major
+			(*this)(3, 0) = X;
+			(*this)(3, 1) = Y;
+			(*this)(3, 2) = Z;
+			(*this)(3, 3) = 1;
 
-			mat(0,0) = mat(1,1) = mat(2,2) = 1;
+			(*this)(0, 0) = (*this)(1, 1) = (*this)(2, 2) = 1;
 		}
 		inline void SetScaleMatrix(const float X, const float Y, const float Z)
 		{
-			mat(0,0) = X;
-			mat(1,1) = Y;
-			mat(2,2) = Z;
-			mat(3,3) = 1;
+			(*this)(0, 0) = X;
+			(*this)(1, 1) = Y;
+			(*this)(2, 2) = Z;
+			(*this)(3, 3) = 1;
 		}
 		inline void SetRotXMatrix(const float radAngle)
 		{
-			mat(0, 0) = 1;
-			mat(1, 1) = cosf(radAngle);
-			mat(1, 2) = -sinf(radAngle);
-			mat(2, 1) = sinf(radAngle);
-			mat(2, 2) = cosf(radAngle);
-			mat(3, 3) = 1;
+			(*this)(0, 0) = 1;
+			(*this)(1, 1) = cosf(radAngle);
+			(*this)(1, 2) = -sinf(radAngle);
+			(*this)(2, 1) = sinf(radAngle);
+			(*this)(2, 2) = cosf(radAngle);
+			(*this)(3, 3) = 1;
 		}
 		inline void SetRotYMatrix(const float radAngle)
 		{
-			mat(0, 0) = cosf(radAngle);
-			mat(0, 2) = sinf(radAngle);
-			mat(1, 1) = 1;
-			mat(2, 0) = -sinf(radAngle);
-			mat(2, 2) = cosf(radAngle);
-			mat(3, 3) = 1;
+			(*this)(0, 0) = cosf(radAngle);
+			(*this)(0, 2) = sinf(radAngle);
+			(*this)(1, 1) = 1;
+			(*this)(2, 0) = -sinf(radAngle);
+			(*this)(2, 2) = cosf(radAngle);
+			(*this)(3, 3) = 1;
 		}
 		inline void SetRotZMatrix(const float radAngle)
 		{
-			mat(0, 0) = cosf(radAngle);
-			mat(0, 1) = -sinf(radAngle);
-			mat(1, 0) = sinf(radAngle);
-			mat(1, 1) = cosf(radAngle);
-			mat(2, 2) = 1;
-			mat(3, 3) = 1;
+			(*this)(0, 0) = cosf(radAngle);
+			(*this)(0, 1) = -sinf(radAngle);
+			(*this)(1, 0) = sinf(radAngle);
+			(*this)(1, 1) = cosf(radAngle);
+			(*this)(2, 2) = 1;
+			(*this)(3, 3) = 1;
 		}
 		inline void SetViewMatrix(const Vector3 EYE, const Vector3 AT, const Vector3 UP)
 		{
 			///Get u, v, n
 			Vector3 u, v, n;
 			n = EYE - AT;
-			n = n.ConvertToUnitVector();
+			n.ConvertToUnitVector();
 
 			u = CrossProduct(n, UP);
-			u = u.ConvertToUnitVector();
+			u.ConvertToUnitVector();
 
 			v = CrossProduct(n, u);
 			///Set Matrix
-			mat(0,0) = u.x;	mat(0,1) = u.y;	mat(0,2) = u.z;
-			mat(0,3) = -EYE.x * (u.x + u.y + u.z);
-			mat(1,0) = v.x;	mat(1,1) = v.y;	mat(1,2) = v.z;
-			mat(1,3) = -EYE.y * (v.x + v.y + v.z);
-			mat(2,0) = n.x;	mat(2,1) = n.y;	mat(2,2) = n.z;
-			mat(2,3) = -EYE.z * (n.x + n.y + n.z);
+			(*this)(0, 0) = u.x;	(*this)(0, 1) = u.y;	(*this)(0, 2) = u.z;
+			(*this)(0, 3) = -EYE.x * (u.x + u.y + u.z);
+			(*this)(1, 0) = v.x;	(*this)(1, 1) = v.y;	(*this)(1, 2) = v.z;
+			(*this)(1, 3) = -EYE.y * (v.x + v.y + v.z);
+			(*this)(2, 0) = n.x;	(*this)(2, 1) = n.y;	(*this)(2, 2) = n.z;
+			(*this)(2, 3) = -EYE.z * (n.x + n.y + n.z);
 			for (int z = 0; z < 3; ++z)
 			{
-				mat(3,z) = 0;
+				(*this)(3, z) = 0;
 			}
-			mat(3,3) = 1;
+			(*this)(3, 3) = 1;
 		}
 		inline void SetProjMatrix(const float fovy, const float aspect, const float n, const float f)
 		{
-			const float PI = 3.14159265f;
 			float radFovy = fovy * PI / 180.0f;
 
-			mat(0,0) = 1 / (tanf(radFovy / 2) *aspect);
-			mat(1,1) = 1 / (tanf(radFovy / 2));
-			mat(2,2) = -((f + n) / (f - n));
-			mat(2,3) = -2 * n*f / (f - n);
-			mat(3,2) = -1;
+			(*this)(0, 0) = 1 / (tanf(radFovy / 2) *aspect);
+			(*this)(1, 1) = 1 / (tanf(radFovy / 2));
+			(*this)(2, 2) = -((f + n) / (f - n));
+			(*this)(2, 3) = -2 * n*f / (f - n);
+			(*this)(3, 2) = -1;
 		}
 
-		Matrix4x4 operator* (Matrix4x4 MB)
+		inline void SetOrthoMatrix(const float l, const float r, const float b, const float t, const float n, const float f)
 		{
-			Matrix4x4 MA;
+			(*this)(0, 0) = 2 / (r - 1);
+			(*this)(1, 1) = 2 / (t - b);
+			(*this)(2, 2) = 1 / (f - n);
+
+			(*this)(0, 3) = -(r + 1) / (r - l);
+			(*this)(1, 3) = -(t + b) / (t - b);
+			(*this)(2, 3) = -n / (f - n);
+			(*this)(3, 3) = 1;
+		}
+
+		friend Matrix4x4 operator* (Matrix4x4 &MA, Matrix4x4 &MB)
+		{
+			Matrix4x4 MC;
 			for (int y = 0; y < 4; ++y)
 			{
 				for (int x = 0; x < 4; ++x)
 				{
 					for (int j = 0; j < 4; ++j)
 					{
-						MA.mat(y, x) += (mat(y, j) * MB.mat(j, x));
+						MC(y, x) += (MA(y, j)*MB(j, x));
 					}
 				}
 			}
-			return MA;
+			return MC;
 		}
 
-		Vector3 operator* (const Vector3 vec)
+		friend Vector3 operator* (Matrix4x4 &M, const Vector3 &vec)
 		{
-			Vector4 tempVec4( vec.x, vec.y, vec.z);
+			Vector4 tempVec4(vec.x, vec.y, vec.z);
 
-			tempVec4.x = (mat(0,0) * tempVec4.x + mat(0,1) * tempVec4.y + mat(0,2) * tempVec4.z + mat(0,3) * tempVec4.w);
-			tempVec4.y = (mat(1,0) * tempVec4.x + mat(1,1) * tempVec4.y + mat(1,2) * tempVec4.z + mat(1,3) * tempVec4.w);
-			tempVec4.z = (mat(2,0) * tempVec4.x + mat(2,1) * tempVec4.y + mat(2,2) * tempVec4.z + mat(2,3) * tempVec4.w);
-			tempVec4.w = (mat(3,0) * tempVec4.x + mat(3,1) * tempVec4.y + mat(3,2) * tempVec4.z + mat(3,3) * tempVec4.w);
+			tempVec4.x = (M(0, 0) * tempVec4.x + M(0, 1) * tempVec4.y + M(0, 2) * tempVec4.z + M(0, 3) * tempVec4.w);
+			tempVec4.y = (M(1, 0) * tempVec4.x + M(1, 1) * tempVec4.y + M(1, 2) * tempVec4.z + M(1, 3) * tempVec4.w);
+			tempVec4.z = (M(2, 0) * tempVec4.x + M(2, 1) * tempVec4.y + M(2, 2) * tempVec4.z + M(2, 3) * tempVec4.w);
+			tempVec4.w = (M(3, 0) * tempVec4.x + M(3, 1) * tempVec4.y + M(3, 2) * tempVec4.z + M(3, 3) * tempVec4.w);
 
-			Vector3 tempVec3 = { tempVec4.x, tempVec4.y, tempVec4.z };
+			Vector3 tempVec3(tempVec4.x, tempVec4.y, tempVec4.z);
 
 			return tempVec3;
 		}
 
-	private:
-		struct Matrix
+		friend Vector3 operator* (const Vector3 &vec, Matrix4x4 &M)
 		{
-			float M[4 * 4];
+			Vector4 tempVec4(vec.x, vec.y, vec.z);
 
-			float& operator()(int y, int x)
+			tempVec4.x = (M(0, 0) * tempVec4.x + M(0, 1) * tempVec4.y + M(0, 2) * tempVec4.z + M(0, 3) * tempVec4.w);
+			tempVec4.y = (M(1, 0) * tempVec4.x + M(1, 1) * tempVec4.y + M(1, 2) * tempVec4.z + M(1, 3) * tempVec4.w);
+			tempVec4.z = (M(2, 0) * tempVec4.x + M(2, 1) * tempVec4.y + M(2, 2) * tempVec4.z + M(2, 3) * tempVec4.w);
+			tempVec4.w = (M(3, 0) * tempVec4.x + M(3, 1) * tempVec4.y + M(3, 2) * tempVec4.z + M(3, 3) * tempVec4.w);
+
+			Vector3 tempVec3(tempVec4.x, tempVec4.y, tempVec4.z);
+
+			return tempVec3;
+		}
+
+		void operator*=(Matrix4x4 M)
+		{
+			for (int y = 0; y < 4; ++y)
 			{
-				return M[y * 4 + x];
+				for (int x = 0; x < 4; ++x)
+				{
+					for (int j = 0; j < 4; ++j)
+					{
+						(*this)(y, x) += ((*this)(y, j)*M(j, x));
+					}
+				}
 			}
-		};
-
-		Matrix mat;
+		}
 	};
 }
 
