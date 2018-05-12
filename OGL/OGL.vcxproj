@@ -134,6 +134,7 @@
     <ClInclude Include="src\core\Display.h" />
     <ClInclude Include="src\core\DisplayConstants.h" />
     <ClInclude Include="src\graphics\Renderer.h" />
+    <ClInclude Include="src\graphics\RendererConstants.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\fragment.glsl" />
