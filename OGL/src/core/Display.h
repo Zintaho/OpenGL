@@ -53,7 +53,9 @@ public:
 	void CreateDisplay();
 	void SwapBuffer() const;
 	void CheckEvent();
+	void AdjustWindowSize(int dw, int dh);
 
+	inline SDL_Window& GetWindow() { return *window; }
 	inline STATE CheckState() const { return state; }
 	///Members
 private:

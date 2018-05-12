@@ -10,6 +10,7 @@ from 2018-04
 테셀레이션
 
 [TODO : SUB]
+EventHandler
 모델 로딩 속도
 글로벌 일루미네이션
 
@@ -20,14 +21,15 @@ from 2018-04
 #include "MainConstants.h"
 #include "src/core/Display.h"
 #include "src/graphics/Renderer.h"
+#include "src/math/MyMath.h"
 //#include "ShaderManager.h"
 //#include "ModelManager.h"
 //#include "Camera.h"
 //#include "GameObject.h"
 
-int SDL_main(int argc, char **argv)
+int main(int argc, char **argv)
 {
-	//using namespace MyMath;
+	using namespace MyMath;
 
 	///Set DisplayOption
 	DisplayOption displayOption;
@@ -49,12 +51,13 @@ int SDL_main(int argc, char **argv)
 	Display display(displayOption);
 	display.CreateDisplay();
 	///Create Renderer
-	Renderer renderer;
+	Renderer renderer(&display);
+
 	///Loop
-	while(true) //(display.CheckState() != STATE::END)
+	while(display.CheckState() != STATE::END)
 	{
 		renderer.Clear();
-		renderer.DrawTriangle();
+		renderer.DrawTest();
 
 		display.SwapBuffer();
 		display.CheckEvent();

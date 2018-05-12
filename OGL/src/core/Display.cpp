@@ -120,6 +120,13 @@ void Display::CheckEvent()
 	}
 }
 
+void Display::AdjustWindowSize(int dw, int dh)
+{
+	int w, h;
+	SDL_GetWindowSize(window, &w, &h);
+	SDL_SetWindowSize(window, w+dw, w+dh);
+}
+
 void Display::Log(const char* log) const
 {
 	std::cout << log << std::endl;

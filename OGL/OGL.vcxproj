@@ -127,6 +127,7 @@
     </ClCompile>
     <ClCompile Include="src\core\Display.cpp" />
     <ClCompile Include="src\graphics\Renderer.cpp" />
+    <ClCompile Include="src\math\MyMath.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="License.md" />
@@ -135,6 +136,7 @@
     <ClInclude Include="src\core\DisplayConstants.h" />
     <ClInclude Include="src\graphics\Renderer.h" />
     <ClInclude Include="src\graphics\RendererConstants.h" />
+    <ClInclude Include="src\math\MyMath.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\fragment.glsl" />

@@ -1,113 +1,417 @@
 #pragma once
 #include <math.h>
+#include <iostream>
+#include <cassert>
 
 ///CMh extension
 namespace MyMath
 {
 	const float PI = 3.141592f;
+	constexpr void DivideByZeroAssert(float f)
+	{
+		assert(f != 0);
+	}
 
 	///Vector2
 	struct Vector2
 	{
-		float u;
-		float v;
+		float u, v;
 
-		Vector2 operator +(const Vector2 n) const
+		Vector2()
+		{
+			u = v = 0.0f;
+		}
+		Vector2(float u, float v)
+		{
+			this->u = u;
+			this->v = v;
+		}
+
+		friend Vector2 operator +(const Vector2& left, const Vector2& right)
 		{
 			Vector2 tempVec;
-			tempVec.u = u + n.u;
-			tempVec.v = v + n.v;
+			tempVec.u = left.u + right.u;
+			tempVec.v = left.v + right.v;
 
 			return tempVec;
 		}
 
-		Vector2 operator -(const Vector2 n) const
+		void operator +=(const Vector2& right)
+		{
+			this->u = this->u + right.u;
+			this->v = this->v + right.v;
+		}
+
+		friend Vector2 operator -(const Vector2& left, const Vector2& right)
 		{
 			Vector2 tempVec;
-			tempVec.u = u - n.u;
-			tempVec.v = v - n.v;
+			tempVec.u = left.u - right.u;
+			tempVec.v = left.v - right.v;
 
 			return tempVec;
 		}
+
+		void operator -=(const Vector2& right)
+		{
+			this->u = this->u - right.u;
+			this->v = this->v - right.v;
+		}
+
+		friend Vector2 operator *(const Vector2& vec, const float& f)
+		{
+			Vector2 tempVec;
+			tempVec.u = vec.u * f;
+			tempVec.v = vec.v * f;
+
+			return tempVec;
+		}
+
+		friend Vector2 operator *(const float& f, const Vector2& vec)
+		{
+			Vector2 tempVec;
+			tempVec.u = vec.u * f;
+			tempVec.v = vec.v * f;
+
+			return tempVec;
+		}
+
+		void operator *=(const float& f)
+		{
+			this->u = this->u * f;
+			this->v = this->v * f;
+		}
+
+
+		friend Vector2 operator /(const Vector2& vec, const float& f)
+		{
+			DivideByZeroAssert(f);
+
+			Vector2 tempVec;
+			tempVec.u = vec.u / f;
+			tempVec.v = vec.v / f;
+
+			return tempVec;
+		}
+
+		friend Vector2 operator /(const float& f, const Vector2& vec)
+		{
+			DivideByZeroAssert(f);
+
+			Vector2 tempVec;
+			tempVec.u = vec.u / f;
+			tempVec.v = vec.v / f;
+
+			return tempVec;
+		}
+
+		void operator /=(const float& f)
+		{
+			DivideByZeroAssert(f);
+
+			this->u = this->u / f;
+			this->v = this->v / f;
+		}
+
+		friend bool operator ==(const Vector2 &left, const Vector2 &right)
+		{
+			return left.u == right.u && left.v == right.v;
+		}
+
+		friend std::ostream& operator << (std::ostream& stream, const Vector2 &vec)
+		{
+			stream << '<' << vec.u << ',' << vec.v << '>';
+			return stream;
+		}
+
+		Vector2 ConvertToUnitVector()
+		{
+			float norm = sqrtf(this->u*this->u + this->v * this->v);
+
+			this->u /= norm;
+			this->v /= norm;
+
+			return *this;
+		}
+
 	};
+	float DotProduct(const Vector2 left, const Vector2 right);
+
 
 	///Vector3
 	struct Vector3
 	{
-		float x;
-		float y;
-		float z;
+		float x, y, z;
 
-		Vector3 operator +(const Vector3 u) const
+		Vector3()
+		{
+			x = y = z =  0.0f;
+		}
+		Vector3(float x, float y, float z)
+		{
+			this->x = x;
+			this->y = y;
+			this->z = z;
+		}
+
+		friend Vector3 operator +(const Vector3& left, const Vector3& right)
 		{
 			Vector3 tempVec;
-			tempVec.x = x + u.x;
-			tempVec.y = y + u.y;
-			tempVec.z = z + u.z;
+			tempVec.x = left.x + right.x;
+			tempVec.y = left.y + right.y;
+			tempVec.z = left.z + right.z;
 
 			return tempVec;
 		}
 
-		Vector3 operator -(const Vector3 u) const
+		void operator +=(const Vector3& right)
+		{
+			this->x = this->x + right.x;
+			this->y = this->y + right.y;
+			this->z = this->z + right.z;
+		}
+
+		friend Vector3 operator -(const Vector3& left, const Vector3& right)
 		{
 			Vector3 tempVec;
-			tempVec.x = x - u.x;
-			tempVec.y = y - u.y;
-			tempVec.z = z - u.z;
+			tempVec.x = left.x - right.x;
+			tempVec.y = left.y - right.y;
+			tempVec.z = left.z - right.z;
 
 			return tempVec;
 		}
 
-		Vector3 operator *(const float f) const
+		void operator -=(const Vector3& right)
+		{
+			this->x = this->x - right.x;
+			this->y = this->y - right.y;
+			this->z = this->z - right.z;
+		}
+
+		friend Vector3 operator *(const Vector3& vec, const float& f)
 		{
 			Vector3 tempVec;
-			tempVec.x = x * f;
-			tempVec.y = y * f;
-			tempVec.z = z * f;
+			tempVec.x = vec.x * f;
+			tempVec.y = vec.y * f;
+			tempVec.z = vec.z * f;
 
 			return tempVec;
+		}
+
+		friend Vector3 operator *(const float& f, const Vector3& vec)
+		{
+			Vector3 tempVec;
+			tempVec.x = vec.x * f;
+			tempVec.y = vec.y * f;
+			tempVec.z = vec.z * f;
+
+			return tempVec;
+		}
+
+		void operator *=(const float& f)
+		{
+			this->x = this->x * f;
+			this->y = this->y * f;
+			this->z = this->z * f;
+		}
+
+
+		friend Vector3 operator /(const Vector3& vec, const float& f)
+		{
+			DivideByZeroAssert(f);
+
+			Vector3 tempVec;
+			tempVec.x = vec.x / f;
+			tempVec.y = vec.y / f;
+			tempVec.z = vec.z / f;
+
+			return tempVec;
+		}
+
+		friend Vector3 operator /(const float& f, const Vector3& vec)
+		{
+			DivideByZeroAssert(f);
+
+			Vector3 tempVec;
+			tempVec.x = vec.x / f;
+			tempVec.y = vec.y / f;
+			tempVec.z = vec.z / f;
+
+			return tempVec;
+		}
+
+		void operator /=(const float& f)
+		{
+			DivideByZeroAssert(f);
+
+			this->x = this->x / f;
+			this->y = this->y / f;
+			this->z = this->z / f;
+		}
+
+		friend bool operator ==(const Vector3 &left, const Vector3 &right)
+		{
+			return left.x == right.x && left.y == right.y && left.z == right.z;
+		}
+
+		friend std::ostream& operator << (std::ostream& stream, const Vector3 &vec)
+		{
+			stream << '<' << vec.x << ',' << vec.y << ',' << vec.z <<'>';
+			return stream;
 		}
 
 		Vector3 ConvertToUnitVector()
 		{
-			float norm = sqrtf(x * x + y * y + z * z);
+			float norm = sqrtf(this->x*this->x + this->y * this->y + this->z * this->z);
 
-			x /= norm;
-			y /= norm;
-			z /= norm;
+			this->x /= norm;
+			this->y /= norm;
+			this->z /= norm;
 
-			return { x,y,z };
+			return *this;
 		}
+
 	};
+	float DotProduct(const Vector3 left, const Vector3 right);
+	Vector3 CrossProduct(const Vector3 u, const Vector3 v);
+
+
 	///Vector4
 	struct Vector4
 	{
-		float x;
-		float y;
-		float z;
-		float w;
+		float x, y, z, w;
 
-		Vector4 operator +(const Vector4 u) const
+		Vector4()
+		{
+			x = y = z = 0.0f;
+			w = 1.0f;
+		}
+		Vector4(float x, float y, float z)
+		{
+			this->x = x;
+			this->y = y;
+			this->z = z;
+			w = 1.0f;
+		}		
+
+		friend Vector4 operator +(const Vector4& left, const Vector4& right)
 		{
 			Vector4 tempVec;
-			tempVec.x = x + u.x;
-			tempVec.y = y + u.y;
-			tempVec.z = z + u.z;
+			tempVec.x = left.x + right.x;
+			tempVec.y = left.y + right.y;
+			tempVec.z = left.z + right.z;
 
 			return tempVec;
 		}
 
-		Vector4 operator -(const Vector4 u) const
+		void operator +=(const Vector4& right)
+		{
+			this->x = this->x + right.x;
+			this->y = this->y + right.y;
+			this->z = this->z + right.z;
+		}
+
+		friend Vector4 operator -(const Vector4& left, const Vector4& right)
 		{
 			Vector4 tempVec;
-			tempVec.x = x - u.x;
-			tempVec.y = y - u.y;
-			tempVec.z = z - u.z;
+			tempVec.x = left.x - right.x;
+			tempVec.y = left.y - right.y;
+			tempVec.z = left.z - right.z;
 
 			return tempVec;
 		}
+
+		void operator -=(const Vector4& right)
+		{
+			this->x = this->x - right.x;
+			this->y = this->y - right.y;
+			this->z = this->z - right.z;
+		}
+
+		friend Vector4 operator *(const Vector4& vec, const float& f)
+		{
+			Vector4 tempVec;
+			tempVec.x = vec.x * f;
+			tempVec.y = vec.y * f;
+			tempVec.z = vec.z * f;
+
+			return tempVec;
+		}
+
+		friend Vector4 operator *(const float& f, const Vector4& vec)
+		{
+			Vector4 tempVec;
+			tempVec.x = vec.x * f;
+			tempVec.y = vec.y * f;
+			tempVec.z = vec.z * f;
+
+			return tempVec;
+		}
+
+		void operator *=(const float& f)
+		{
+			this->x = this->x * f;
+			this->y = this->y * f;
+			this->z = this->z * f;
+		}
+
+
+		friend Vector4 operator /(const Vector4& vec, const float& f)
+		{
+			DivideByZeroAssert(f);
+
+			Vector4 tempVec;
+			tempVec.x = vec.x / f;
+			tempVec.y = vec.y / f;
+			tempVec.z = vec.z / f;
+
+			return tempVec;
+		}
+
+		friend Vector4 operator /(const float& f, const Vector4& vec)
+		{
+			DivideByZeroAssert(f);
+
+			Vector4 tempVec;
+			tempVec.x = vec.x / f;
+			tempVec.y = vec.y / f;
+			tempVec.z = vec.z / f;
+
+			return tempVec;
+		}
+
+		void operator /=(const float& f)
+		{
+			DivideByZeroAssert(f);
+
+			this->x = this->x / f;
+			this->y = this->y / f;
+			this->z = this->z / f;
+		}
+
+		friend bool operator ==(const Vector4 &left, const Vector4 &right)
+		{
+			return left.x == right.x && left.y == right.y && left.z == right.z;
+		}
+
+		friend std::ostream& operator << (std::ostream& stream, const Vector4 &vec)
+		{
+			stream << '<' << vec.x << ',' << vec.y << ',' << vec.z << ',' << vec.w << '>';
+			return stream;
+		}
+
+		Vector4 ConvertToUnitVector()
+		{
+			float norm = sqrtf(this->x*this->x + this->y * this->y + this->z * this->z);
+
+			this->x /= norm;
+			this->y /= norm;
+			this->z /= norm;
+
+			return *this;
+		}
+
 	};
-	Vector3 CrossProduct(const Vector3 u, const Vector3 v);
+	float DotProduct(const Vector4 left, const Vector4 right);
 
 	///Matrix 4x4
 	class Matrix4x4
@@ -233,7 +537,7 @@ namespace MyMath
 
 		Vector3 operator* (const Vector3 vec)
 		{
-			Vector4 tempVec4 = { vec.x, vec.y, vec.z, 1 };
+			Vector4 tempVec4( vec.x, vec.y, vec.z);
 
 			tempVec4.x = (mat(0,0) * tempVec4.x + mat(0,1) * tempVec4.y + mat(0,2) * tempVec4.z + mat(0,3) * tempVec4.w);
 			tempVec4.y = (mat(1,0) * tempVec4.x + mat(1,1) * tempVec4.y + mat(1,2) * tempVec4.z + mat(1,3) * tempVec4.w);

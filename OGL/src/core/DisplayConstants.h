@@ -4,12 +4,12 @@
 #define OFF 0
 
 const char* TITLE = "OpenGL 4.3 Practice";
-const size_t WINDOW_POSX = 100;
+const size_t WINDOW_POSX = 400;
 const size_t WINDOW_POSY = 100;
 const size_t WINDOW_WIDTH = 600;
 const size_t WINDOW_HEIGHT = 600;
 
-const int VERSION_MAJOR = 4;
+const int VERSION_MAJOR = 4;	//Does not set the version, just tell the version
 const int VERSION_MINOR = 3;
 
 const int DEPTH_BIT_SIZE = 32;

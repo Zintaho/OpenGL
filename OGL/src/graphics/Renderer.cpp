@@ -3,8 +3,10 @@
 
 #include <iostream>
 
-Renderer::Renderer()
+Renderer::Renderer(Display* display)
 {
+	this->display = display;
+
 	InitGLEW();
 	SetGLOptions();
 }
@@ -17,11 +19,16 @@ void Renderer::InitGLEW() const
 		exit(1);
 	}
 
-	std::cout << "Current GL Version: " << glGetString(GL_VERSION) << std::endl;
+	std::cout << "OpenGL " << glGetString(GL_VERSION) << std::endl;
 }
 
 void Renderer::SetGLOptions() const
 {
+	int w, h;
+	SDL_GetWindowSize(&display->GetWindow(), &w, &h);
+
+	glViewport(0, 0, static_cast<GLsizei>(w), static_cast<GLsizei>(h));
+
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 
@@ -41,11 +48,12 @@ Renderer::~Renderer()
 }
 
 ///For Debug (under OGL3.2)
-void Renderer::DrawTriangle()
+void Renderer::DrawTest()
 {
-	glBegin(GL_TRIANGLES);
-	glVertex2f(0.5f, 0.5f);
-	glVertex2f(-0.5f, -0.5f);
-	glVertex2f(0.5f, -0.5f);
-	glEnd();
+	GLuint vao;
+	int count = 1;
+	glGenVertexArrays(count, &vao);
+	glBindVertexArray(vao);
+
+	glDrawArrays(GL_ARRAY_BUFFER, 0, 6);
 }
