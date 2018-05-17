@@ -66,9 +66,9 @@ void ModelManager::LoadObj(Mesh *pMesh)
 					{
 						std::vector<std::string> splitedSplitedBuffer = StringSpliter(splitedBuffer[i], '/');
 						VertexIndex tempVI;
-						tempVI.pos = std::stoi(splitedSplitedBuffer[0]);
-						tempVI.uv = std::stoi(splitedSplitedBuffer[1]);
-						tempVI.normal = std::stoi(splitedSplitedBuffer[2]);
+						tempVI.pos = std::stoi(splitedSplitedBuffer[0])-1;
+						tempVI.uv = std::stoi(splitedSplitedBuffer[1])-1;
+						tempVI.normal = std::stoi(splitedSplitedBuffer[2])-1;
 
 						vertexIndice.push_back(tempVI);
 					}
@@ -83,23 +83,26 @@ void ModelManager::LoadObj(Mesh *pMesh)
 		centerPos.z /= posCount;
 
 		///Translate Model
-		for (auto pos : positions)
-		{
-			pos - centerPos;
-		}
+		//for (auto pos : positions)
+		//{
+		//	pos - centerPos;
+		//}
 
 		Vertex tempVertex;
 		VertexIndex tempVI;
 		size_t vertexSize = vertexIndice.size();
+		pMesh->GetVertice().resize(vertexSize);
+		pMesh->GetIndice().resize(vertexSize);
+
 		for (int i = 0; i < vertexSize; ++i)
 		{
 			tempVI = vertexIndice[i];
-			tempVertex.Pos = positions[tempVI.pos - 1];
-			tempVertex.Normal = normals[tempVI.normal - 1];
-			tempVertex.TextureUV = uvs[tempVI.uv - 1];
+			tempVertex.Pos = positions[tempVI.pos];
+			tempVertex.Normal = normals[tempVI.normal];
+			tempVertex.TextureUV = uvs[tempVI.uv];
 
-			pMesh->GetVertice().push_back(tempVertex);
-			pMesh->GetIndice().push_back(tempVI.uv - 1);
+			pMesh->GetVertice()[i] = tempVertex;
+			pMesh->GetIndice()[i] = i;
 		}
 	}
 }

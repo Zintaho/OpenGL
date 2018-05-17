@@ -14,7 +14,7 @@ Display::Display(DisplayOption option)
 }
 
 void Display::InitSDL()
-{	
+{
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)	//Initialize all of the SDL subsystems( ex) VIDEO, AUDIO, EVENTS, TIMER, JOYSTICK)
 	{
 		std::cerr << SDL_GetError() << std::endl;
@@ -58,6 +58,10 @@ void Display::SetSDLAttributes()
 	{
 		SDL_GL_SetSwapInterval(OFF);
 	}
+}
+float Display::GetAspect() const
+{
+	return WINDOW_WIDTH / WINDOW_HEIGHT;
 }
 
 Uint32 Display::GetDisplayFlags() const
@@ -105,10 +109,10 @@ void Display::CheckEvent()
 			break;
 		case SDL_KEYUP:
 			Log(LOG_KEY_UP);
-			break;		
+			break;
 		case SDL_KEYDOWN:
 			Log(LOG_KEY_DOWN);
-			break;		
+			break;
 		case SDL_MOUSEBUTTONUP:
 			Log(LOG_MOUSE_UP);
 			break;
@@ -124,7 +128,7 @@ void Display::AdjustWindowSize(int dw, int dh)
 {
 	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
-	SDL_SetWindowSize(window, w+dw, w+dh);
+	SDL_SetWindowSize(window, w + dw, w + dh);
 }
 
 void Display::Log(const char* log) const

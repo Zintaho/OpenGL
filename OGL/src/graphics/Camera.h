@@ -18,7 +18,9 @@ public:
 		MyMath::Matrix4x4 projMat;
 		projMat.SetProjMatrix(fovy, aspect, n, f);
 
-		MyMath::Matrix4x4 returnMat = projMat * viewMat;
+		MyMath::Matrix4x4 debugMat;
+		debugMat.SetIdentityMatrix();
+		MyMath::Matrix4x4 returnMat = debugMat;//projMat * viewMat;
 
 		return returnMat;
 	}

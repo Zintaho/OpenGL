@@ -57,7 +57,7 @@ public:
 
 	inline SDL_Window& GetWindow() { return *window; }
 	inline STATE CheckState() const { return state; }
-	inline float GetAspect() const { return WINDOW_WIDTH / WINDOW_HEIGHT; }
+	float GetAspect() const;
 	///Members
 private:
 	///Methods

@@ -23,7 +23,6 @@ EventHandler
 #include "src/graphics/Renderer.h"
 #include "src/graphics/ModelManager.h"
 #include "src/graphics/ShaderManager.h"
-#include "src/graphics/GameObject.h"
 //#include "ShaderManager.h"
 //#include "ModelManager.h"
 //#include "Camera.h"
@@ -47,25 +46,25 @@ int main(int argc, char **argv)
 	displayOption.HIGH_DPI = true;
 
 	displayOption.ADAPTIVE_VSYNC = true;
-	///Create Display
+	///Create Display & Renderer
 	Display display(displayOption);
 	display.CreateDisplay();
-	///Create Renderer
 	Renderer renderer(&display);
 	///Create Manager;
 	ModelManager modelManager;
 	ShaderManager shaderManager;
 	///Create Components
 	Mesh mesh("PC");
-	Shader shader("VS_PHONG", "FS_PHONG");
+	Shader shader("VS_Phong", "FS_Phong");
 
-	MyMath::Vector3 pos(0, 0, 0);
+	MyMath::Vector3 pos(-0.25, -0.25, 0);
 	MyMath::Vector3 rot(0, 0, 0);
-	Transform transform(pos, rot);
+	MyMath::Vector3 scale(1.5, 1.5, 1.5);
+	Transform transform(pos, rot,scale);
 
 	GameObject gameObject(&mesh, transform);
 
-	float fovy = 100;
+	float fovy = 120;
 	float aspect = display.GetAspect();
 	float n = -1;
 	float f = 1;
@@ -74,16 +73,24 @@ int main(int argc, char **argv)
 
 	Camera mainCam(fovy, aspect, n, f, eye, at);
 
-
 	modelManager.LoadObj(&mesh);
 	shaderManager.LoadShader(&shader);
 	shaderManager.CompileShader(&shader);
 	shaderManager.LinkProgram(&shader);
+	///Create RendererContext
+	RenderContext renderContext;
+	renderContext.renderGO = &gameObject;
+	renderContext.renderCam = &mainCam;
+	renderContext.renderShader = &shader;
+	renderer.GetRenderContext() = renderContext;
+
 	///Loop
 	while(display.CheckState() != STATE::END)
 	{
 		renderer.Clear();
-		renderer.DrawTest();
+		renderer.InitArrays();
+		renderer.UpdateDrawInfo();
+		renderer.DrawCall();
 
 		display.SwapBuffer();
 		display.CheckEvent();

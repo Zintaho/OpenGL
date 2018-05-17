@@ -38,13 +38,11 @@ void ShaderManager::LinkProgram(Shader * shader)
 	GLuint vShader = shader->GetVS();
 	GLuint fShader = shader->GetFS();
 	GLuint shaderProgram = shader->GetProgram();
+	GLuint *attribs = shader->GetAttribs();
 	GLuint *uniforms = shader->GetUniforms();
 
 	glAttachShader(shaderProgram, vShader);
 	glAttachShader(shaderProgram, fShader);
-
-	glBindAttribLocation(shaderProgram, 0, "position");
-	glBindAttribLocation(shaderProgram, 1, "normal");
 
 	glLinkProgram(shaderProgram);
 	CheckProgramLinkError(shaderProgram, "Shader Program");
@@ -52,9 +50,17 @@ void ShaderManager::LinkProgram(Shader * shader)
 	glValidateProgram(shaderProgram);
 	CheckProgramValidateError(shaderProgram, "Shader Validate");
 
-	uniforms[static_cast<unsigned int>(UNIFORM_TYPE::TRANSFORM)] = glGetUniformLocation(shaderProgram, "transform");
-	uniforms[static_cast<unsigned int>(UNIFORM_TYPE::VIEWPROJ)] = glGetUniformLocation(shaderProgram, "vp");
-	uniforms[static_cast<unsigned int>(UNIFORM_TYPE::EYE)] = glGetUniformLocation(shaderProgram, "eye");
+	glBindAttribLocation(shaderProgram, CONVERT(ATTRIB_TYPE::POS), Shader::mapAtr[ATTRIB_TYPE::POS]);
+	glBindAttribLocation(shaderProgram, CONVERT(ATTRIB_TYPE::UV), Shader::mapAtr[ATTRIB_TYPE::UV]);
+	glBindAttribLocation(shaderProgram, CONVERT(ATTRIB_TYPE::NORMAL), Shader::mapAtr[ATTRIB_TYPE::NORMAL]);
+
+	attribs[CONVERT(ATTRIB_TYPE::POS)] = glGetAttribLocation(shaderProgram, Shader::mapAtr[ATTRIB_TYPE::POS]);
+	attribs[CONVERT(ATTRIB_TYPE::UV)] = glGetAttribLocation(shaderProgram, Shader::mapAtr[ATTRIB_TYPE::UV]);
+	attribs[CONVERT(ATTRIB_TYPE::NORMAL)] = glGetAttribLocation(shaderProgram, Shader::mapAtr[ATTRIB_TYPE::NORMAL]);
+
+	uniforms[CONVERT(UNIFORM_TYPE::TRANSFORM)] = glGetUniformLocation(shaderProgram, Shader::mapUni[UNIFORM_TYPE::TRANSFORM]);
+	uniforms[CONVERT(UNIFORM_TYPE::VIEWPROJ)] = glGetUniformLocation(shaderProgram, Shader::mapUni[UNIFORM_TYPE::VIEWPROJ]);
+	uniforms[CONVERT(UNIFORM_TYPE::EYE)] = glGetUniformLocation(shaderProgram, Shader::mapUni[UNIFORM_TYPE::EYE]);
 }
 
 std::string ShaderManager::ReadSource(std::string sourcePath)
