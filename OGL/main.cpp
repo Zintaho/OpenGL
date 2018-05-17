@@ -21,7 +21,7 @@ EventHandler
 #include "MainConstants.h"
 #include "src/core/Display.h"
 #include "src/graphics/Renderer.h"
-#include "src/math/MyMath.h"
+#include "src/graphics/ModelManager.h"
 //#include "ShaderManager.h"
 //#include "ModelManager.h"
 //#include "Camera.h"
@@ -29,8 +29,6 @@ EventHandler
 
 int main(int argc, char **argv)
 {
-	using namespace MyMath;
-
 	///Set DisplayOption
 	DisplayOption displayOption;
 	displayOption.FULL_SCREEN = false;
@@ -52,7 +50,11 @@ int main(int argc, char **argv)
 	display.CreateDisplay();
 	///Create Renderer
 	Renderer renderer(&display);
-
+	///Create ModelManager;
+	ModelManager modelManager;
+	///Create Mesh
+	Mesh mesh("PC");
+	modelManager.LoadObj(&mesh);
 	///Loop
 	while(display.CheckState() != STATE::END)
 	{

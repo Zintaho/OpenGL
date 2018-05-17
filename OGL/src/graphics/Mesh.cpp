@@ -1,9 +1,10 @@
 #include "Mesh.h"
 #include "ModelManager.h"
 
+#if 0
 void Mesh::LoadMeshFile()
 {
-	ModelManager::ProcessModel(fileName);
+	ModelManager::LoadObj(fileName);
 }
 
 void Mesh::InitMesh(Vertex * vertice, GLsizei numVertice, unsigned int* indice, GLsizei numIndice)
@@ -54,3 +55,4 @@ Mesh::~Mesh()
 		CleanArray();
 	}
 }
+#endif

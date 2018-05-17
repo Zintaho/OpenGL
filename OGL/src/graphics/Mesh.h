@@ -1,17 +1,31 @@
 #pragma once
-#include "MyMath.h"
+#include "../../src/math/MyMath.h"
 
+#include <vector>
 #include <string>
-#include <GL/glew.h>
 
 ///Vertex
 struct Vertex
 {
 	MyMath::Vector3 Pos;
 	MyMath::Vector3 Normal;
-	//MyMath::Vector2 TextureUV;
+	MyMath::Vector2 TextureUV;
 };
+class Mesh
+{
+public:	
+	Mesh(const char* fileName) :
+		fileName(fileName) {};
 
+	inline std::vector<Vertex> &GetVertice() { return vertice; }
+	inline std::vector<uint64_t> &GetIndice() { return indice; }
+	inline std::string GetFileName() const { return fileName; } 
+private:
+	std::vector<Vertex> vertice;
+	std::vector<uint64_t> indice;
+	std::string fileName;
+};
+#if 0
 class Mesh
 {
 public:
@@ -64,3 +78,4 @@ private:
 	std::string fileName;
 	bool isMeshInitialized;
 };
+#endif

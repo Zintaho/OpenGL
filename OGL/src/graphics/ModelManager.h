@@ -16,12 +16,10 @@
 class ModelManager
 {
 public:
-	static void ProcessModel(std::string fileName);
+	void LoadObj(Mesh *pMesh);
 
-	static MyMath::Vector3 centerPos;
-	static std::vector<Vertex> vertice;
-	static std::vector<unsigned int> indice;
-	static GLuint verticeNum;
-	static GLuint indiceNum;
+	MyMath::Vector3 centerPos;
+private:
+	std::vector<std::string> StringSpliter(std::string buffer, char token);
 };
 
