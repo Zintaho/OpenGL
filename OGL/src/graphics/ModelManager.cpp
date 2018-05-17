@@ -11,7 +11,7 @@ void ModelManager::LoadObj(Mesh *pMesh)
 		unsigned int uv;
 	};
 
-	centerPos = { 0,0,0 };
+	MyMath::Vector3 centerPos(0, 0, 0);
 
 	std::vector<MyMath::Vector3> positions;
 	std::vector<MyMath::Vector3> normals;
@@ -76,6 +76,17 @@ void ModelManager::LoadObj(Mesh *pMesh)
 
 			}
 		}
+		///Calculate Center Position of GameObject
+		size_t posCount = positions.size();
+		centerPos.x /= posCount;
+		centerPos.y /= posCount;
+		centerPos.z /= posCount;
+
+		///Translate Model
+		for (auto pos : positions)
+		{
+			pos - centerPos;
+		}
 
 		Vertex tempVertex;
 		VertexIndex tempVI;
@@ -90,17 +101,6 @@ void ModelManager::LoadObj(Mesh *pMesh)
 			pMesh->GetVertice().push_back(tempVertex);
 			pMesh->GetIndice().push_back(tempVI.uv - 1);
 		}
-#if 0
-
-///Calculate Center Position of GameObject
-size_t verticeSize = vertice.size();
-centerPos.x /= verticeSize;
-centerPos.y /= verticeSize;
-centerPos.z /= verticeSize;
-
-verticeNum = static_cast<GLuint>(vertice.size());
-indiceNum = static_cast<GLuint>(indice.size());
-#endif
 	}
 }
 

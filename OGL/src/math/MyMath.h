@@ -533,7 +533,7 @@ namespace MyMath
 			(*this)(3, 3) = 1;
 		}
 
-		friend Matrix4x4 operator* (Matrix4x4 &MA, Matrix4x4 &MB)
+		friend Matrix4x4& operator* (Matrix4x4 &MA, Matrix4x4 &MB)
 		{
 			Matrix4x4 MC;
 			for (int y = 0; y < 4; ++y)

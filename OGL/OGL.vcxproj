@@ -126,11 +126,14 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="src\core\Display.cpp" />
+    <ClCompile Include="src\graphics\Camera.cpp" />
+    <ClCompile Include="src\graphics\GameObject.cpp" />
     <ClCompile Include="src\graphics\Mesh.cpp" />
     <ClCompile Include="src\graphics\ModelManager.cpp" />
     <ClCompile Include="src\graphics\Renderer.cpp" />
     <ClCompile Include="src\graphics\Shader.cpp" />
     <ClCompile Include="src\graphics\ShaderManager.cpp" />
+    <ClCompile Include="src\graphics\Transform.cpp" />
     <ClCompile Include="src\math\MyMath.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -138,12 +141,15 @@
     <ClInclude Include="MainConstants.h" />
     <ClInclude Include="src\core\Display.h" />
     <ClInclude Include="src\core\DisplayConstants.h" />
+    <ClInclude Include="src\graphics\Camera.h" />
+    <ClInclude Include="src\graphics\GameObject.h" />
     <ClInclude Include="src\graphics\Mesh.h" />
     <ClInclude Include="src\graphics\ModelManager.h" />
     <ClInclude Include="src\graphics\Renderer.h" />
     <ClInclude Include="src\graphics\RendererConstants.h" />
     <ClInclude Include="src\graphics\Shader.h" />
     <ClInclude Include="src\graphics\ShaderManager.h" />
+    <ClInclude Include="src\graphics\Transform.h" />
     <ClInclude Include="src\math\MyMath.h" />
   </ItemGroup>
   <ItemGroup>

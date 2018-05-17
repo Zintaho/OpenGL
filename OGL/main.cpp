@@ -1,6 +1,6 @@
 /*
 OpenGL 4.3 Practice
-by Zintaho (Jin-Seok, Yu)
+by Zintaho (YU Jin-seok)
 
 from 2018-04
  now 2018-05
@@ -23,6 +23,7 @@ EventHandler
 #include "src/graphics/Renderer.h"
 #include "src/graphics/ModelManager.h"
 #include "src/graphics/ShaderManager.h"
+#include "src/graphics/GameObject.h"
 //#include "ShaderManager.h"
 //#include "ModelManager.h"
 //#include "Camera.h"
@@ -56,7 +57,24 @@ int main(int argc, char **argv)
 	ShaderManager shaderManager;
 	///Create Components
 	Mesh mesh("PC");
-	Shader shader("vertex", "fragment");
+	Shader shader("VS_PHONG", "FS_PHONG");
+
+	MyMath::Vector3 pos(0, 0, 0);
+	MyMath::Vector3 rot(0, 0, 0);
+	Transform transform(pos, rot);
+
+	GameObject gameObject(&mesh, transform);
+
+	float fovy = 100;
+	float aspect = display.GetAspect();
+	float n = -1;
+	float f = 1;
+	MyMath::Vector3 eye(0, 0, -1);
+	MyMath::Vector3 at(pos);
+
+	Camera mainCam(fovy, aspect, n, f, eye, at);
+
+
 	modelManager.LoadObj(&mesh);
 	shaderManager.LoadShader(&shader);
 	shaderManager.CompileShader(&shader);

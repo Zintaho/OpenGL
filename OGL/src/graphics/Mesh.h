@@ -16,6 +16,16 @@ class Mesh
 public:	
 	Mesh(const char* fileName) :
 		fileName(fileName) {};
+	virtual ~Mesh()
+	{
+		ClearMesh();
+	}
+
+	inline void ClearMesh()
+	{
+		vertice.clear();
+		indice.clear();
+	}
 
 	inline std::vector<Vertex> &GetVertice() { return vertice; }
 	inline std::vector<uint64_t> &GetIndice() { return indice; }

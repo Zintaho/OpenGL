@@ -1,5 +1,5 @@
 #pragma once
-#include "MyMath.h"
+#include "../../src/math/MyMath.h"
 
 #include <GL/glew.h>
 
