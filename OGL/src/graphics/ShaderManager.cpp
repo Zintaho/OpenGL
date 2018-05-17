@@ -1,19 +1,102 @@
 #include "ShaderManager.h"
-#include "MyMath.h"
 
-#include <GL/glew.h>
+#include <../GL/glew.h>
 #include <iostream>
 #include <fstream>
-#include <vector>
 
-GameObject* ShaderManager::renderObject;
-Camera* ShaderManager::renderCam;
+void ShaderManager::LoadShader(Shader * shader)
+{
+	///Load Vertex Shader Source
+	shader->GetVSSource() = ReadSource(shader->GetVSFileName());
+	///Load Fragment Shader Souce
+	shader->GetFSSource() = ReadSource(shader->GetFSFileName());
+}
 
-std::string ShaderManager::vShaderSrc;
-std::string ShaderManager::fShaderSrc;
-int ShaderManager::uniforms[static_cast<unsigned int>(UNIFORM_TYPE::NUM_UNIFORM)];
-unsigned int ShaderManager::vShader, ShaderManager::fShader, ShaderManager::shaderProgram;
+void ShaderManager::CompileShader(Shader * shader)
+{
+	shader->GetVS() = glCreateShader(GL_VERTEX_SHADER);
 
+	GLuint shaderToCompile = shader->GetVS();
+	const char* srcPtr = shader->GetVSSource().c_str();
+	glShaderSource(shaderToCompile, 1, &srcPtr, NULL);
+	glCompileShader(shaderToCompile);
+	CheckShaderCompileError(shaderToCompile, "Vertex");
+
+	shader->GetFS() = glCreateShader(GL_FRAGMENT_SHADER);
+
+	shaderToCompile = shader->GetFS();
+	srcPtr = shader->GetFSSource().c_str();
+	glShaderSource(shaderToCompile, 1, &srcPtr, NULL);
+	glCompileShader(shaderToCompile);
+	CheckShaderCompileError(shaderToCompile, "Fragment");
+
+	shader->GetProgram() = glCreateProgram();
+}
+
+void ShaderManager::LinkProgram(Shader * shader)
+{
+	GLuint vShader = shader->GetVS();
+	GLuint fShader = shader->GetFS();
+	GLuint shaderProgram = shader->GetProgram();
+	GLuint *uniforms = shader->GetUniforms();
+
+	glAttachShader(shaderProgram, vShader);
+	glAttachShader(shaderProgram, fShader);
+
+	glBindAttribLocation(shaderProgram, 0, "position");
+	glBindAttribLocation(shaderProgram, 1, "normal");
+
+	glLinkProgram(shaderProgram);
+	CheckProgramLinkError(shaderProgram, "Shader Program");
+
+	glValidateProgram(shaderProgram);
+	CheckProgramValidateError(shaderProgram, "Shader Validate");
+
+	uniforms[static_cast<unsigned int>(UNIFORM_TYPE::TRANSFORM)] = glGetUniformLocation(shaderProgram, "transform");
+	uniforms[static_cast<unsigned int>(UNIFORM_TYPE::VIEWPROJ)] = glGetUniformLocation(shaderProgram, "vp");
+	uniforms[static_cast<unsigned int>(UNIFORM_TYPE::EYE)] = glGetUniformLocation(shaderProgram, "eye");
+}
+
+std::string ShaderManager::ReadSource(std::string sourcePath)
+{
+	const std::string shaderPathHeader = ".\\shader\\";
+	const std::string shaderPathFooter = ".glsl";
+
+	std::string path, buffer;
+	std::ifstream sourceStream;
+
+	std::string returnSource = "";
+
+	path = (shaderPathHeader + sourcePath + shaderPathFooter);
+	sourceStream.open(path);
+
+	if (sourceStream.is_open())
+	{
+		while (not sourceStream.eof())
+		{
+			getline(sourceStream, buffer);
+			returnSource += (buffer + '\n');
+		}
+		sourceStream.close();
+	}
+
+	return returnSource;
+}
+
+void ShaderManager::UnloadShader(Shader *shader)
+{
+	GLuint vShader = shader->GetVS();
+	GLuint fShader = shader->GetFS();
+	GLuint shaderProgram = shader->GetProgram();
+
+	glDetachShader(shaderProgram, vShader);
+	glDetachShader(shaderProgram, fShader);
+	glDeleteShader(vShader);
+	glDeleteShader(fShader);
+	glDeleteProgram(shaderProgram);
+}
+
+#if 0
 void ShaderManager::LoadShader(const char* vertexShaderFileName, const char* fragmentShaderFileName)
 {
 	const std::string shaderPathHeader = ".\\shader\\";
@@ -92,15 +175,7 @@ void ShaderManager::UpdateShader(GameObject * ro, Camera * rc)
 	GLfloat fEye[3] = { eye.x,eye.y,eye.z };
 	glUniform3fv(uniforms[static_cast<unsigned int>(UNIFORM_TYPE::VIEWPROJ)], 1, fEye);
 }
-
-void ShaderManager::UnloadShader()
-{
-	glDetachShader(shaderProgram, vShader);
-	glDetachShader(shaderProgram, fShader);
-	glDeleteShader(vShader);
-	glDeleteShader(fShader);
-	glDeleteProgram(shaderProgram);
-}
+#endif
 
 void ShaderManager::CheckShaderCompileError(const unsigned int shader, std::string tag)
 {

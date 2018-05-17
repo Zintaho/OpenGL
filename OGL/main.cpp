@@ -22,6 +22,7 @@ EventHandler
 #include "src/core/Display.h"
 #include "src/graphics/Renderer.h"
 #include "src/graphics/ModelManager.h"
+#include "src/graphics/ShaderManager.h"
 //#include "ShaderManager.h"
 //#include "ModelManager.h"
 //#include "Camera.h"
@@ -50,11 +51,16 @@ int main(int argc, char **argv)
 	display.CreateDisplay();
 	///Create Renderer
 	Renderer renderer(&display);
-	///Create ModelManager;
+	///Create Manager;
 	ModelManager modelManager;
-	///Create Mesh
+	ShaderManager shaderManager;
+	///Create Components
 	Mesh mesh("PC");
+	Shader shader("vertex", "fragment");
 	modelManager.LoadObj(&mesh);
+	shaderManager.LoadShader(&shader);
+	shaderManager.CompileShader(&shader);
+	shaderManager.LinkProgram(&shader);
 	///Loop
 	while(display.CheckState() != STATE::END)
 	{
