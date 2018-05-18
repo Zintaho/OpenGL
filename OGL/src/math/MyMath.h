@@ -518,11 +518,12 @@ namespace MyMath
 		inline void SetProjMatrix(const float fovy, const float aspect, const float n, const float f)
 		{
 			float radFovy = fovy * PI / 180.0f;
+			float cotFovy_2 = 1 / tanf(fovy / 2);
 
-			(*this)(0, 0) = 1 / (tanf(radFovy / 2) *aspect);
-			(*this)(1, 1) = 1 / (tanf(radFovy / 2));
+			(*this)(0, 0) = cotFovy_2 / aspect;
+			(*this)(1, 1) = cotFovy_2;
 			(*this)(2, 2) = -((f + n) / (f - n));
-			(*this)(2, 3) = -2 * n*f / (f - n);
+			(*this)(2, 3) = -((2 * n*f )/ (f - n));
 			(*this)(3, 2) = -1;
 		}
 

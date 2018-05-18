@@ -7,7 +7,7 @@ uniform vec3 eye;
 out vec4 fragColor;	
 
 //Light
-uniform vec3 LightDirection = normalize(vec3(0.0,-0.5,-1.0));
+uniform vec3 LightDirection = normalize(vec3(0.0,-0.5,1.0));
 uniform vec4 LightColor = vec4(1.0,1.0,1.0,1.0);
 uniform vec4 LightAmbient = vec4(0.9,0.9,0.9,1.0);
 
@@ -22,7 +22,7 @@ void main()
 {
 	vec3 normal = normalize(newNormal); //래스터라이저에 의해 보간된 노멀의 정규화
 
-	float lightAmount = dot(-LightDirection, -normal);
+	float lightAmount = dot(-LightDirection, normal);
 	lightAmount = max(0.0, lightAmount);
 
 	//Diffuse
@@ -30,7 +30,7 @@ void main()
 	vec3 PhongD = diff * lightAmount;
 	
 	//Specular
-	vec3 r = normalize(2.0f * -normal * dot(-normal, -LightDirection) + LightDirection);
+	vec3 r = normalize(2.0f * normal * dot(normal, -LightDirection) + LightDirection);
 	vec3 v = normalize(eye - worldPos);
 	float spec = pow(max(dot(r,v),0.0f),MaterialShininess);
 	if(lightAmount <= 0.0f)

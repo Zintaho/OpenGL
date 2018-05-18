@@ -7,8 +7,8 @@ void ModelManager::LoadObj(Mesh *pMesh)
 	struct VertexIndex
 	{
 		unsigned int pos;
-		unsigned int normal;
 		unsigned int uv;
+		unsigned int normal;
 	};
 
 	MyMath::Vector3 centerPos(0, 0, 0);
@@ -53,7 +53,6 @@ void ModelManager::LoadObj(Mesh *pMesh)
 				{
 					MyMath::Vector2 tempVec(stof(splitedBuffer[1]), stof(splitedBuffer[2]));
 					uvs.push_back(tempVec);
-
 				}
 				else if (lineHeader == "vn")
 				{
@@ -83,11 +82,25 @@ void ModelManager::LoadObj(Mesh *pMesh)
 		centerPos.z /= posCount;
 
 		///Translate Model
-		//for (auto pos : positions)
-		//{
-		//	pos - centerPos;
-		//}
+		for (auto pos : positions)
+		{
+			pos - centerPos;
+		}
+		for (MyMath::Vector3 v : positions)
+		{
+			Vertex vv;
+			vv.Pos = v;
+			vv.Normal = { 0,0,0 };
+			pMesh->GetVertice().push_back(vv);
+		}
 
+		///Calculate Vertex Normal
+		for (auto oi : vertexIndice)
+		{
+			pMesh->GetIndice().push_back(oi.pos);
+			pMesh->GetVertice()[oi.pos].Normal += normals[oi.normal];
+		}
+#if 0
 		Vertex tempVertex;
 		VertexIndex tempVI;
 		size_t vertexSize = vertexIndice.size();
@@ -104,6 +117,7 @@ void ModelManager::LoadObj(Mesh *pMesh)
 			pMesh->GetVertice()[i] = tempVertex;
 			pMesh->GetIndice()[i] = i;
 		}
+#endif
 	}
 }
 

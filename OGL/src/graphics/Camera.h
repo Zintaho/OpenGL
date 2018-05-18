@@ -20,7 +20,7 @@ public:
 
 		MyMath::Matrix4x4 debugMat;
 		debugMat.SetIdentityMatrix();
-		MyMath::Matrix4x4 returnMat = debugMat;//projMat * viewMat;
+		MyMath::Matrix4x4 returnMat = projMat * viewMat;
 
 		return returnMat;
 	}
