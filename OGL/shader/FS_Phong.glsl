@@ -22,7 +22,7 @@ void main()
 {
 	vec3 normal = normalize(newNormal); //래스터라이저에 의해 보간된 노멀의 정규화
 
-	float lightAmount = dot(-LightDirection, -normal);
+	float lightAmount = dot(-LightDirection, normal);
 	lightAmount = max(0.0, lightAmount);
 
 	//Diffuse
@@ -30,7 +30,7 @@ void main()
 	vec3 PhongD = diff * lightAmount;
 	
 	//Specular
-	vec3 r = normalize(2.0f * -normal * dot(-normal, -LightDirection) + LightDirection);
+	vec3 r = normalize(2.0f * normal * dot(normal, -LightDirection) + LightDirection);
 	vec3 v = normalize(eye - worldPos);
 	float spec = pow(max(dot(r,v),0.0f),MaterialShininess);
 	if(lightAmount <= 0.0f)

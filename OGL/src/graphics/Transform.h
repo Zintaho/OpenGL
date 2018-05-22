@@ -1,5 +1,5 @@
 #pragma once
-#include "MyMath.h"
+#include "../../src/math/MyMath.h"
 
 class Transform
 {
@@ -20,7 +20,7 @@ public:
 		MyMath::Matrix4x4 rotateZMat;
 		rotateZMat.SetRotZMatrix(rotation.z);
 
-		MyMath::Matrix4x4 returnMat = transMat * rotateZMat * rotateYMat * rotateXMat *  scaleMat;
+		MyMath::Matrix4x4 returnMat = transMat * rotateZMat * rotateXMat * rotateYMat *  scaleMat;
 
 		return returnMat;
 	}

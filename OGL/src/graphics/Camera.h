@@ -1,5 +1,5 @@
 #pragma once
-#include "MyMath.h"
+#include "../../src/math/MyMath.h"
 
 #include <GL/glew.h>
 
@@ -13,11 +13,13 @@ public:
 
 	inline MyMath::Matrix4x4 MakeMatrix()
 	{
-		MyMath::Matrix4x4 viewMat;
-		viewMat.SetViewMatrix(EYE, AT, UP);
 		MyMath::Matrix4x4 projMat;
 		projMat.SetProjMatrix(fovy, aspect, n, f);
+		MyMath::Matrix4x4 viewMat;
+		viewMat.SetViewMatrix(EYE, AT, UP);
 
+		MyMath::Matrix4x4 debugMat;
+		debugMat.SetIdentityMatrix();
 		MyMath::Matrix4x4 returnMat = projMat * viewMat;
 
 		return returnMat;
