@@ -56,17 +56,17 @@ int main(int argc, char **argv)
 	ModelManager modelManager;
 	ShaderManager shaderManager;
 	///Create Components
-	Mesh mesh("Pikachu");
+	Mesh mesh("Trophy");
 	Shader shader("vertex", "fragment");
 
 	MyMath::Vector3 pos(0, 0, 0.0f);
 	MyMath::Vector3 rot(0, 0, 0);
-	MyMath::Vector3 scale(0.5f, 0.5f, 0.5f);
+	MyMath::Vector3 scale(5.0f, 5.0f, 5.0f);
 	Transform transform(pos, rot, scale);
 
 	GameObject gameObject(&mesh, transform);
 
-	float fovy = (1.0f / 2.0f) * MyMath::PI;
+	float fovy = (2.0f / 3.0f) * MyMath::PI;
 	float aspect = display.GetAspect();
 	float n = 1;
 	float f = 1000;
@@ -95,15 +95,15 @@ int main(int argc, char **argv)
 		MyMath::Vector3 formerRot = gameObject.GetTransform().GetRotate();
 		gameObject.GetTransform().SetRotate(MyMath::Vector3(formerRot.x, counter, formerRot.z));
 
-		//renderer.InitArrays();
+		renderer.InitArrays();
 		renderer.UpdateDrawInfo();
-		renderer.DrawTest();
+		//renderer.DrawTest();
 		//renderer.ShaderTest();
 		//renderer.DrawTest();
 
 		//gameObject.GetTransform().SetRotate(MyMath::Vector3(formerRot.x, formerRot.y + MyMath::PI/360, formerRot.z));
 
-		//renderer.DrawCall();
+		renderer.DrawCall();
 
 		display.SwapBuffer();
 		EventHandle(display.CheckEvent(), &(renderer.GetRenderContext()) );
@@ -195,6 +195,20 @@ void EventHandle(EventInfo eventInfo, RenderContext *rc)
 		case 'd':
 #if MOVGO
 			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x + 0.1f, formerTrans.y, formerTrans.z));
+#else
+			cam->SetEYE(MyMath::Vector3(formerEYE.x + 0.1f, formerEYE.y, formerEYE.z));
+#endif
+			break;		
+		case 'e':
+#if MOVGO
+				go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x , formerTrans.y - 0.1f, formerTrans.z));
+#else
+				cam->SetEYE(MyMath::Vector3(formerEYE.x + 0.1f, formerEYE.y, formerEYE.z));
+#endif
+				break;
+		case 'q':
+#if MOVGO
+			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x , formerTrans.y + 0.1f, formerTrans.z));
 #else
 			cam->SetEYE(MyMath::Vector3(formerEYE.x + 0.1f, formerEYE.y, formerEYE.z));
 #endif

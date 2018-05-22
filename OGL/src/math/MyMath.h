@@ -497,33 +497,38 @@ namespace MyMath
 
 			(*this)(0, 0) = cotFovy_2 / aspect;
 			(*this)(1, 1) = cotFovy_2;
-			(*this)(2, 2) = (-n - f) / (n - f);
+			(*this)(2, 2) = (f + n) / (n - f);
 			(*this)(2, 3) = (2 * f*n) / (n - f);
-			(*this)(3, 2) = 1;
+			(*this)(3, 2) = -1;
 		}
 		inline void SetViewMatrix(const Vector3 EYE, const Vector3 AT, const Vector3 UP)
 		{
+			Matrix4x4 camTrans;
+			Matrix4x4 camRotate;
+			Matrix4x4 temp;
+			camTrans.SetIdentityMatrix();
+			camRotate.SetIdentityMatrix();
+			temp.SetIdentityMatrix();
+
+			///cam Trans Matrix
+			camTrans(0, 3) = -EYE.x;
+			camTrans(1, 3) = -EYE.y;
+			camTrans(2, 3) = -EYE.z;
+
+			///cam Rotate Matrix
 			///Get u, v, n
-			Vector3 u, v, n;
-			n = EYE - AT;
+			Vector3 u, v, n;	
+			n = EYE-AT;
 			n.Normalize();
-
-			u = Cross(n, UP);
+			u = Cross(UP, n);
 			u.Normalize();
-
 			v = Cross(n, u);
-			///Set Matrix
-			(*this)(0, 0) = u.x;	(*this)(0, 1) = u.y;	(*this)(0, 2) = u.z;
-			(*this)(0, 3) = -EYE.x * (u.x + u.y + u.z);
-			(*this)(1, 0) = v.x;	(*this)(1, 1) = v.y;	(*this)(1, 2) = v.z;
-			(*this)(1, 3) = -EYE.y * (v.x + v.y + v.z);
-			(*this)(2, 0) = n.x;	(*this)(2, 1) = n.y;	(*this)(2, 2) = n.z;
-			(*this)(2, 3) = -EYE.z * (n.x + n.y + n.z);
-			for (int z = 0; z < 3; ++z)
-			{
-				(*this)(3, z) = 0;
-			}
-			(*this)(3, 3) = 1;
+			camRotate(0, 0) = u.x;	camRotate(0, 1) = u.y;	camRotate(0, 2) = u.z;
+			camRotate(1, 0) = v.x;	camRotate(1, 1) = v.y;	camRotate(1, 2) = v.z;
+			camRotate(2, 0) = n.x;	camRotate(2, 1) = n.y;	camRotate(2, 2) = n.z;
+
+			temp = camRotate * camTrans;
+			(*this) = temp;
 		}
 
 		inline void SetOrthoMatrix(const float l, const float r, const float b, const float t, const float n, const float f)
