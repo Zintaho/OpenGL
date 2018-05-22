@@ -476,9 +476,9 @@ namespace MyMath
 		inline void SetRotYMatrix(const float radAngle)
 		{
 			(*this)(0, 0) = cosf(radAngle);
-			(*this)(0, 2) = sinf(radAngle);
+			(*this)(0, 2) = -sinf(radAngle);
 			(*this)(1, 1) = 1;
-			(*this)(2, 0) = -sinf(radAngle);
+			(*this)(2, 0) = sinf(radAngle);
 			(*this)(2, 2) = cosf(radAngle);
 			(*this)(3, 3) = 1;
 		}

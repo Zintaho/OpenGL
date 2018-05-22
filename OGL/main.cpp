@@ -55,11 +55,11 @@ int main(int argc, char **argv)
 	ShaderManager shaderManager;
 	///Create Components
 	Mesh mesh("PC");
-	Shader shader("VS_Phong", "FS_Phong");
+	Shader shader("vertex", "fragment");
 
 	MyMath::Vector3 pos(0, 0, 0);
 	MyMath::Vector3 rot(0, 0, 0);
-	MyMath::Vector3 scale(0.25, 0.25, 0.25);
+	MyMath::Vector3 scale(0.5, 0.5, 0.5);
 	Transform transform(pos, rot,scale);
 
 	GameObject gameObject(&mesh, transform);
@@ -74,7 +74,6 @@ int main(int argc, char **argv)
 	Camera mainCam(fovy, aspect, n, f, eye, at);
 
 	modelManager.LoadObj(&mesh);
-	shaderManager.LoadShader(&shader);
 	shaderManager.CompileShader(&shader);
 	shaderManager.LinkProgram(&shader);
 	///Create RendererContext
@@ -85,25 +84,28 @@ int main(int argc, char **argv)
 	renderer.GetRenderContext() = renderContext;
 	///Loop
 	MyMath::Vector3 formerTrans = gameObject.GetTransform().GetTrans();
-	int counter = 0;
+	float counter = 0;
 	while(display.CheckState() != STATE::END)
 	{
 		renderer.Clear();
-		renderer.ShaderTest();
-		renderer.DrawTest();
-		//renderer.InitArrays();
 
 		MyMath::Vector3 formerRot = gameObject.GetTransform().GetRotate();
-		gameObject.GetTransform().SetTrans(MyMath::Vector3(formerTrans.x, sinf((MyMath::PI*counter)/360), formerTrans.z));
-		gameObject.GetTransform().SetRotate(MyMath::Vector3(formerRot.x, formerRot.y + MyMath::PI/360, formerRot.z));
+		gameObject.GetTransform().SetRotate(MyMath::Vector3(counter, counter, formerRot.z));
 
-		//renderer.UpdateDrawInfo();
+		renderer.UpdateDrawInfo();
+		renderer.DrawTest();
+		//renderer.ShaderTest();
+		//renderer.DrawTest();
+		//renderer.InitArrays();
+
+		//gameObject.GetTransform().SetRotate(MyMath::Vector3(formerRot.x, formerRot.y + MyMath::PI/360, formerRot.z));
+
 		//renderer.DrawCall();
 
 		display.SwapBuffer();
 		display.CheckEvent();
 
-		counter += 1;
+		counter += MyMath::PI/180;
 	}
 
 	//Mesh *trophyMesh = new Mesh("Trophy");

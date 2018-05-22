@@ -34,9 +34,15 @@ class Shader
 public:
 	Shader(const char* vsFilename, const char* fsFilename) :
 		vsFileName(vsFilename), fsFileName(fsFilename)
-	{	
-		vsShader = fsShader = shaderProgram = -1;
+	{
 		InitMap();
+
+		shaderProgram = glCreateProgram();
+		vsShader = glCreateShader(GL_VERTEX_SHADER);
+		fsShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+		vsSource = ReadSource(vsFileName);
+		fsSource = ReadSource(fsFileName);
 	};
 	virtual ~Shader();
 
@@ -54,6 +60,7 @@ public:
 	static std::map<UNIFORM_TYPE, const char*> mapUni;
 private:
 	static void InitMap();
+	std::string ReadSource(std::string sourcePath);
 
 	GLuint attribs[CONVERT(ATTRIB_TYPE::NUM_ATTRIB)];
 	GLuint uniforms[CONVERT(UNIFORM_TYPE::NUM_UNIFORM)];

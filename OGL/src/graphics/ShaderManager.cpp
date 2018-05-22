@@ -4,33 +4,21 @@
 #include <iostream>
 #include <fstream>
 
-void ShaderManager::LoadShader(Shader * shader)
-{
-	///Load Vertex Shader Source
-	shader->GetVSSource() = ReadSource(shader->GetVSFileName());
-	///Load Fragment Shader Souce
-	shader->GetFSSource() = ReadSource(shader->GetFSFileName());
-}
+#define ERR_BUFSIZ 1024
 
 void ShaderManager::CompileShader(Shader * shader)
 {
-	shader->GetVS() = glCreateShader(GL_VERTEX_SHADER);
-
 	GLuint shaderToCompile = shader->GetVS();
-	const char* srcPtr = shader->GetVSSource().c_str();
+	const char* srcPtr = shader->GetVSSource().c_str();	
 	glShaderSource(shaderToCompile, 1, &srcPtr, NULL);
 	glCompileShader(shaderToCompile);
 	CheckShaderCompileError(shaderToCompile, "Vertex");
-
-	shader->GetFS() = glCreateShader(GL_FRAGMENT_SHADER);
 
 	shaderToCompile = shader->GetFS();
 	srcPtr = shader->GetFSSource().c_str();
 	glShaderSource(shaderToCompile, 1, &srcPtr, NULL);
 	glCompileShader(shaderToCompile);
 	CheckShaderCompileError(shaderToCompile, "Fragment");
-
-	shader->GetProgram() = glCreateProgram();
 }
 
 void ShaderManager::LinkProgram(Shader * shader)
@@ -63,30 +51,40 @@ void ShaderManager::LinkProgram(Shader * shader)
 	uniforms[CONVERT(UNIFORM_TYPE::EYE)] = glGetUniformLocation(shaderProgram, Shader::mapUni[UNIFORM_TYPE::EYE]);
 }
 
-std::string ShaderManager::ReadSource(std::string sourcePath)
+void ShaderManager::CheckShaderCompileError(const unsigned int shader, std::string tag)
 {
-	const std::string shaderPathHeader = ".\\shader\\";
-	const std::string shaderPathFooter = ".glsl";
-
-	std::string path, buffer;
-	std::ifstream sourceStream;
-
-	std::string returnSource = "";
-
-	path = (shaderPathHeader + sourcePath + shaderPathFooter);
-	sourceStream.open(path);
-
-	if (sourceStream.is_open())
+	GLint success;
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	if (!success)
 	{
-		while (not sourceStream.eof())
-		{
-			getline(sourceStream, buffer);
-			returnSource += (buffer + '\n');
-		}
-		sourceStream.close();
+		GLchar infoLog[ERR_BUFSIZ];
+		glGetShaderInfoLog(shader, ERR_BUFSIZ, NULL, infoLog);
+		std::cerr << tag << ":: SHADER COMPILE ERROR\n" << infoLog << std::endl;
 	}
+}
 
-	return returnSource;
+void ShaderManager::CheckProgramLinkError(const unsigned int program, std::string tag)
+{
+	GLint success;
+	glGetProgramiv(program, GL_LINK_STATUS, &success);
+	if (!success)
+	{
+		GLchar infoLog[ERR_BUFSIZ];
+		glGetProgramInfoLog(program, ERR_BUFSIZ, NULL, infoLog);
+		std::cerr << tag << ":: PROGRAM LINK ERROR\n" << infoLog << std::endl;
+	}
+}
+
+void ShaderManager::CheckProgramValidateError(const unsigned int program, std::string tag)
+{
+	GLint success;
+	glGetProgramiv(program, GL_VALIDATE_STATUS, &success);
+	if (!success)
+	{
+		GLchar infoLog[ERR_BUFSIZ];
+		glGetProgramInfoLog(program, ERR_BUFSIZ, NULL, infoLog);
+		std::cerr << tag << ":: PROGRAM ERROR\n" << infoLog << std::endl;
+	}
 }
 
 void ShaderManager::UnloadShader(Shader *shader)
@@ -182,37 +180,3 @@ void ShaderManager::UpdateShader(GameObject * ro, Camera * rc)
 	glUniform3fv(uniforms[static_cast<unsigned int>(UNIFORM_TYPE::VIEWPROJ)], 1, fEye);
 }
 #endif
-
-void ShaderManager::CheckShaderCompileError(const unsigned int shader, std::string tag)
-{
-	int success;
-	char infoLog[512];
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-		std::cerr << tag << ":: SHADER COMPILE ERROR\n" << infoLog << std::endl;
-	}
-}
-
-void ShaderManager::CheckProgramLinkError(const unsigned int program, std::string tag)
-{
-	int success;
-	char infoLog[512];
-	glGetProgramiv(program, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(program, 512, NULL, infoLog);
-		std::cerr << tag << ":: PROGRAM LINK ERROR\n" << infoLog << std::endl;
-	}
-}
-
-void ShaderManager::CheckProgramValidateError(const unsigned int program, std::string tag)
-{
-	int success;
-	char infoLog[512];
-	glGetProgramiv(program, GL_VALIDATE_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(program, 512, NULL, infoLog);
-		std::cerr << tag << ":: PROGRAM ERROR\n" << infoLog << std::endl;
-	}
-}

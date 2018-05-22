@@ -51,7 +51,7 @@ public:
 	void UpdateDrawInfo();
 	void DrawCall();
 	void DrawTest();
-	void ShaderTest();
+	void DrawTest(float f);
 private:
 	///Methods
 	void InitGLEW();
