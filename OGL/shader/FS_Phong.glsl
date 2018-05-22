@@ -7,7 +7,7 @@ uniform vec3 eye;
 out vec4 fragColor;	
 
 //Light
-uniform vec3 LightDirection = normalize(vec3(0.0,-0.5,1.0));
+uniform vec3 LightDirection = normalize(vec3(0.0,-0.5,-1.0));
 uniform vec4 LightColor = vec4(1.0,1.0,1.0,1.0);
 uniform vec4 LightAmbient = vec4(0.9,0.9,0.9,1.0);
 

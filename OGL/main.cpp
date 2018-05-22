@@ -10,7 +10,7 @@ from 2018-04
 테셀레이션
 
 [TODO : SUB]
-EventHandler
+마우스 이벤트 처리
 모델 로딩 속도
 글로벌 일루미네이션
 
@@ -23,10 +23,6 @@ EventHandler
 #include "src/graphics/Renderer.h"
 #include "src/graphics/ModelManager.h"
 #include "src/graphics/ShaderManager.h"
-//#include "ShaderManager.h"
-//#include "ModelManager.h"
-//#include "Camera.h"
-//#include "GameObject.h"
 
 void EventHandle(EventInfo eventInfo, RenderContext *rc);
 
@@ -56,8 +52,8 @@ int main(int argc, char **argv)
 	ModelManager modelManager;
 	ShaderManager shaderManager;
 	///Create Components
-	Mesh mesh("Trophy");
-	Shader shader("vertex", "fragment");
+	Mesh mesh("PC");
+	Shader shader(VS_PHONG, FS_PHONG);
 
 	MyMath::Vector3 pos(0, 0, 0.0f);
 	MyMath::Vector3 rot(0, 0, 0);
@@ -97,12 +93,6 @@ int main(int argc, char **argv)
 
 		renderer.InitArrays();
 		renderer.UpdateDrawInfo();
-		//renderer.DrawTest();
-		//renderer.ShaderTest();
-		//renderer.DrawTest();
-
-		//gameObject.GetTransform().SetRotate(MyMath::Vector3(formerRot.x, formerRot.y + MyMath::PI/360, formerRot.z));
-
 		renderer.DrawCall();
 
 		display.SwapBuffer();
@@ -111,59 +101,16 @@ int main(int argc, char **argv)
 		counter += MyMath::PI/180;
 	}
 
-	//Mesh *trophyMesh = new Mesh("Trophy");
-	//trophyMesh->LoadMeshFile();
-	//trophyMesh->InitMesh(&ModelManager::vertice[0], ModelManager::verticeNum, &ModelManager::indice[0], ModelManager::indiceNum);
-
-	//Vector3 centerPos = ModelManager::centerPos;
-	//GameObject *go[OBJECT_NUM];
-	//for (int i = 0; i < OBJECT_NUM; ++i)
-	//{
-	//	go[i] = new GameObject(trophyMesh, {0.0f, i * 0.55f, 0.0f }, {0, i * PI/3,PI }, { INIT_SCALE,INIT_SCALE,INIT_SCALE});
-	//	go[i]->centerPos = { centerPos.x, centerPos.y + i * 0.5f, centerPos.z };
-	//}
-
-	//Vector3 p0 = { go[0]->centerPos.x + 0.0f, go[0]->centerPos.y + 0.5f, go[0]->centerPos.z + 2.5f };
-
-	//Camera mainCam(100, WINDOW_HEIGHT / WINDOW_WIDTH, -1, 1, p0, go[0]->centerPos);
-
-	//ShaderManager::LoadShader(VS_PHONG, FS_PHONG);
-	//float counter = 0.0f;
-	//float rotCounter = 0.0f;
-	//while (not display.CheckWindowClosed())
-	//{
-	//	display.Update();
-	//	display.Clear();
-	//	
-	//	for (int i = 0; i < OBJECT_NUM; ++i)
-	//	{
-	//		Vector3 transVec = go[i]->GetTransform().GetTrans();
-	//		//go[i]->GetTransform().SetTrans({ transVec.x,transVec.y + 1.0f * i,transVec.z });
-
-	//		ShaderManager::UpdateShader(go[i], &mainCam);
-	//		go[i]->GetMesh()->DrawMesh();
-	//	}
-
-	//	display.SwapBuffer();
-	//}
-	//ShaderManager::UnloadShader();
-
-	//for (int i = 0; i < OBJECT_NUM; ++i)
-	//{
-	//	delete go[i];
-	//}
-	//delete trophyMesh;
-
-
-
 	return 0;
 }
 
 void EventHandle(EventInfo eventInfo, RenderContext *rc)
 {
-#define MOVGO true
+#define MOVGO false
 	Camera *cam = rc->renderCam;
 	GameObject *go = rc->renderGO;
+	const float speed = 0.5f;
+
 
 	MyMath::Vector3 formerTrans = go->GetTransform().GetTrans();
 	MyMath::Vector3 formerEYE = cam->GetEYE();
@@ -173,44 +120,44 @@ void EventHandle(EventInfo eventInfo, RenderContext *rc)
 		{
 		case 'w':
 #if MOVGO
-			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x, formerTrans.y, formerTrans.z - 0.1f));
+			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x, formerTrans.y, formerTrans.z - speed));
 #else
-			cam->SetEYE(MyMath::Vector3(formerEYE.x, formerEYE.y, formerEYE.z - 0.1f));
+			cam->SetEYE(MyMath::Vector3(formerEYE.x, formerEYE.y, formerEYE.z - speed));
 #endif
 			break;
 		case 's':
 #if MOVGO
-			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x, formerTrans.y, formerTrans.z + 0.1f));
+			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x, formerTrans.y, formerTrans.z + speed));
 #else
-			cam->SetEYE(MyMath::Vector3(formerEYE.x, formerEYE.y, formerEYE.z + 0.1f));
+			cam->SetEYE(MyMath::Vector3(formerEYE.x, formerEYE.y, formerEYE.z + speed));
 #endif
 			break;
 		case 'a':
 #if MOVGO			
-			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x - 0.1f, formerTrans.y, formerTrans.z));
+			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x - speed, formerTrans.y, formerTrans.z));
 #else
-			cam->SetEYE(MyMath::Vector3(formerEYE.x - 0.1f, formerEYE.y, formerEYE.z));
+			cam->SetEYE(MyMath::Vector3(formerEYE.x - speed, formerEYE.y, formerEYE.z));
 #endif
 			break;
 		case 'd':
 #if MOVGO
-			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x + 0.1f, formerTrans.y, formerTrans.z));
+			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x + speed, formerTrans.y, formerTrans.z));
 #else
-			cam->SetEYE(MyMath::Vector3(formerEYE.x + 0.1f, formerEYE.y, formerEYE.z));
+			cam->SetEYE(MyMath::Vector3(formerEYE.x + speed, formerEYE.y, formerEYE.z));
 #endif
 			break;		
 		case 'e':
 #if MOVGO
-				go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x , formerTrans.y - 0.1f, formerTrans.z));
+				go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x , formerTrans.y - speed, formerTrans.z));
 #else
-				cam->SetEYE(MyMath::Vector3(formerEYE.x + 0.1f, formerEYE.y, formerEYE.z));
+				cam->SetEYE(MyMath::Vector3(formerEYE.x, formerEYE.y - speed, formerEYE.z));
 #endif
 				break;
 		case 'q':
 #if MOVGO
-			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x , formerTrans.y + 0.1f, formerTrans.z));
+			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x , formerTrans.y + speed, formerTrans.z));
 #else
-			cam->SetEYE(MyMath::Vector3(formerEYE.x + 0.1f, formerEYE.y, formerEYE.z));
+			cam->SetEYE(MyMath::Vector3(formerEYE.x , formerEYE.y + speed, formerEYE.z));
 #endif
 			break;
 		}

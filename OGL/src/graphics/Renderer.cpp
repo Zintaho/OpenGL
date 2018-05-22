@@ -31,11 +31,11 @@ void Renderer::SetGLOptions()
 
 	glViewport(0, 0, static_cast<GLsizei>(w), static_cast<GLsizei>(h));
 
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 
-	//glFrontFace(GL_CW);
-	//glCullFace(GL_BACK);
+	glFrontFace(GL_CW);
+	glCullFace(GL_BACK);
 }
 
 void Renderer::Clear()
@@ -47,27 +47,25 @@ void Renderer::Clear()
 void Renderer::InitArrays()
 {
 	Mesh *mesh = renderContext.renderGO->GetMesh();
-	size_t drawCount = mesh->GetIndice().size();
+	drawCount = static_cast<GLsizei>(mesh->GetIndice().size());
 
 	GLsizei numVertice = static_cast<GLsizei>(mesh->GetVertice().size());
-	GLsizei vertexSize = static_cast<GLsizei>(sizeof(Vertex));
+	GLsizei sizeofVertex = static_cast<GLsizei>(sizeof(Vertex));
 
 	glGenVertexArrays(VAOTYPE(VAO_TYPE::NUM_VAO), VAOs);
 	glBindVertexArray(VAOs[VAOTYPE(VAO_TYPE::MAIN)]);
 
 	glGenBuffers(VBOTYPE(VBO_TYPE::NUM_VBO), VBOs);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOs[VBOTYPE(VBO_TYPE::POS)]);
-	glBufferData(GL_ARRAY_BUFFER, numVertice * vertexSize, &mesh->GetVertice()[0], GL_STATIC_DRAW);
-
+	glBufferData(GL_ARRAY_BUFFER, numVertice * sizeofVertex, &(mesh->GetVertice())[0], GL_STATIC_DRAW);
 	glEnableVertexAttribArray(VBOTYPE(VBO_TYPE::POS));
-	glVertexAttribPointer(VBOTYPE(VBO_TYPE::POS), 3, GL_FLOAT, GL_FALSE, vertexSize, 0);
-	glEnableVertexAttribArray(VBOTYPE(VBO_TYPE::UV));
-	glVertexAttribPointer(VBOTYPE(VBO_TYPE::UV), 2, GL_FLOAT, GL_FALSE, vertexSize, 0);
-	glEnableVertexAttribArray(VBOTYPE(VBO_TYPE::NORMAL));
-	glVertexAttribPointer(VBOTYPE(VBO_TYPE::NORMAL), 3, GL_FLOAT, GL_FALSE, vertexSize, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, VBOs[VBOTYPE(VBO_TYPE::POS)]);
+	glVertexAttribPointer(VBOTYPE(VBO_TYPE::POS), 3, GL_FLOAT, GL_FALSE, sizeofVertex, 0);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOs[VBOTYPE(VBO_TYPE::INDEX)]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, drawCount * sizeof(unsigned int), &mesh->GetIndice()[0], GL_STATIC_DRAW);
+	glGenBuffers(1, &IBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, drawCount * sizeof(unsigned int), &(mesh->GetIndice())[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 }
 
 void Renderer::UpdateDrawInfo()
@@ -93,9 +91,6 @@ void Renderer::UpdateDrawInfo()
 
 void Renderer::DrawCall()
 {
-	Mesh *mesh = renderContext.renderGO->GetMesh();
-	GLsizei drawCount = static_cast<GLsizei>(mesh->GetIndice().size());
-
 	if (drawCount > 0)
 	{
 		glBindVertexArray(VAOs[VAOTYPE(VAO_TYPE::MAIN)]);

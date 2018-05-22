@@ -86,38 +86,25 @@ void ModelManager::LoadObj(Mesh *pMesh)
 		{
 			pos - centerPos;
 		}
-		for (MyMath::Vector3 v : positions)
-		{
-			Vertex vv;
-			vv.Pos = v;
-			vv.Normal = { 0,0,0 };
-			pMesh->GetVertice().push_back(vv);
-		}
 
-		///Calculate Vertex Normal
-		for (auto oi : vertexIndice)
-		{
-			pMesh->GetIndice().push_back(oi.pos);
-			pMesh->GetVertice()[oi.pos].Normal += normals[oi.normal];
-		}
-#if 0
+		///Assign Vertice Memory
 		Vertex tempVertex;
-		VertexIndex tempVI;
-		size_t vertexSize = vertexIndice.size();
+		size_t vertexSize = positions.size();
+		size_t indexSize = vertexIndice.size();
 		pMesh->GetVertice().resize(vertexSize);
-		pMesh->GetIndice().resize(vertexSize);
+		pMesh->GetIndice().resize(indexSize);
 
 		for (int i = 0; i < vertexSize; ++i)
 		{
-			tempVI = vertexIndice[i];
-			tempVertex.Pos = positions[tempVI.pos];
-			tempVertex.Normal = normals[tempVI.normal];
-			tempVertex.TextureUV = uvs[tempVI.uv];
+			tempVertex.Pos = positions[i];
 
 			pMesh->GetVertice()[i] = tempVertex;
-			pMesh->GetIndice()[i] = i;
 		}
-#endif
+		for (int i = 0; i < indexSize; ++i)
+		{
+			pMesh->GetIndice()[i] = vertexIndice[i].pos;
+		}
+
 	}
 }
 

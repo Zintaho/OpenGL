@@ -14,9 +14,8 @@ enum class VAO_TYPE : GLuint
 enum class VBO_TYPE : GLuint
 {
 	POS = 0,
-	UV,
-	NORMAL,
-	INDEX,
+	//UV,
+	//NORMAL,
 
 	NUM_VBO
 };
@@ -51,7 +50,6 @@ public:
 	void UpdateDrawInfo();
 	void DrawCall();
 	void DrawTest();
-	void DrawTest(float f);
 private:
 	///Methods
 	void InitGLEW();
@@ -59,7 +57,9 @@ private:
 	///Membersx	
 	unsigned int VAOs[static_cast<GLuint>(VAO_TYPE::NUM_VAO)];
 	unsigned int VBOs[static_cast<GLuint>(VBO_TYPE::NUM_VBO)];
+	unsigned int IBO;
 
 	Display *display;
 	RenderContext renderContext;
+	GLsizei drawCount;
 };
