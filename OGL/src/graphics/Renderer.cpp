@@ -83,8 +83,8 @@ void Renderer::UpdateDrawInfo()
 
 	GLuint* uniforms = sh->GetUniforms();
 
-	glUniformMatrix4fv(uniforms[static_cast<unsigned int>(UNIFORM_TYPE::TRANSFORM)], 1, GL_FALSE, transMat.GetMatrix());
-	glUniformMatrix4fv(uniforms[static_cast<unsigned int>(UNIFORM_TYPE::VIEWPROJ)], 1, GL_FALSE, VPMat.GetMatrix());
+	glUniformMatrix4fv(uniforms[static_cast<unsigned int>(UNIFORM_TYPE::TRANSFORM)], 1, GL_TRUE, transMat.GetMatrix());
+	glUniformMatrix4fv(uniforms[static_cast<unsigned int>(UNIFORM_TYPE::VIEWPROJ)], 1, GL_TRUE, VPMat.GetMatrix());
 
 	MyMath::Vector3 eye = rc->GetEYE();
 	GLfloat fEye[3] = { eye.x,eye.y,eye.z };

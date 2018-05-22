@@ -259,7 +259,7 @@ namespace MyMath
 			return stream;
 		}
 
-		Vector3 ConvertToUnitVector()
+		Vector3 Normalize()
 		{
 			float norm = sqrtf(this->x*this->x + this->y * this->y + this->z * this->z);
 
@@ -272,7 +272,7 @@ namespace MyMath
 
 	};
 	float DotProduct(const Vector3 left, const Vector3 right);
-	Vector3 CrossProduct(const Vector3 u, const Vector3 v);
+	Vector3 Cross(const Vector3 u, const Vector3 v);
 
 
 	///Vector4
@@ -450,9 +450,9 @@ namespace MyMath
 		}
 		inline void SetTranslateMatrix(const float X, const float Y, const float Z)
 		{///column major
-			(*this)(3, 0) = X;
-			(*this)(3, 1) = Y;
-			(*this)(3, 2) = Z;
+			(*this)(0, 3) = X;
+			(*this)(1, 3) = Y;
+			(*this)(2, 3) = Z;
 			(*this)(3, 3) = 1;
 
 			(*this)(0, 0) = (*this)(1, 1) = (*this)(2, 2) = 1;
@@ -491,17 +491,27 @@ namespace MyMath
 			(*this)(2, 2) = 1;
 			(*this)(3, 3) = 1;
 		}
+		inline void SetProjMatrix(const float fovy, const float aspect, const float n, const float f)
+		{
+			float cotFovy_2 = 1 / tanf(fovy * 0.5f);
+
+			(*this)(0, 0) = cotFovy_2 / aspect;
+			(*this)(1, 1) = cotFovy_2;
+			(*this)(2, 2) = (-n - f) / (n - f);
+			(*this)(2, 3) = (2 * f*n) / (n - f);
+			(*this)(3, 2) = 1;
+		}
 		inline void SetViewMatrix(const Vector3 EYE, const Vector3 AT, const Vector3 UP)
 		{
 			///Get u, v, n
 			Vector3 u, v, n;
 			n = EYE - AT;
-			n.ConvertToUnitVector();
+			n.Normalize();
 
-			u = CrossProduct(n, UP);
-			u.ConvertToUnitVector();
+			u = Cross(n, UP);
+			u.Normalize();
 
-			v = CrossProduct(n, u);
+			v = Cross(n, u);
 			///Set Matrix
 			(*this)(0, 0) = u.x;	(*this)(0, 1) = u.y;	(*this)(0, 2) = u.z;
 			(*this)(0, 3) = -EYE.x * (u.x + u.y + u.z);
@@ -514,17 +524,6 @@ namespace MyMath
 				(*this)(3, z) = 0;
 			}
 			(*this)(3, 3) = 1;
-		}
-		inline void SetProjMatrix(const float fovy, const float aspect, const float n, const float f)
-		{
-			float radFovy = fovy * PI / 180.0f;
-			float cotFovy_2 = 1 / tanf(fovy / 2);
-
-			(*this)(0, 0) = cotFovy_2 / aspect;
-			(*this)(1, 1) = cotFovy_2;
-			(*this)(2, 2) = -((f + n) / (f - n));
-			(*this)(2, 3) = -((2 * n*f )/ (f - n));
-			(*this)(3, 2) = -1;
 		}
 
 		inline void SetOrthoMatrix(const float l, const float r, const float b, const float t, const float n, const float f)

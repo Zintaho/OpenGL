@@ -14,7 +14,7 @@ float MyMath::DotProduct(const Vector4 left, const Vector4 right)
 	return left.x*right.x + left.y * right.y + left.z * right.z;
 }
 
-Vector3 MyMath::CrossProduct(const Vector3 u, const Vector3 v)
+Vector3 MyMath::Cross(const Vector3 u, const Vector3 v)
 {
 	Vector3 result;
 

@@ -20,10 +20,7 @@ public:
 		MyMath::Matrix4x4 rotateZMat;
 		rotateZMat.SetRotZMatrix(rotation.z);
 
-		MyMath::Matrix4x4 debugMat;
-		debugMat.SetIdentityMatrix();
-		//MyMath::Matrix4x4 returnMat = debugMat;
-		MyMath::Matrix4x4 returnMat = transMat * rotateZMat * rotateYMat * rotateXMat *  scaleMat;
+		MyMath::Matrix4x4 returnMat = transMat * rotateZMat * rotateXMat * rotateYMat *  scaleMat;
 
 		return returnMat;
 	}

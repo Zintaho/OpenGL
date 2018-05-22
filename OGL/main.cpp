@@ -28,6 +28,8 @@ EventHandler
 //#include "Camera.h"
 //#include "GameObject.h"
 
+void EventHandle(EventInfo eventInfo, RenderContext *rc);
+
 int main(int argc, char **argv)
 {
 	///Set DisplayOption
@@ -54,21 +56,21 @@ int main(int argc, char **argv)
 	ModelManager modelManager;
 	ShaderManager shaderManager;
 	///Create Components
-	Mesh mesh("PC");
+	Mesh mesh("Pikachu");
 	Shader shader("vertex", "fragment");
 
-	MyMath::Vector3 pos(0, 0, 0);
+	MyMath::Vector3 pos(0, 0, 0.0f);
 	MyMath::Vector3 rot(0, 0, 0);
-	MyMath::Vector3 scale(0.5, 0.5, 0.5);
-	Transform transform(pos, rot,scale);
+	MyMath::Vector3 scale(0.5f, 0.5f, 0.5f);
+	Transform transform(pos, rot, scale);
 
 	GameObject gameObject(&mesh, transform);
 
-	float fovy = 120;
+	float fovy = (1.0f / 2.0f) * MyMath::PI;
 	float aspect = display.GetAspect();
-	float n = -1;
-	float f = 1;
-	MyMath::Vector3 eye(pos.x,pos.y,pos.z-1.0f);
+	float n = 1;
+	float f = 1000;
+	MyMath::Vector3 eye(0.0f, 0.0f, 3.0f);
 	MyMath::Vector3 at(pos);
 
 	Camera mainCam(fovy, aspect, n, f, eye, at);
@@ -85,25 +87,26 @@ int main(int argc, char **argv)
 	///Loop
 	MyMath::Vector3 formerTrans = gameObject.GetTransform().GetTrans();
 	float counter = 0;
+
 	while(display.CheckState() != STATE::END)
 	{
 		renderer.Clear();
 
 		MyMath::Vector3 formerRot = gameObject.GetTransform().GetRotate();
-		gameObject.GetTransform().SetRotate(MyMath::Vector3(counter, counter, formerRot.z));
+		gameObject.GetTransform().SetRotate(MyMath::Vector3(formerRot.x, counter, formerRot.z));
 
+		//renderer.InitArrays();
 		renderer.UpdateDrawInfo();
 		renderer.DrawTest();
 		//renderer.ShaderTest();
 		//renderer.DrawTest();
-		//renderer.InitArrays();
 
 		//gameObject.GetTransform().SetRotate(MyMath::Vector3(formerRot.x, formerRot.y + MyMath::PI/360, formerRot.z));
 
 		//renderer.DrawCall();
 
 		display.SwapBuffer();
-		display.CheckEvent();
+		EventHandle(display.CheckEvent(), &(renderer.GetRenderContext()) );
 
 		counter += MyMath::PI/180;
 	}
@@ -154,4 +157,49 @@ int main(int argc, char **argv)
 
 
 	return 0;
+}
+
+void EventHandle(EventInfo eventInfo, RenderContext *rc)
+{
+#define MOVGO true
+	Camera *cam = rc->renderCam;
+	GameObject *go = rc->renderGO;
+
+	MyMath::Vector3 formerTrans = go->GetTransform().GetTrans();
+	MyMath::Vector3 formerEYE = cam->GetEYE();
+	if (eventInfo.eventType == SDL_KEYDOWN)
+	{
+		switch (eventInfo.eventData)
+		{
+		case 'w':
+#if MOVGO
+			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x, formerTrans.y, formerTrans.z - 0.1f));
+#else
+			cam->SetEYE(MyMath::Vector3(formerEYE.x, formerEYE.y, formerEYE.z - 0.1f));
+#endif
+			break;
+		case 's':
+#if MOVGO
+			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x, formerTrans.y, formerTrans.z + 0.1f));
+#else
+			cam->SetEYE(MyMath::Vector3(formerEYE.x, formerEYE.y, formerEYE.z + 0.1f));
+#endif
+			break;
+		case 'a':
+#if MOVGO			
+			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x - 0.1f, formerTrans.y, formerTrans.z));
+#else
+			cam->SetEYE(MyMath::Vector3(formerEYE.x - 0.1f, formerEYE.y, formerEYE.z));
+#endif
+			break;
+		case 'd':
+#if MOVGO
+			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x + 0.1f, formerTrans.y, formerTrans.z));
+#else
+			cam->SetEYE(MyMath::Vector3(formerEYE.x + 0.1f, formerEYE.y, formerEYE.z));
+#endif
+			break;
+		}
+		std::cout << eventInfo.eventData << std::endl;
+	}
 }

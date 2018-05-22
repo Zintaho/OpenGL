@@ -43,6 +43,12 @@ enum class STATE : Uint16
 	NUM_STATE
 };
 
+struct EventInfo
+{
+	SDL_EventType eventType;
+	char eventData;
+};
+
 class Display
 {
 public:
@@ -50,9 +56,9 @@ public:
 	Display(DisplayOption option);
 	virtual ~Display();
 	///Methods
+	EventInfo CheckEvent();
 	void CreateDisplay();
 	void SwapBuffer() const;
-	void CheckEvent();
 	void AdjustWindowSize(int dw, int dh);
 
 	inline SDL_Window& GetWindow() { return *window; }

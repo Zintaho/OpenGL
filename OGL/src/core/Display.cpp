@@ -98,8 +98,12 @@ void Display::SwapBuffer() const
 	SDL_GL_SwapWindow(window);
 }
 
-void Display::CheckEvent()
+EventInfo Display::CheckEvent()
 {
+	EventInfo eventInfo;
+	eventInfo.eventType = SDL_FIRSTEVENT;
+	eventInfo.eventData = 0;
+
 	while (SDL_PollEvent(&event))
 	{
 		switch (event.type)
@@ -111,6 +115,9 @@ void Display::CheckEvent()
 			Log(LOG_KEY_UP);
 			break;
 		case SDL_KEYDOWN:
+			eventInfo.eventType = SDL_KEYDOWN;
+			eventInfo.eventData = event.key.keysym.sym;
+
 			Log(LOG_KEY_DOWN);
 			break;
 		case SDL_MOUSEBUTTONUP:
@@ -119,9 +126,10 @@ void Display::CheckEvent()
 		case SDL_MOUSEBUTTONDOWN:
 			Log(LOG_MOUSE_DOWN);
 			break;
-
 		}
 	}
+
+	return eventInfo;
 }
 
 void Display::AdjustWindowSize(int dw, int dh)

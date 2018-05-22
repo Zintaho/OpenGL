@@ -13,10 +13,10 @@ public:
 
 	inline MyMath::Matrix4x4 MakeMatrix()
 	{
-		MyMath::Matrix4x4 viewMat;
-		viewMat.SetViewMatrix(EYE, AT, UP);
 		MyMath::Matrix4x4 projMat;
 		projMat.SetProjMatrix(fovy, aspect, n, f);
+		MyMath::Matrix4x4 viewMat;
+		viewMat.SetViewMatrix(EYE, AT, UP);
 
 		MyMath::Matrix4x4 debugMat;
 		debugMat.SetIdentityMatrix();
