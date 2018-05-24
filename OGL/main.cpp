@@ -52,15 +52,19 @@ int main(int argc, char **argv)
 	ModelManager modelManager;
 	ShaderManager shaderManager;
 	///Create Components
-	Mesh mesh("PC");
+	Mesh mesh("Trophy");
+	Mesh *pMesh = &mesh;
 	Shader shader(VS_PHONG, FS_PHONG);
+	Shader shader2("VS", "FS", "TCS", "TES");
+	Shader *pShader = &shader;
 
 	MyMath::Vector3 pos(0, 0, 0.0f);
-	MyMath::Vector3 rot(0, 0, 0);
-	MyMath::Vector3 scale(5.0f, 5.0f, 5.0f);
+	MyMath::Vector3 rot(0, MyMath::PI/2, 0);
+	MyMath::Vector3 scale(8.0f, 8.0f, 8.0f);
 	Transform transform(pos, rot, scale);
 
-	GameObject gameObject(&mesh, transform);
+	GameObject gameObject(pMesh, transform);
+	GameObject *pGameObject = &gameObject;
 
 	float fovy = (2.0f / 3.0f) * MyMath::PI;
 	float aspect = display.GetAspect();
@@ -70,15 +74,16 @@ int main(int argc, char **argv)
 	MyMath::Vector3 at(pos);
 
 	Camera mainCam(fovy, aspect, n, f, eye, at);
+	Camera *pCam = &mainCam;
 
-	modelManager.LoadObj(&mesh);
-	shaderManager.CompileShader(&shader);
-	shaderManager.LinkProgram(&shader);
+	modelManager.LoadObj(pMesh);
+	shaderManager.CompileShader(pShader);
+	shaderManager.LinkProgram(pShader);
 	///Create RendererContext
 	RenderContext renderContext;
-	renderContext.renderGO = &gameObject;
-	renderContext.renderCam = &mainCam;
-	renderContext.renderShader = &shader;
+	renderContext.renderGO = pGameObject;
+	renderContext.renderCam = pCam;
+	renderContext.renderShader = pShader;
 	renderer.GetRenderContext() = renderContext;
 	///Loop
 	MyMath::Vector3 formerTrans = gameObject.GetTransform().GetTrans();
@@ -89,7 +94,7 @@ int main(int argc, char **argv)
 		renderer.Clear();
 
 		MyMath::Vector3 formerRot = gameObject.GetTransform().GetRotate();
-		gameObject.GetTransform().SetRotate(MyMath::Vector3(formerRot.x, counter, formerRot.z));
+		//gameObject.GetTransform().SetRotate(MyMath::Vector3(counter, counter, formerRot.z));
 
 		renderer.InitArrays();
 		renderer.UpdateDrawInfo();

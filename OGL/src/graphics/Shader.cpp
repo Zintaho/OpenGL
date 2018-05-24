@@ -10,7 +10,8 @@ void Shader::InitMap()
 	mapAtr[ATTRIB_TYPE::NORMAL] = "normal";
 
 	mapUni[UNIFORM_TYPE::TRANSFORM] = "transform";
-	mapUni[UNIFORM_TYPE::VIEWPROJ] = "vp";
+	mapUni[UNIFORM_TYPE::VIEW] = "view";
+	mapUni[UNIFORM_TYPE::PROJ] = "proj";
 	mapUni[UNIFORM_TYPE::EYE] = "eye";
 }
 
@@ -42,4 +43,12 @@ std::string Shader::ReadSource(std::string sourcePath)
 
 Shader::~Shader()
 {
+	glDetachShader(shaderProgram, vsShader);
+	if (bTessOn)
+	{
+		glDetachShader(shaderProgram, tcsShader);
+		glDetachShader(shaderProgram, tesShader);
+	}
+	glDetachShader(shaderProgram, fsShader);
+	glDeleteProgram(shaderProgram);
 }

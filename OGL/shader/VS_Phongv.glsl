@@ -6,7 +6,8 @@ layout(location = 1) in  vec3 normal;
 out vec4 color;
 
 uniform mat4 transform;
-uniform mat4 vp;
+uniform mat4 view;
+uniform mat4 proj;
 uniform vec3 eye;
 
 //Light
@@ -27,7 +28,7 @@ void main()
 	vec4 tempPos = transform * vec4(position, 1.0);
 	vec3 worldPos = tempPos.xyz;
 
-    gl_Position =  vp * transform * vec4(position, 1.0);
+    gl_Position =  proj * view * transform * vec4(position, 1.0);
 
 	float lightAmount = dot(-LightDirection, -newNormal);
 	lightAmount = max(0.0, lightAmount);

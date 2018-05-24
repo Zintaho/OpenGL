@@ -10,17 +10,21 @@ public:
 		fovy(fovy), aspect(aspect), n(n), f(f), EYE(eye), AT(at), UP(up)
 	{};
 	virtual ~Camera();
-
-	inline MyMath::Matrix4x4 MakeMatrix()
+	inline MyMath::Matrix4x4 MakeViewMatrix()
 	{
-		MyMath::Matrix4x4 projMat;
-		projMat.SetProjMatrix(fovy, aspect, n, f);
 		MyMath::Matrix4x4 viewMat;
 		viewMat.SetViewMatrix(EYE, AT, UP);
 
-		MyMath::Matrix4x4 debugMat;
-		debugMat.SetIdentityMatrix();
-		MyMath::Matrix4x4 returnMat = projMat * viewMat;
+		MyMath::Matrix4x4 returnMat = viewMat;
+
+		return returnMat;
+	}	
+	inline MyMath::Matrix4x4 MakeProjMatrix()
+	{
+		MyMath::Matrix4x4 projMat;
+		projMat.SetProjMatrix(fovy, aspect, n, f);
+
+		MyMath::Matrix4x4 returnMat = projMat;
 
 		return returnMat;
 	}

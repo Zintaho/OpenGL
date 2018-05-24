@@ -76,6 +76,19 @@
     <None Include="shader\VS_Phongv.glsl">
       <Filter>Shader Files</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
+    <None Include="shader\TCS.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\TES.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\VS.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\FS.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="License.md">

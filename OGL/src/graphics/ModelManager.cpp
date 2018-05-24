@@ -87,24 +87,30 @@ void ModelManager::LoadObj(Mesh *pMesh)
 			pos - centerPos;
 		}
 
-		///Assign Vertice Memory
+		///Pushback Vertice
 		Vertex tempVertex;
-		size_t vertexSize = positions.size();
-		size_t indexSize = vertexIndice.size();
-		pMesh->GetVertice().resize(vertexSize);
-		pMesh->GetIndice().resize(indexSize);
-
-		for (int i = 0; i < vertexSize; ++i)
+		size_t verticeSize = positions.size();
+		size_t normalsSize = normals.size();
+		size_t indiceSize = vertexIndice.size();
+		pMesh->GetVertice().resize(verticeSize);
+		pMesh->GetIndice().resize(indiceSize);
+		for (int i = 0; i < verticeSize; ++i)
 		{
 			tempVertex.Pos = positions[i];
+			tempVertex.Normal = MyMath::Vector3(0, 0, 0);
 
 			pMesh->GetVertice()[i] = tempVertex;
 		}
-		for (int i = 0; i < indexSize; ++i)
+		///Calculate Vertex Normal
+		for (int i = 0; i < indiceSize; ++i)
 		{
 			pMesh->GetIndice()[i] = vertexIndice[i].pos;
+			pMesh->GetVertice()[vertexIndice[i].pos].Normal += normals[vertexIndice[i].normal];
+		}		
+		for (int i = 0; i < verticeSize; ++i)
+		{
+			pMesh->GetVertice()[i].Normal.Normalize();
 		}
-
 	}
 }
 

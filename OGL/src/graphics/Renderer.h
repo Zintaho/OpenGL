@@ -14,8 +14,8 @@ enum class VAO_TYPE : GLuint
 enum class VBO_TYPE : GLuint
 {
 	POS = 0,
-	//UV,
-	//NORMAL,
+	UV,
+	NORMAL,
 
 	NUM_VBO
 };
@@ -50,6 +50,7 @@ public:
 	void UpdateDrawInfo();
 	void DrawCall();
 	void DrawTest();
+	void DrawTest(float f);
 private:
 	///Methods
 	void InitGLEW();
