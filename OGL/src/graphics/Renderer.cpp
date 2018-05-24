@@ -31,11 +31,13 @@ void Renderer::SetGLOptions()
 
 	glViewport(0, 0, static_cast<GLsizei>(w), static_cast<GLsizei>(h));
 
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_CULL_FACE);
+	//glEnable(GL_DEPTH_TEST);
 
 	//glFrontFace(GL_CW);
-	glCullFace(GL_BACK);
+	//glCullFace(GL_BACK);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void Renderer::Clear()
@@ -101,7 +103,6 @@ void Renderer::DrawCall()
 	{
 		glBindVertexArray(VAOs[VAOTYPE(VAO_TYPE::MAIN)]);
 
-		//glDrawElements(GL_LINES, drawCount, GL_UNSIGNED_INT, 0);
 		glDrawElements(GL_TRIANGLES,drawCount, GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(NULL);

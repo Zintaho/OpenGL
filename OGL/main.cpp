@@ -52,9 +52,10 @@ int main(int argc, char **argv)
 	ModelManager modelManager;
 	ShaderManager shaderManager;
 	///Create Components
-	Mesh mesh("Trophy");
+	Mesh mesh("Rabbit");
 	Mesh *pMesh = &mesh;
-	Shader shader(VS_PHONG, FS_PHONG);
+	Shader shader("vertex", "fragment");
+	Shader shader1("vertex", "fragment","control","evaluation");
 	Shader shader2("VS", "FS", "TCS", "TES");
 	Shader *pShader = &shader;
 

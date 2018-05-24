@@ -154,6 +154,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="shader\control.glsl" />
+    <None Include="shader\evaluation.glsl" />
     <None Include="shader\fragment.glsl" />
     <None Include="shader\FS.glsl" />
     <None Include="shader\FS_Phong.glsl" />
