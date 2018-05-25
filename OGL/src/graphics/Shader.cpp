@@ -49,6 +49,10 @@ Shader::~Shader()
 		glDetachShader(shaderProgram, tcsShader);
 		glDetachShader(shaderProgram, tesShader);
 	}
+	if (bGSOn)
+	{
+		glDetachObjectARB(shaderProgram, gsShader);
+	}
 	glDetachShader(shaderProgram, fsShader);
 	glDeleteProgram(shaderProgram);
 }

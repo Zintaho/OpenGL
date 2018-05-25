@@ -52,12 +52,12 @@ int main(int argc, char **argv)
 	ModelManager modelManager;
 	ShaderManager shaderManager;
 	///Create Components
-	Mesh mesh("Rabbit");
+	Mesh mesh("Trophy");
 	Mesh *pMesh = &mesh;
-	Shader shader("vertex", "fragment");
-	Shader shader1("vertex", "fragment","control","evaluation");
-	Shader shader2("VS", "FS", "TCS", "TES");
-	Shader *pShader = &shader;
+	Shader shader2("vertex", "fragment");
+	Shader shader3("vertex", "fragment", "geometry");
+	Shader shader4("vertex", "fragment","geometry","control","evaluation");
+	Shader *pShader = &shader3;
 
 	MyMath::Vector3 pos(0, 0, 0.0f);
 	MyMath::Vector3 rot(0, MyMath::PI/2, 0);
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 		renderer.Clear();
 
 		MyMath::Vector3 formerRot = gameObject.GetTransform().GetRotate();
-		//gameObject.GetTransform().SetRotate(MyMath::Vector3(counter, counter, formerRot.z));
+		gameObject.GetTransform().SetRotate(MyMath::Vector3(formerRot.z, counter, formerRot.z));
 
 		renderer.InitArrays();
 		renderer.UpdateDrawInfo();

@@ -95,6 +95,9 @@
     <None Include="shader\evaluation.glsl">
       <Filter>Shader Files</Filter>
     </None>
+    <None Include="shader\geometry.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="License.md">

@@ -20,6 +20,14 @@ void ShaderManager::CompileShader(Shader * shader)
 	glCompileShader(shaderToCompile);
 	CheckShaderCompileError(shaderToCompile, "Fragment");
 
+	if (shader->isGSOn())
+	{
+		shaderToCompile = shader->GetGS();
+		srcPtr = shader->GetGSSource().c_str();
+		glShaderSource(shaderToCompile, 1, &srcPtr, NULL);
+		glCompileShader(shaderToCompile);
+		CheckShaderCompileError(shaderToCompile, "Geometry");
+	}
 	if (shader->isTessOn())
 	{
 		shaderToCompile = shader->GetTCS();
@@ -40,7 +48,7 @@ void ShaderManager::LinkProgram(Shader * shader)
 {
 	GLuint vShader = shader->GetVS();
 	GLuint fShader = shader->GetFS();	
-	GLuint tcShader, teShader;
+	GLuint gShader,tcShader, teShader;
 	GLuint shaderProgram = shader->GetProgram();
 	GLuint *attribs = shader->GetAttribs();
 	GLuint *uniforms = shader->GetUniforms();
@@ -53,6 +61,11 @@ void ShaderManager::LinkProgram(Shader * shader)
 		teShader = shader->GetTES();
 		glAttachShader(shaderProgram, tcShader);
 		glAttachShader(shaderProgram, teShader);
+	}
+	if (shader->isGSOn())
+	{
+		gShader = shader->GetGS();
+		glAttachShader(shaderProgram, gShader);
 	}
 	glAttachShader(shaderProgram, fShader);
 
@@ -67,6 +80,10 @@ void ShaderManager::LinkProgram(Shader * shader)
 	{
 		glDeleteShader(tcShader);
 		glDeleteShader(teShader);
+	}
+	if (shader->isGSOn())
+	{
+		glDeleteShader(gShader);
 	}
 	glDeleteShader(fShader);
 

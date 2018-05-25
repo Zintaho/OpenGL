@@ -160,6 +160,7 @@
     <None Include="shader\FS.glsl" />
     <None Include="shader\FS_Phong.glsl" />
     <None Include="shader\FS_Phongv.glsl" />
+    <None Include="shader\geometry.glsl" />
     <None Include="shader\TCS.glsl" />
     <None Include="shader\TES.glsl" />
     <None Include="shader\vertex.glsl" />

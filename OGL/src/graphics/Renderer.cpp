@@ -37,7 +37,7 @@ void Renderer::SetGLOptions()
 	//glFrontFace(GL_CW);
 	//glCullFace(GL_BACK);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void Renderer::Clear()
@@ -103,7 +103,8 @@ void Renderer::DrawCall()
 	{
 		glBindVertexArray(VAOs[VAOTYPE(VAO_TYPE::MAIN)]);
 
-		glDrawElements(GL_TRIANGLES,drawCount, GL_UNSIGNED_INT, 0);
+		glPointSize(5);
+		glDrawElements(GL_POINTS,drawCount, GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(NULL);
 	}
