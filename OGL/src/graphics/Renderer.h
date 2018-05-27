@@ -13,18 +13,26 @@ enum class VAO_TYPE : GLuint
 };
 enum class VBO_TYPE : GLuint
 {
-	POS = 0,
-	UV,
-	NORMAL,
+	MAIN = 0,
 
 	NUM_VBO
 };
+enum class IBO_TYPE : GLuint
+{
+	MAIN = 0,
 
-constexpr GLuint VAOTYPE(VAO_TYPE type)
+	NUM_IBO
+};
+
+constexpr GLuint CONVERT(VAO_TYPE type)
 {
 	return static_cast<GLuint>(type);
 }
-constexpr GLuint VBOTYPE(VBO_TYPE type)
+constexpr GLuint CONVERT(VBO_TYPE type)
+{
+	return static_cast<GLuint>(type);
+}
+constexpr GLuint CONVERT(IBO_TYPE type)
 {
 	return static_cast<GLuint>(type);
 }
@@ -46,7 +54,7 @@ public:
 	///Methods
 	inline RenderContext &GetRenderContext() { return renderContext; }
 	void Clear();
-	void InitArrays();
+	void GenRenderObjects();
 	void UpdateDrawInfo();
 	void DrawCall();
 	void DrawTest();
@@ -56,9 +64,9 @@ private:
 	void InitGLEW();
 	void SetGLOptions();
 	///Membersx	
-	unsigned int VAOs[static_cast<GLuint>(VAO_TYPE::NUM_VAO)];
-	unsigned int VBOs[static_cast<GLuint>(VBO_TYPE::NUM_VBO)];
-	unsigned int IBO;
+	unsigned int VAOs[CONVERT(VAO_TYPE::NUM_VAO)];
+	unsigned int VBOs[CONVERT(VBO_TYPE::NUM_VBO)];
+	unsigned int IBOs[CONVERT(IBO_TYPE::NUM_IBO)];
 
 	Display *display;
 	RenderContext renderContext;

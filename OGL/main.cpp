@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 	ModelManager modelManager;
 	ShaderManager shaderManager;
 	///Create Components
-	Mesh mesh("Trophy");
+	Mesh mesh("Trophy", GL_POINTS);
 	Mesh *pMesh = &mesh;
 	Shader shader2("vertex", "fragment");
 	Shader shader3("vertex", "fragment", "geometry");
@@ -63,9 +63,13 @@ int main(int argc, char **argv)
 	MyMath::Vector3 rot(0, MyMath::PI/2, 0);
 	MyMath::Vector3 scale(8.0f, 8.0f, 8.0f);
 	Transform transform(pos, rot, scale);
-
-	GameObject gameObject(pMesh, transform);
-	GameObject *pGameObject = &gameObject;
+#define OBJECTS 5
+	std::vector<GameObject> vecGO;
+	for (int i = 0; i < OBJECTS; ++i)
+	{
+		vecGO.push_back(GameObject(pMesh, transform));
+		transform.SetTrans(MyMath::Vector3(transform.GetTrans().x+0.6f, 0.0f, 0.0f));
+	}
 
 	float fovy = (2.0f / 3.0f) * MyMath::PI;
 	float aspect = display.GetAspect();
@@ -82,24 +86,21 @@ int main(int argc, char **argv)
 	shaderManager.LinkProgram(pShader);
 	///Create RendererContext
 	RenderContext renderContext;
-	renderContext.renderGO = pGameObject;
+	renderContext.renderGO = &vecGO[0];
 	renderContext.renderCam = pCam;
 	renderContext.renderShader = pShader;
 	renderer.GetRenderContext() = renderContext;
 	///Loop
-	MyMath::Vector3 formerTrans = gameObject.GetTransform().GetTrans();
 	float counter = 0;
-
 	while(display.CheckState() != STATE::END)
 	{
 		renderer.Clear();
-
-		MyMath::Vector3 formerRot = gameObject.GetTransform().GetRotate();
-		gameObject.GetTransform().SetRotate(MyMath::Vector3(formerRot.z, counter, formerRot.z));
-
-		renderer.InitArrays();
-		renderer.UpdateDrawInfo();
-		renderer.DrawCall();
+		for (int i = 0; i < OBJECTS; ++i)
+		{
+			renderer.GetRenderContext().renderGO = &vecGO[i];
+			renderer.UpdateDrawInfo();
+			renderer.DrawCall();
+		}
 
 		display.SwapBuffer();
 		EventHandle(display.CheckEvent(), &(renderer.GetRenderContext()) );
