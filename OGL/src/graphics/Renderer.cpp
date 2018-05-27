@@ -33,6 +33,7 @@ void Renderer::SetRenderGO(GameObject *renderGO)
 	{
 		UpdateBufferData();
 	}
+	UpdateUniforms();
 }
 
 void Renderer::InitGLEW()
@@ -98,7 +99,7 @@ void Renderer::UpdateBufferData()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, drawCount * sizeof(unsigned int), &(mesh->GetIndice())[0], GL_STATIC_DRAW);
 }
 
-void Renderer::UpdataUniforms()
+void Renderer::UpdateUniforms()
 {
 	GameObject *ro = renderContext.renderGO;
 	Camera *rc = renderContext.renderCam;
@@ -117,6 +118,43 @@ void Renderer::UpdataUniforms()
 	MyMath::Vector3 eye = rc->GetEYE();
 	GLfloat fEye[3] = { eye.x,eye.y,eye.z };
 	glUniform3fv(uniforms[CONVERT(UNIFORM_TYPE::EYE)], 1, fEye);
+}
+
+void Renderer::UpdateUniform(UNIFORM_TYPE uniType)
+{
+	Camera * rc = renderContext.renderCam;
+	Shader *sh = renderContext.renderShader;
+	glUseProgram(sh->GetProgram());
+
+	GLuint* uniforms = sh->GetUniforms();
+	switch (uniType)
+	{
+	case UNIFORM_TYPE::TRANSFORM:
+	{
+		MyMath::Matrix4x4 transMat = renderContext.renderGO->GetTransform().MakeMatrix();
+		glUniformMatrix4fv(uniforms[CONVERT(UNIFORM_TYPE::TRANSFORM)], 1, GL_TRUE, transMat.GetMatrix());
+		break;
+	}
+	case UNIFORM_TYPE::VIEW:
+	{
+		MyMath::Matrix4x4 viewMat = rc->MakeViewMatrix();
+		glUniformMatrix4fv(uniforms[CONVERT(UNIFORM_TYPE::VIEW)], 1, GL_TRUE, viewMat.GetMatrix());
+		break;
+	}
+	case UNIFORM_TYPE::PROJ:
+	{
+		MyMath::Matrix4x4 projMat = rc->MakeProjMatrix();
+		glUniformMatrix4fv(uniforms[CONVERT(UNIFORM_TYPE::PROJ)], 1, GL_TRUE, projMat.GetMatrix());
+		break;
+	}
+	case UNIFORM_TYPE::EYE:
+	{
+		MyMath::Vector3 eye = rc->GetEYE();
+		GLfloat fEye[3] = { eye.x,eye.y,eye.z };
+		glUniform3fv(uniforms[CONVERT(UNIFORM_TYPE::EYE)], 1, fEye);
+		break;
+	}
+	}
 }
 
 void Renderer::DrawCall()
@@ -162,7 +200,7 @@ void Renderer::DrawTest()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	
+
 	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 
 	glDisableVertexAttribArray(0);

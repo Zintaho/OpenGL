@@ -60,7 +60,8 @@ public:
 	inline Shader* GetRenderShader() { return renderContext.renderShader; }
 	void Clear();
 	void GenRenderObjects();
-	void UpdataUniforms();
+	void UpdateUniform(UNIFORM_TYPE uniType);
+	void UpdateUniforms();
 	void DrawCall();
 	void DrawTest();
 	void DrawTest(float f);
@@ -75,6 +76,6 @@ private:
 	unsigned int IBOs[CONVERT(IBO_TYPE::NUM_IBO)];
 
 	Display *display;
-	RenderContext renderContext; ///You cannot accest renderContext directyle by public member functions
+	RenderContext renderContext; ///You cannot access renderContext directly by public methods
 	GLsizei drawCount;
 };

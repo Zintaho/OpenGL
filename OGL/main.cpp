@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 	///Process Shaders
 	Shader shader2("VS_PHONG", "FS_PHONG");
 	Shader shader3("vertex", "fragment", "geometry");
-	Shader shader4("vertex", "fragment","geometry","control","evaluation");
+	Shader shader4("vertex", "fragment", "geometry", "control", "evaluation");
 	Shader *pShader = &shader2;
 	shaderManager.ProcessShader(pShader);
 	///Create GameObjects
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 	for (int i = 0; i < OBJECTS; ++i)
 	{
 		vecGO.push_back(GameObject(pMesh, transform));
-		transform.SetTrans(MyMath::Vector3(transform.GetTrans().x+2.0f, 0.0f, 0.0f));
+		transform.SetTrans(MyMath::Vector3(transform.GetTrans().x + 2.0f, 0.0f, 0.0f));
 	}
 	///Create Cameras
 	float fovy = (2.0f / 3.0f) * MyMath::PI;
@@ -81,27 +81,28 @@ int main(int argc, char **argv)
 	Camera mainCam(fovy, aspect, n, f, eye, at);
 	Camera *pCam = &mainCam;
 	///Set RenderContext
-	renderer.SetRenderGO(&vecGO[0]);
 	renderer.SetRenderCam(pCam);
 	renderer.SetRenderShader(pShader);
+	renderer.SetRenderGO(&vecGO[0]);
+
 	///Loop
 	float counter = 0;
-	while(display.CheckState() != STATE::END)
+	while (display.CheckState() != STATE::END)
 	{
 		renderer.Clear();
-		for (int i = 0; i < OBJECTS; ++i)
-		{
-			renderer.SetRenderGO(&vecGO[i]);
-			renderer.UpdataUniforms();
-			renderer.DrawCall();
-		}
+
+		renderer.UpdateUniform(UNIFORM_TYPE::VIEW);
+		renderer.UpdateUniform(UNIFORM_TYPE::PROJ);
+
+		renderer.DrawCall();
 
 		display.SwapBuffer();
 		EventHandle(display.CheckEvent(), renderer);
 
-		counter += MyMath::PI/180;
+		counter += MyMath::PI / 180;
 	}
 
+	///END
 	return 0;
 }
 
@@ -146,19 +147,19 @@ void EventHandle(EventInfo eventInfo, Renderer &renderer)
 #else
 			cam->SetEYE(MyMath::Vector3(formerEYE.x + speed, formerEYE.y, formerEYE.z));
 #endif
-			break;		
+			break;
 		case 'e':
 #if MOVGO
-				go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x , formerTrans.y - speed, formerTrans.z));
+			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x, formerTrans.y - speed, formerTrans.z));
 #else
-				cam->SetEYE(MyMath::Vector3(formerEYE.x, formerEYE.y - speed, formerEYE.z));
+			cam->SetEYE(MyMath::Vector3(formerEYE.x, formerEYE.y - speed, formerEYE.z));
 #endif
-				break;
+			break;
 		case 'q':
 #if MOVGO
-			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x , formerTrans.y + speed, formerTrans.z));
+			go->GetTransform().SetTrans(MyMath::Vector3(formerTrans.x, formerTrans.y + speed, formerTrans.z));
 #else
-			cam->SetEYE(MyMath::Vector3(formerEYE.x , formerEYE.y + speed, formerEYE.z));
+			cam->SetEYE(MyMath::Vector3(formerEYE.x, formerEYE.y + speed, formerEYE.z));
 #endif
 			break;
 		}
