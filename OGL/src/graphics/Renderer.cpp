@@ -7,11 +7,32 @@
 
 Renderer::Renderer(Display* display)
 {
+	renderContext.renderGO = nullptr;
+	renderContext.renderCam = nullptr;
+	renderContext.renderShader = nullptr;
 	this->display = display;
 
 	InitGLEW();
 	SetGLOptions();
 	GenRenderObjects();
+}
+
+void Renderer::SetRenderGO(GameObject *renderGO)
+{
+	bool isSameMesh = false;
+	if (renderContext.renderGO != nullptr)
+	{
+		Mesh *pMeshBefore = renderContext.renderGO->GetMesh();
+		if (pMeshBefore != 0 && pMeshBefore == renderGO->GetMesh())
+		{
+			isSameMesh = true;
+		}
+	}
+	renderContext.renderGO = renderGO;
+	if (not isSameMesh)
+	{
+		UpdateBufferData();
+	}
 }
 
 void Renderer::InitGLEW()
@@ -55,12 +76,9 @@ void Renderer::GenRenderObjects()
 	glGenBuffers(CONVERT(IBO_TYPE::NUM_IBO), IBOs);
 }
 
-void Renderer::UpdateDrawInfo()
+void Renderer::UpdateBufferData()
 {
-	GameObject *ro = renderContext.renderGO;
-	Camera *rc = renderContext.renderCam;
-	Shader *sh = renderContext.renderShader;
-	Mesh *mesh = ro->GetMesh();
+	Mesh *mesh = renderContext.renderGO->GetMesh();
 	GLsizei numVertice = static_cast<GLsizei>(mesh->GetVertice().size());
 	GLsizei sizeofVertex = static_cast<GLsizei>(sizeof(Vertex));
 	drawCount = static_cast<GLsizei>(mesh->GetIndice().size());
@@ -78,6 +96,13 @@ void Renderer::UpdateDrawInfo()
 	///Bind IBO
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBOs[CONVERT(IBO_TYPE::MAIN)]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, drawCount * sizeof(unsigned int), &(mesh->GetIndice())[0], GL_STATIC_DRAW);
+}
+
+void Renderer::UpdataUniforms()
+{
+	GameObject *ro = renderContext.renderGO;
+	Camera *rc = renderContext.renderCam;
+	Shader *sh = renderContext.renderShader;
 	///Get ShaderProgram
 	glUseProgram(sh->GetProgram());
 
@@ -99,10 +124,6 @@ void Renderer::DrawCall()
 	if (drawCount > 0)
 	{
 		glDrawElements(renderContext.renderGO->GetMesh()->GetPrimitiveType(), drawCount, GL_UNSIGNED_INT, 0);
-		glDisableVertexAttribArray(CONVERT(ATTRIB_TYPE::UV));
-		glDisableVertexAttribArray(CONVERT(ATTRIB_TYPE::NORMAL));
-		glDisableVertexAttribArray(CONVERT(ATTRIB_TYPE::POS));
-		glBindVertexArray(NULL);
 	}
 }
 

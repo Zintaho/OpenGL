@@ -52,10 +52,15 @@ public:
 	Renderer(Display* display);
 	virtual ~Renderer();
 	///Methods
-	inline RenderContext &GetRenderContext() { return renderContext; }
+	void SetRenderGO(GameObject *renderGO);
+	inline void SetRenderCam(Camera *renderCam) { renderContext.renderCam = renderCam; }
+	inline void SetRenderShader(Shader *renderShader) { renderContext.renderShader = renderShader; }
+	inline GameObject* GetRenderGO() { return renderContext.renderGO; }
+	inline Camera* GetRenderCam() { return renderContext.renderCam; }
+	inline Shader* GetRenderShader() { return renderContext.renderShader; }
 	void Clear();
 	void GenRenderObjects();
-	void UpdateDrawInfo();
+	void UpdataUniforms();
 	void DrawCall();
 	void DrawTest();
 	void DrawTest(float f);
@@ -63,12 +68,13 @@ private:
 	///Methods
 	void InitGLEW();
 	void SetGLOptions();
+	void UpdateBufferData();
 	///Membersx	
 	unsigned int VAOs[CONVERT(VAO_TYPE::NUM_VAO)];
 	unsigned int VBOs[CONVERT(VBO_TYPE::NUM_VBO)];
 	unsigned int IBOs[CONVERT(IBO_TYPE::NUM_IBO)];
 
 	Display *display;
-	RenderContext renderContext;
+	RenderContext renderContext; ///You cannot accest renderContext directyle by public member functions
 	GLsizei drawCount;
 };

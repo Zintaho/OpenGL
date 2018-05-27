@@ -1,4 +1,5 @@
 #pragma once
+const int OBJECTS = 100;
 const int OBJECT_NUM = 30;
 const float INIT_SCALE = 1.0f;
 

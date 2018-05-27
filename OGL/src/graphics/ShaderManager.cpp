@@ -5,7 +5,11 @@
 #include <fstream>
 
 #define ERR_BUFSIZ 1024
-
+void ShaderManager::ProcessShader(Shader * shader)
+{
+	CompileShader(shader);
+	LinkProgram(shader);
+}
 void ShaderManager::CompileShader(Shader * shader)
 {
 	GLuint shaderToCompile = shader->GetVS();

@@ -8,6 +8,10 @@
 class GameObject
 {
 public:
+	GameObject()
+	{
+		mesh = 0;
+	}
 	GameObject(Mesh* pMesh, Transform tr) :
 		mesh(pMesh), transform(tr)
 	{};

@@ -24,7 +24,7 @@ from 2018-04
 #include "src/graphics/ModelManager.h"
 #include "src/graphics/ShaderManager.h"
 
-void EventHandle(EventInfo eventInfo, RenderContext *rc);
+void EventHandle(EventInfo eventInfo, Renderer &renderer);
 
 int main(int argc, char **argv)
 {
@@ -42,7 +42,6 @@ int main(int argc, char **argv)
 	displayOption.MOUSE_FOCUS = false;
 	displayOption.MOUSE_CAPTURE = false;
 	displayOption.HIGH_DPI = true;
-
 	displayOption.ADAPTIVE_VSYNC = true;
 	///Create Display & Renderer
 	Display display(displayOption);
@@ -51,45 +50,40 @@ int main(int argc, char **argv)
 	///Create Manager;
 	ModelManager modelManager;
 	ShaderManager shaderManager;
-	///Create Components
-	Mesh mesh("Trophy", GL_POINTS);
+	///Process Meshes
+	Mesh mesh("Trophy", GL_TRIANGLES);
 	Mesh *pMesh = &mesh;
-	Shader shader2("vertex", "fragment");
+	modelManager.LoadObj(pMesh);
+	///Process Shaders
+	Shader shader2("VS_PHONG", "FS_PHONG");
 	Shader shader3("vertex", "fragment", "geometry");
 	Shader shader4("vertex", "fragment","geometry","control","evaluation");
-	Shader *pShader = &shader3;
-
+	Shader *pShader = &shader2;
+	shaderManager.ProcessShader(pShader);
+	///Create GameObjects
+	std::vector<GameObject> vecGO;
 	MyMath::Vector3 pos(0, 0, 0.0f);
-	MyMath::Vector3 rot(0, MyMath::PI/2, 0);
+	MyMath::Vector3 rot(0, 0, 0);
 	MyMath::Vector3 scale(8.0f, 8.0f, 8.0f);
 	Transform transform(pos, rot, scale);
-#define OBJECTS 5
-	std::vector<GameObject> vecGO;
 	for (int i = 0; i < OBJECTS; ++i)
 	{
 		vecGO.push_back(GameObject(pMesh, transform));
-		transform.SetTrans(MyMath::Vector3(transform.GetTrans().x+0.6f, 0.0f, 0.0f));
+		transform.SetTrans(MyMath::Vector3(transform.GetTrans().x+2.0f, 0.0f, 0.0f));
 	}
-
+	///Create Cameras
 	float fovy = (2.0f / 3.0f) * MyMath::PI;
 	float aspect = display.GetAspect();
 	float n = 1;
 	float f = 1000;
 	MyMath::Vector3 eye(0.0f, 0.0f, 3.0f);
 	MyMath::Vector3 at(pos);
-
 	Camera mainCam(fovy, aspect, n, f, eye, at);
 	Camera *pCam = &mainCam;
-
-	modelManager.LoadObj(pMesh);
-	shaderManager.CompileShader(pShader);
-	shaderManager.LinkProgram(pShader);
-	///Create RendererContext
-	RenderContext renderContext;
-	renderContext.renderGO = &vecGO[0];
-	renderContext.renderCam = pCam;
-	renderContext.renderShader = pShader;
-	renderer.GetRenderContext() = renderContext;
+	///Set RenderContext
+	renderer.SetRenderGO(&vecGO[0]);
+	renderer.SetRenderCam(pCam);
+	renderer.SetRenderShader(pShader);
 	///Loop
 	float counter = 0;
 	while(display.CheckState() != STATE::END)
@@ -97,13 +91,13 @@ int main(int argc, char **argv)
 		renderer.Clear();
 		for (int i = 0; i < OBJECTS; ++i)
 		{
-			renderer.GetRenderContext().renderGO = &vecGO[i];
-			renderer.UpdateDrawInfo();
+			renderer.SetRenderGO(&vecGO[i]);
+			renderer.UpdataUniforms();
 			renderer.DrawCall();
 		}
 
 		display.SwapBuffer();
-		EventHandle(display.CheckEvent(), &(renderer.GetRenderContext()) );
+		EventHandle(display.CheckEvent(), renderer);
 
 		counter += MyMath::PI/180;
 	}
@@ -111,11 +105,11 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-void EventHandle(EventInfo eventInfo, RenderContext *rc)
+void EventHandle(EventInfo eventInfo, Renderer &renderer)
 {
 #define MOVGO false
-	Camera *cam = rc->renderCam;
-	GameObject *go = rc->renderGO;
+	Camera *cam = renderer.GetRenderCam();
+	GameObject *go = renderer.GetRenderGO();
 	const float speed = 0.5f;
 
 

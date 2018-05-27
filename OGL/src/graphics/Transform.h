@@ -4,6 +4,12 @@
 class Transform
 {
 public:
+	Transform()
+	{
+		position = MyMath::Vector3(0, 0, 0);
+		rotation = MyMath::Vector3(0, 0, 0);
+		scale = MyMath::Vector3(1, 1, 1);
+	}
 	Transform(const MyMath::Vector3& pos, const MyMath::Vector3& rot, const MyMath::Vector3& scale = { 1.0f,1.0f,1.0f }) :
 		position(pos), rotation(rot), scale(scale) {};
 
