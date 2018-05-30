@@ -6,12 +6,12 @@ from 2018-04
  now 2018-05
 
 [TODO : MAIN]
-텍스쳐
-테셀레이션
+테셀레이션(PN-Triangle)
+애니메이션
 
 [TODO : SUB]
 마우스 이벤트 처리
-모델 로딩 속도
+파일 로딩 속도
 글로벌 일루미네이션
 
 [TODO : MISC]
@@ -54,6 +54,9 @@ int main(int argc, char **argv)
 	Mesh mesh("Trophy", GL_TRIANGLES);
 	Mesh *pMesh = &mesh;
 	modelManager.LoadObj(pMesh);
+	///Process Textures
+	Texture texture("test", "bmp");
+	Texture *pTexture = &texture;
 	///Process Shaders
 	Shader shader2("VS_PHONG", "FS_PHONG");
 	Shader shader3("vertex", "fragment", "geometry");
@@ -63,12 +66,13 @@ int main(int argc, char **argv)
 	///Create GameObjects
 	std::vector<GameObject> vecGO;
 	MyMath::Vector3 pos(0, 0, 0.0f);
-	MyMath::Vector3 rot(0, 0, 0);
-	MyMath::Vector3 scale(8.0f, 8.0f, 8.0f);
+	MyMath::Vector3 rot(0, MyMath::PI, 0);
+	MyMath::Vector3 scale(7.0f, 7.0f, 7.0f);
 	Transform transform(pos, rot, scale);
 	for (int i = 0; i < OBJECTS; ++i)
 	{
 		vecGO.push_back(GameObject(pMesh, transform));
+		vecGO[i].SetTexture(pTexture);
 		transform.SetTrans(MyMath::Vector3(transform.GetTrans().x + 2.0f, 0.0f, 0.0f));
 	}
 	///Create Cameras
@@ -81,6 +85,7 @@ int main(int argc, char **argv)
 	Camera mainCam(fovy, aspect, n, f, eye, at);
 	Camera *pCam = &mainCam;
 	///Set RenderContext
+	renderer.SetTextureFilter({ GL_LINEAR,GL_LINEAR });
 	renderer.SetRenderCam(pCam);
 	renderer.SetRenderShader(pShader);
 	renderer.SetRenderGO(&vecGO[0]);

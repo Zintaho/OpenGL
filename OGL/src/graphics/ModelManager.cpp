@@ -51,7 +51,7 @@ void ModelManager::LoadObj(Mesh *pMesh)
 				}
 				else if (lineHeader == "vt")
 				{
-					MyMath::Vector2 tempVec(stof(splitedBuffer[1]), stof(splitedBuffer[2]));
+					MyMath::Vector2 tempVec(1-stof(splitedBuffer[1]), 1-stof(splitedBuffer[2]));
 					uvs.push_back(tempVec);
 				}
 				else if (lineHeader == "vn")
@@ -89,27 +89,22 @@ void ModelManager::LoadObj(Mesh *pMesh)
 
 		///Pushback Vertice
 		Vertex tempVertex;
+		VertexIndex tempVI;
 		size_t verticeSize = positions.size();
 		size_t normalsSize = normals.size();
+		size_t uvSize = uvs.size();
 		size_t indiceSize = vertexIndice.size();
-		pMesh->GetVertice().resize(verticeSize);
+		pMesh->GetVertice().resize(indiceSize);
 		pMesh->GetIndice().resize(indiceSize);
-		for (int i = 0; i < verticeSize; ++i)
-		{
-			tempVertex.Pos = positions[i];
-			tempVertex.Normal = MyMath::Vector3(0, 0, 0);
-
-			pMesh->GetVertice()[i] = tempVertex;
-		}
-		///Calculate Vertex Normal
 		for (int i = 0; i < indiceSize; ++i)
 		{
-			pMesh->GetIndice()[i] = vertexIndice[i].pos;
-			pMesh->GetVertice()[vertexIndice[i].pos].Normal += normals[vertexIndice[i].normal];
-		}		
-		for (int i = 0; i < verticeSize; ++i)
-		{
-			pMesh->GetVertice()[i].Normal.Normalize();
+			tempVI = vertexIndice[i];
+			tempVertex.Pos = positions[tempVI.pos];
+			tempVertex.Normal = normals[tempVI.normal];
+			tempVertex.TextureUV = uvs[tempVI.uv];
+
+			pMesh->GetVertice()[i] = tempVertex;
+			pMesh->GetIndice()[i] = tempVI.uv;
 		}
 	}
 }

@@ -17,15 +17,15 @@ void Shader::InitMap()
 
 std::string Shader::ReadSource(std::string sourcePath)
 {
-	const std::string shaderPathHeader = ".\\shader\\";
-	const std::string shaderPathFooter = ".glsl";
+	const std::string pathHeader = ".\\shader\\";
+	const std::string pathFooter = ".glsl";
 
 	std::string path, buffer;
 	std::ifstream sourceStream;
 
 	std::string returnSource = "";
 
-	path = (shaderPathHeader + sourcePath + shaderPathFooter);
+	path = (pathHeader + sourcePath + pathFooter);
 	sourceStream.open(path);
 
 	if (sourceStream.is_open())

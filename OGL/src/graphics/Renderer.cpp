@@ -34,6 +34,7 @@ void Renderer::SetRenderGO(GameObject *renderGO)
 		UpdateBufferData();
 	}
 	UpdateUniforms();
+	UpdateTextures();
 }
 
 void Renderer::InitGLEW()
@@ -54,14 +55,13 @@ void Renderer::SetGLOptions()
 
 	glViewport(0, 0, static_cast<GLsizei>(w), static_cast<GLsizei>(h));
 
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 
-	//glFrontFace(GL_CW);
-	//glCullFace(GL_BACK);
+	glFrontFace(GL_CW);
+	glCullFace(GL_BACK);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glPointSize(2);
 }
 
 void Renderer::Clear()
@@ -155,6 +155,18 @@ void Renderer::UpdateUniform(UNIFORM_TYPE uniType)
 		break;
 	}
 	}
+}
+
+void Renderer::UpdateTextures()
+{
+	glGenTextures(CONVERT(TEX_TYPE::NUM_TEX), Texs);
+	glBindTexture(GL_TEXTURE_2D, Texs[CONVERT(TEX_TYPE::MAIN)]);
+
+	TextureData *texData = renderContext.renderGO->GetTexture()->GetData();
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texData->width, texData->height, 0, GL_BGR, GL_UNSIGNED_BYTE, texData->imageData);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, renderContext.texFilter.minFilter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, renderContext.texFilter.maxFilter);
 }
 
 void Renderer::DrawCall()
