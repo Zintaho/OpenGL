@@ -64,7 +64,7 @@ public:
 		vsFileName(vsFilename), fsFileName(fsFilename), gsFileName(gsFilename), tcsFileName(tcsFilename), tesFileName(tesFilename)
 	{
 		InitMap();
-		bGSOn = true;
+		//bGSOn = true;
 		bTessOn = true;
 
 		shaderProgram = glCreateProgram();

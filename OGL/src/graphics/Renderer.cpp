@@ -61,7 +61,7 @@ void Renderer::SetGLOptions()
 	glFrontFace(GL_CW);
 	glCullFace(GL_BACK);
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void Renderer::Clear()

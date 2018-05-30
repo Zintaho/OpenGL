@@ -16,7 +16,7 @@ uniform vec4 LightAmbient = vec4(0.9,0.9,0.9,1.0);
 //Material
 uniform vec4 MaterialAmbient = vec4(0.24725,0.1995,0.0745,1.0);
 uniform vec4 MaterialSpecular = vec4(0.628281,0.555892,0.366065,1.0);
-uniform float MaterialShininess = 60;
+uniform float MaterialShininess = 6;
 uniform vec4 MaterialEmission = vec4(0.96, 0.89, 0.51, 1.0);
 
 void main()

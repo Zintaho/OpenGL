@@ -169,6 +169,7 @@
     <None Include="shader\VS.glsl" />
     <None Include="shader\VS_Phong.glsl" />
     <None Include="shader\VS_Phongv.glsl" />
+    <None Include="src\graphics\GS.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

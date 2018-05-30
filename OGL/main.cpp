@@ -6,7 +6,7 @@ from 2018-04
  now 2018-05
 
 [TODO : MAIN]
-테셀레이션(PN-Triangle)
+테셀레이션(PN-Triangle) //TCS, TES는 적용 가능
 애니메이션
 
 [TODO : SUB]
@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 	ModelManager modelManager;
 	ShaderManager shaderManager;
 	///Process Meshes
-	Mesh mesh("Trophy", GL_TRIANGLES);
+	Mesh mesh("Trophy", GL_PATCHES);
 	Mesh *pMesh = &mesh;
 	modelManager.LoadObj(pMesh);
 	///Process Textures
@@ -59,15 +59,16 @@ int main(int argc, char **argv)
 	Texture *pTexture = &texture;
 	///Process Shaders
 	Shader shader2("VS_PHONG", "FS_PHONG");
+	Shader shader2_2("VS", "FS");
 	Shader shader3("vertex", "fragment", "geometry");
-	Shader shader4("vertex", "fragment", "geometry", "control", "evaluation");
-	Shader *pShader = &shader2;
+	Shader shader4("VS", "FS", "GS", "TCS", "TES");
+	Shader *pShader = &shader4;
 	shaderManager.ProcessShader(pShader);
 	///Create GameObjects
 	std::vector<GameObject> vecGO;
 	MyMath::Vector3 pos(0, 0, 0.0f);
 	MyMath::Vector3 rot(0, MyMath::PI, 0);
-	MyMath::Vector3 scale(7.0f, 7.0f, 7.0f);
+	MyMath::Vector3 scale(10.0f, 10.0f, 10.0f);
 	Transform transform(pos, rot, scale);
 	for (int i = 0; i < OBJECTS; ++i)
 	{
