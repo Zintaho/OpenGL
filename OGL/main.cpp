@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 	ModelManager modelManager;
 	ShaderManager shaderManager;
 	///Process Meshes
-	Mesh mesh("Trophy", GL_PATCHES);
+	Mesh mesh("Rabbit", GL_PATCHES);
 	Mesh *pMesh = &mesh;
 	modelManager.LoadObj(pMesh);
 	///Process Textures
